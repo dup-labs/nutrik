@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nūtrk — Feito de consistência.</title>
+
+  <link rel="stylesheet" href="_ds/n-trk-design-system-f3965d0f-2d60-4963-88f5-b9af41d76f01/tokens/typography.css">
+  <link rel="stylesheet" href="_ds/n-trk-design-system-f3965d0f-2d60-4963-88f5-b9af41d76f01/tokens/colors.css">
+  <link rel="stylesheet" href="_ds/n-trk-design-system-f3965d0f-2d60-4963-88f5-b9af41d76f01/tokens/spacing.css">
+  <link rel="stylesheet" href="_ds/n-trk-design-system-f3965d0f-2d60-4963-88f5-b9af41d76f01/tokens/effects.css">
+  <link rel="stylesheet" href="_ds/n-trk-design-system-f3965d0f-2d60-4963-88f5-b9af41d76f01/styles.css">
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script src="_ds/n-trk-design-system-f3965d0f-2d60-4963-88f5-b9af41d76f01/_ds_bundle.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--color-base);
+      color: var(--color-text);
+      font-family: var(--font-interface);
+      overflow-x: hidden;
+      text-wrap: pretty;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: var(--gradient-bg-glow);
+      pointer-events: none; z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.04; pointer-events: none; z-index: 9999;
+    }
+
+    #root { position: relative; z-index: 1; }
+
+    /* Marquee */
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .marquee-track { display: flex; animation: marquee 28s linear infinite; width: max-content; }
+
+    /* Cursor click ripple */
+    @keyframes ripple {
+      0%   { opacity: 0.5; transform: scale(0); }
+      100% { opacity: 0;   transform: scale(3.5); }
+    }
+
+    /* Scroll reveal */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s cubic-bezier(0.2,0,0,1), transform 0.7s cubic-bezier(0.2,0,0,1); }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.10s; }
+    .reveal-delay-2 { transition-delay: 0.20s; }
+    .reveal-delay-3 { transition-delay: 0.30s; }
+
+    /* Nav */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: var(--z-sticky); backdrop-filter: blur(24px); background: rgba(5,7,11,0.82); border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 48px; height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 32px; }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-link { font-family: var(--font-interface); font-size: 14px; color: var(--color-text-muted); text-decoration: none; letter-spacing: -0.01em; transition: color var(--transition-fast); }
+    .nav-link:hover { color: var(--color-text); }
+
+    /* Layout */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
+
+    /* Glass */
+    .glass { background: var(--glass-bg); backdrop-filter: var(--glass-blur); border: var(--glass-border); border-radius: var(--radius-lg); }
+    .glass-elevated { background: var(--glass-bg-elevated); backdrop-filter: var(--glass-blur-elevated); border: var(--glass-border-elevated); border-radius: var(--radius-lg); }
+
+    /* Label caps */
+    .label { font-family: var(--font-interface); font-size: 11px; font-weight: 500; letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--color-text-muted); }
+
+    /* Adherence bars */
+    .bar-track { height: 3px; background: rgba(255,255,255,0.07); border-radius: 9999px; overflow: hidden; }
+    .bar-fill  { height: 100%; border-radius: 9999px; }
+
+    /* App frame */
+    .app-frame { background: var(--color-surface); border-radius: var(--radius-lg); border: var(--glass-border-elevated); box-shadow: var(--glow-blue), var(--shadow-elevated); overflow: hidden; }
+    .frame-chrome { background: var(--color-surface); padding: 10px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .frame-dots { display: flex; gap: 5px; }
+    .frame-dot  { width: 10px; height: 10px; border-radius: 50%; }
+    .frame-url  { flex: 1; background: rgba(255,255,255,0.05); border-radius: 4px; padding: 3px 12px; font-size: 11px; font-family: var(--font-data); color: var(--color-text-muted); max-width: 220px; margin: 0 auto; text-align: center; }
+
+    /* Form inputs */
+    .field-input { width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.04); border: var(--glass-border); border-radius: var(--radius-md); color: var(--color-text); font-family: var(--font-interface); font-size: 14px; outline: none; transition: border-color var(--transition-fast), box-shadow var(--transition-fast); }
+    .field-input::placeholder { color: var(--color-text-disabled); }
+    .field-input:focus { border-color: rgba(109,164,183,0.45); box-shadow: 0 0 0 3px rgba(109,164,183,0.08); }
+
+    /* Submit button */
+    .btn-submit { width: 100%; padding: 14px 24px; background: var(--color-blue-core); border: var(--glass-border); border-radius: var(--radius-md); color: var(--color-text); font-family: var(--font-interface); font-size: 15px; font-weight: 500; cursor: pointer; letter-spacing: -0.01em; transition: background var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast); }
+    .btn-submit:hover { background: #1a4a5e; box-shadow: var(--glow-blue); }
+    .btn-submit:active { transform: scale(0.97); }
+
+    /* Role toggle */
+    .role-btn { flex: 1; padding: 9px 12px; border-radius: var(--radius-md); font-family: var(--font-interface); font-size: 13px; font-weight: 500; cursor: pointer; transition: all var(--transition-fast); text-transform: capitalize; }
+    .role-btn.active   { border: var(--glass-border-elevated); background: var(--color-blue-subtle); color: var(--color-blue-glow); }
+    .role-btn.inactive { border: var(--glass-border); background: transparent; color: var(--color-text-muted); }
+    .role-btn.inactive:hover { color: var(--color-text); }
+
+    /* Feature card hover */
+    .feat-card { transition: border-color var(--transition-base), box-shadow var(--transition-base); }
+    .feat-card:hover { border-color: rgba(109,164,183,0.28); box-shadow: var(--glow-blue); }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .nav-links  { display: none; }
+      .nav-inner  { padding: 0 24px; }
+      .container  { padding: 0 24px; }
+      .hero-grid  { grid-template-columns: 1fr !important; }
+      .hero-visual { display: none !important; }
+      .feat-grid  { grid-template-columns: 1fr !important; }
+      .whom-grid  { grid-template-columns: 1fr !important; }
+      .gami-grid  { grid-template-columns: 1fr !important; }
+      .phone-side { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" src="lp-showcase.jsx"></script>
+  <script type="text/babel" src="lp-extra.jsx"></script>
+
+  <script type="text/babel">
+    const { Button, Badge } = window.NTrkDesignSystem_f3965d;
+    const Icon = window.Icon;
+    const { AnimatedProductShowcase, GamificationSection, MobileSection } = window;
+
+    /* ── Nav ─────────────────────────────────────────────────── */
+    function Nav({ onCTA }) {
+      return (
+        <nav>
+          <div className="nav-inner">
+            <img src="assets/nutrk-logo.svg" alt="Nūtrk" style={{ height: 20 }} />
+            <div className="nav-links">
+              <a href="#funcionalidades" className="nav-link">Funcionalidades</a>
+              <a href="#para-quem" className="nav-link">Para quem</a>
+              <a href="#acesso" className="nav-link">Acesso antecipado</a>
+            </div>
+            <Button variant="primary" size="sm" onClick={onCTA}>Solicitar acesso</Button>
+          </div>
+        </nav>
+      );
+    }
+
+    /* ── Hero ────────────────────────────────────────────────── */
+    function Hero({ onCTA }) {
+      return (
+        <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', paddingTop: 64, overflow: 'hidden', position: 'relative' }}>
+          <div style={{ position: 'absolute', top: '20%', right: '-10%', width: 700, height: 700, borderRadius: '50%', background: 'radial-gradient(circle, rgba(109,164,183,0.10) 0%, transparent 65%)', pointerEvents: 'none' }} />
+
+          <div className="container hero-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1.15fr', gap: 72, alignItems: 'center', padding: '88px 48px' }}>
+            {/* Copy */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
+              <div><Badge variant="blue" dot>Acesso antecipado — vagas limitadas</Badge></div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+                <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(38px, 4.5vw, 62px)', fontWeight: 800, letterSpacing: 'var(--tracking-tight)', lineHeight: 1.05, color: 'var(--color-text)' }}>
+                  O protocolo que mantém o paciente consistente.
+                </h1>
+                <p style={{ fontFamily: 'var(--font-interface)', fontSize: 17, lineHeight: 1.65, color: 'var(--color-text-muted)', maxWidth: 440 }}>
+                  Nūtrk conecta nutricionistas e personal trainers em uma plataforma única — do registro ao resultado, sem lacunas no protocolo.
+                </p>
+              </div>
+              <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+                <Button variant="primary" size="lg" onClick={onCTA}>Solicitar acesso antecipado</Button>
+                <a href="#funcionalidades" style={{ display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'var(--font-interface)', fontSize: 14, fontWeight: 500, color: 'var(--color-text-muted)', textDecoration: 'none', transition: 'color var(--transition-fast)' }}
+                  onMouseEnter={e => e.currentTarget.style.color = 'var(--color-text)'}
+                  onMouseLeave={e => e.currentTarget.style.color = 'var(--color-text-muted)'}>
+                  Ver funcionalidades <Icon name="arrowR" size={14} color="currentColor" />
+                </a>
+              </div>
+              <div style={{ display: 'flex', gap: 32, paddingTop: 20, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                {[{ n:'48', l:'pacientes monitorados' },{ n:'87%', l:'aderência média' },{ n:'12', l:'dias de streak' }].map(({ n, l }) => (
+                  <div key={l} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                    <span style={{ fontFamily: 'var(--font-data)', fontSize: 26, color: 'var(--color-blue-glow)', lineHeight: 1 }}>{n}</span>
+                    <span style={{ fontFamily: 'var(--font-interface)', fontSize: 12, color: 'var(--color-text-muted)' }}>{l}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Screenshot */}
+            <div className="hero-visual" style={{ position: 'relative' }}>
+              <div style={{ position: 'absolute', inset: -60, background: 'radial-gradient(ellipse, rgba(109,164,183,0.18) 0%, transparent 65%)', pointerEvents: 'none' }} />
+              <div className="app-frame" style={{ transform: 'perspective(1400px) rotateX(2.5deg) rotateY(-5deg)', position: 'relative' }}>
+                <div className="frame-chrome">
+                  <div className="frame-dots">{['#FF5F57','#FFBD2E','#28CA41'].map(c => <div key={c} className="frame-dot" style={{ background: c }}/>)}</div>
+                  <div className="frame-url">app.nutrk.com</div>
+                </div>
+                <img src="screenshots/dashboard.png" alt="Dashboard Nūtrk" style={{ width: '100%', display: 'block' }} />
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* ── Marquee ─────────────────────────────────────────────── */
+    function MarqueeStrip() {
+      return (
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', padding: '14px 0', overflow: 'hidden', background: 'rgba(109,164,183,0.03)' }}>
+          <div className="marquee-track">
+            {Array(20).fill(null).map((_, i) => (
+              <span key={i} style={{ fontFamily: 'var(--font-display)', fontSize: 13, fontWeight: 700, color: 'var(--color-text-muted)', letterSpacing: '0.05em', textTransform: 'uppercase', padding: '0 48px', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 48 }}>
+                Feito de consistência.
+                <span style={{ width: 3, height: 3, borderRadius: '50%', background: 'var(--color-blue-glow)', flexShrink: 0 }} />
+              </span>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    /* ── Mini UI components ──────────────────────────────────── */
+
+    function MiniPatientList() {
+      const rows = [
+        { initials: 'JF', name: 'João Ferreira',  pct: 87, active: true },
+        { initials: 'AC', name: 'Ana Costa',       pct: 72, active: true, debt: true },
+        { initials: 'PL', name: 'Pedro Lima',      pct: 91, active: true },
+      ];
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+          {rows.map(r => (
+            <div key={r.name} style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '7px 10px', background: 'rgba(255,255,255,0.025)', borderRadius: 8, border: '1px solid rgba(255,255,255,0.05)' }}>
+              <div style={{ width: 26, height: 26, borderRadius: '50%', background: 'var(--color-blue-subtle)', border: 'var(--glass-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontFamily: 'var(--font-interface)', fontWeight: 600, color: 'var(--color-blue-glow)', flexShrink: 0 }}>{r.initials}</div>
+              <span style={{ fontFamily: 'var(--font-interface)', fontSize: 12, fontWeight: 500, color: 'var(--color-text)', flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.name}</span>
+              <div className="bar-track" style={{ width: 54 }}><div className="bar-fill" style={{ width: `${r.pct}%`, background: r.pct >= 85 ? 'var(--color-blue-glow)' : '#4a8fa0' }} /></div>
+              <span style={{ fontFamily: 'var(--font-data)', fontSize: 11, color: 'var(--color-text-muted)', minWidth: 26, textAlign: 'right' }}>{r.pct}%</span>
+              {r.debt && <span style={{ fontSize: 9, fontFamily: 'var(--font-interface)', color: 'var(--color-error)', background: 'rgba(255,75,75,0.1)', border: '1px solid rgba(255,75,75,0.2)', borderRadius: 4, padding: '1px 5px', fontWeight: 500 }}>ATRASO</span>}
+            </div>
+          ))}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px 10px', background: 'rgba(109,164,183,0.05)', borderRadius: 8, border: 'var(--glass-border)', marginTop: 2 }}>
+            <span className="label">Aderência média</span>
+            <span style={{ fontFamily: 'var(--font-data)', fontSize: 18, color: 'var(--color-blue-glow)', lineHeight: 1 }}>83%</span>
+          </div>
+        </div>
+      );
+    }
+
+    function MiniProtocol() {
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+          {[
+            { role: 'NUTRICIONISTA', proto: 'Cutting Q2 2026',      icon: 'utensils', color: '#0DB9D7' },
+            { role: 'PERSONAL',      proto: 'Hipertrofia — Fase 2', icon: 'activity', color: 'var(--color-blue-glow)' },
+          ].map(({ role, proto, icon, color }) => (
+            <div key={role} style={{ padding: '10px 12px', background: 'rgba(255,255,255,0.025)', borderRadius: 8, border: '1px solid rgba(109,164,183,0.12)', display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 30, height: 30, borderRadius: 6, background: 'var(--color-blue-subtle)', border: 'var(--glass-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><Icon name={icon} size={13} color={color} /></div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div className="label" style={{ marginBottom: 2 }}>{role}</div>
+                <div style={{ fontFamily: 'var(--font-interface)', fontSize: 12, fontWeight: 500, color: 'var(--color-text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{proto}</div>
+              </div>
+              <span style={{ fontSize: 9, fontFamily: 'var(--font-interface)', color: 'var(--color-blue-glow)', background: 'var(--color-blue-subtle)', border: 'var(--glass-border)', borderRadius: 4, padding: '2px 6px', fontWeight: 500, flexShrink: 0 }}>ATIVO</span>
+            </div>
+          ))}
+          <div style={{ padding: '8px 12px', background: 'rgba(255,255,255,0.02)', borderRadius: 8, border: '1px solid rgba(255,255,255,0.04)' }}>
+            <div className="label" style={{ marginBottom: 4 }}>Comentário interno</div>
+            <p style={{ fontFamily: 'var(--font-interface)', fontSize: 11, color: 'var(--color-text-muted)', margin: 0, fontStyle: 'italic', lineHeight: 1.5 }}>Atenção ao consumo proteico nos dias de treino pesado.</p>
+          </div>
+        </div>
+      );
+    }
+
+    function MiniTracking() {
+      const days = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+      const missed = new Set(['4-3','6-1']);
+      return (
+        <div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 5, marginBottom: 10 }}>
+            {days.map((day, di) => (
+              <div key={di}>
+                <div className="label" style={{ textAlign: 'center', marginBottom: 6, fontSize: 9 }}>{day}</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  {[0,1,2,3].map(mi => {
+                    const bad = missed.has(`${di}-${mi}`);
+                    return (
+                      <div key={mi} style={{ height: 20, borderRadius: 4, background: bad ? 'rgba(255,75,75,0.10)' : 'rgba(109,164,183,0.08)', border: bad ? '1px solid rgba(255,75,75,0.22)' : '1px solid rgba(109,164,183,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Icon name={bad ? 'xmark' : 'check'} size={9} color={bad ? '#CC2E2E' : '#6DA4B7'} />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px 12px', background: 'rgba(109,164,183,0.06)', borderRadius: 7, border: 'var(--glass-border)' }}>
+            <span className="label">Esta semana</span>
+            <span style={{ fontFamily: 'var(--font-data)', fontSize: 18, color: 'var(--color-blue-glow)', lineHeight: 1 }}>90%</span>
+          </div>
+        </div>
+      );
+    }
+
+    function MiniAgenda() {
+      const appts = [
+        { time: '09:00', name: 'Sofia Rocha',   type: 'Retorno',   init: 'SR' },
+        { time: '10:30', name: 'Pedro Lima',    type: 'Avaliação', init: 'PL' },
+        { time: '14:00', name: 'João Ferreira', type: 'Consulta',  init: 'JF' },
+        { time: '15:30', name: 'Ana Costa',     type: 'Retorno',   init: 'AC' },
+      ];
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+          <div style={{ display: 'flex', gap: 4, marginBottom: 4 }}>
+            {['Seg','Ter','Qua','Qui','Sex'].map((d, i) => (
+              <div key={d} style={{ flex: 1, textAlign: 'center', padding: '4px 2px', borderRadius: 5, background: i === 2 ? 'var(--color-blue-subtle)' : 'rgba(255,255,255,0.025)', border: i === 2 ? 'var(--glass-border)' : '1px solid rgba(255,255,255,0.04)', fontFamily: 'var(--font-interface)', fontSize: 9, color: i === 2 ? 'var(--color-blue-glow)' : 'var(--color-text-muted)', fontWeight: i === 2 ? 500 : 400 }}>{d}</div>
+            ))}
+          </div>
+          {appts.map(({ time, name, type, init }) => (
+            <div key={name} style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '6px 9px', background: 'rgba(255,255,255,0.025)', borderRadius: 7, border: '1px solid rgba(255,255,255,0.04)' }}>
+              <span style={{ fontFamily: 'var(--font-data)', fontSize: 10, color: 'var(--color-text-muted)', minWidth: 36 }}>{time}</span>
+              <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'var(--color-blue-subtle)', border: 'var(--glass-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 7, fontFamily: 'var(--font-interface)', fontWeight: 700, color: 'var(--color-blue-glow)', flexShrink: 0 }}>{init}</div>
+              <span style={{ fontFamily: 'var(--font-interface)', fontSize: 11, color: 'var(--color-text)', flex: 1, fontWeight: 500 }}>{name}</span>
+              <span style={{ fontSize: 8, padding: '1px 5px', borderRadius: 3, fontFamily: 'var(--font-interface)', color: 'var(--color-text-muted)', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>{type}</span>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    function MiniNotification() {
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 10px', background: 'rgba(109,164,183,0.06)', borderRadius: 8, border: 'var(--glass-border)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+              <Icon name="users" size={13} color="var(--color-blue-glow)" />
+              <span style={{ fontFamily: 'var(--font-interface)', fontSize: 12, color: 'var(--color-text)', fontWeight: 500 }}>Todos os pacientes ativos</span>
+            </div>
+            <span style={{ fontFamily: 'var(--font-data)', fontSize: 18, color: 'var(--color-blue-glow)', lineHeight: 1 }}>48</span>
+          </div>
+          <div style={{ padding: '10px 10px', background: 'rgba(255,255,255,0.025)', borderRadius: 8, border: '1px solid rgba(255,255,255,0.05)' }}>
+            <div className="label" style={{ marginBottom: 5 }}>Mensagem</div>
+            <p style={{ fontFamily: 'var(--font-interface)', fontSize: 12, color: 'var(--color-text-muted)', margin: 0, lineHeight: 1.5, fontStyle: 'italic' }}>
+              "Lembrete: semana de check-in de peso. Registre no app até sexta."
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+            <div style={{ flex: 1, height: 28, background: 'rgba(255,255,255,0.03)', borderRadius: 7, border: 'var(--glass-border)', display: 'flex', alignItems: 'center', padding: '0 10px' }}>
+              <span style={{ fontFamily: 'var(--font-interface)', fontSize: 11, color: 'var(--color-text-disabled)' }}>Agendar envio...</span>
+            </div>
+            <div style={{ width: 28, height: 28, borderRadius: 7, background: 'var(--color-blue-subtle)', border: 'var(--glass-border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Icon name="send" size={12} color="var(--color-blue-glow)" />
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function MiniFeedback() {
+      const responses = [
+        { name: 'João F.', text: 'Semana puxada no trabalho, mas me mantive no protocolo.', mood: 3 },
+        { name: 'Sofia R.', text: 'Me senti bem nos treinos. Dieta ok essa semana.', mood: 5 },
+      ];
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 10px', background: 'rgba(109,164,183,0.06)', borderRadius: 7, border: 'var(--glass-border)' }}>
+            <Icon name="send" size={12} color="var(--color-blue-glow)" />
+            <span style={{ fontFamily: 'var(--font-interface)', fontSize: 11, color: 'var(--color-text)', flex: 1, fontWeight: 500 }}>Envio automático a cada 7 dias</span>
+            <span style={{ fontFamily: 'var(--font-data)', fontSize: 14, color: 'var(--color-blue-glow)' }}>73%</span>
+            <span style={{ fontFamily: 'var(--font-interface)', fontSize: 9, color: 'var(--color-text-muted)' }}>resp.</span>
+          </div>
+          {responses.map(({ name, text, mood }) => (
+            <div key={name} style={{ padding: '9px 10px', background: 'rgba(255,255,255,0.025)', borderRadius: 7, border: '1px solid rgba(255,255,255,0.05)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+                <span style={{ fontFamily: 'var(--font-interface)', fontSize: 11, fontWeight: 500, color: 'var(--color-text)' }}>{name}</span>
+                <div style={{ display: 'flex', gap: 2 }}>
+                  {[1,2,3,4,5].map(n => <div key={n} style={{ width: 6, height: 6, borderRadius: '50%', background: n <= mood ? 'var(--color-blue-glow)' : 'rgba(255,255,255,0.1)' }} />)}
+                </div>
+              </div>
+              <p style={{ fontFamily: 'var(--font-interface)', fontSize: 11, color: 'var(--color-text-muted)', margin: 0, fontStyle: 'italic', lineHeight: 1.4 }}>{text}</p>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    /* ── Features ────────────────────────────────────────────── */
+    function Features() {
+      const cards = [
+        { icon: 'users',     title: 'Visão total dos seus pacientes',  desc: 'Dashboard com aderência, status financeiro e alertas de todos os pacientes — em tempo real.',        mini: <MiniPatientList /> },
+        { icon: 'link',      title: 'Protocolo integrado com o par',   desc: 'Nutricionista e personal na mesma plataforma. Comentários internos e visão compartilhada.',           mini: <MiniProtocol /> },
+        { icon: 'chart',     title: 'Acompanhamento entre consultas',  desc: 'Registros diários de refeição, treino e sono. O paciente registra; você acompanha.',                  mini: <MiniTracking /> },
+        { icon: 'calendar',  title: 'Agenda integrada',                desc: 'Gerencie consultas, avaliações e retornos em um calendário conectado ao perfil de cada paciente.',    mini: <MiniAgenda /> },
+        { icon: 'bell',      title: 'Notificações em massa',           desc: 'Envie lembretes e avisos para todos os pacientes ativos de uma vez, com agendamento de envio.',        mini: <MiniNotification /> },
+        { icon: 'msgCircle', title: 'Feedback periódico',              desc: 'Solicitação automática semanal — índice de humor, dificuldades e relato livre do paciente.',           mini: <MiniFeedback /> },
+      ];
+      return (
+        <section id="funcionalidades" style={{ padding: '112px 0' }}>
+          <div className="container">
+            <div className="reveal" style={{ textAlign: 'center', marginBottom: 56, display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'center' }}>
+              <div className="label">Funcionalidades</div>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(26px, 3vw, 42px)', fontWeight: 700, letterSpacing: 'var(--tracking-tight)', color: 'var(--color-text)', maxWidth: 540, lineHeight: 1.1 }}>
+                Tudo que um protocolo precisa para se manter vivo.
+              </h2>
+            </div>
+            <div className="feat-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 18 }}>
+              {cards.map(({ icon, title, desc, mini }, i) => (
+                <div key={title} className={`glass feat-card reveal reveal-delay-${Math.min(i % 3 + 1, 3)}`} style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 'var(--radius-md)', background: 'var(--color-blue-subtle)', border: 'var(--glass-border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Icon name={icon} size={17} color="var(--color-blue-glow)" />
+                    </div>
+                    <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700, color: 'var(--color-text)', letterSpacing: 'var(--tracking-tight)' }}>{title}</h3>
+                    <p style={{ fontFamily: 'var(--font-interface)', fontSize: 13, lineHeight: 1.6, color: 'var(--color-text-muted)', margin: 0 }}>{desc}</p>
+                  </div>
+                  <div style={{ padding: 12, background: 'rgba(5,7,11,0.55)', borderRadius: 10, border: '1px solid rgba(255,255,255,0.04)', flex: 1 }}>
+                    {mini}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* ── Product showcase (animated) ────────────────────────── */
+    function ShowcaseSection() {
+      return (
+        <section style={{ padding: '32px 0 112px', position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg, transparent, rgba(11,16,32,0.4) 15%, rgba(11,16,32,0.4) 85%, transparent)' }}>
+          <div style={{ position: 'absolute', bottom: '5%', left: '50%', transform: 'translateX(-50%)', width: '70%', height: 200, background: 'radial-gradient(ellipse, rgba(109,164,183,0.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
+          <div className="container">
+            <div className="reveal" style={{ textAlign: 'center', marginBottom: 44, display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
+              <div className="label">O produto</div>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(24px, 3vw, 38px)', fontWeight: 700, letterSpacing: 'var(--tracking-tight)', color: 'var(--color-text)', lineHeight: 1.1 }}>
+                Precisão de laboratório.<br />Clareza de dashboard.
+              </h2>
+            </div>
+            <div className="reveal">
+              <AnimatedProductShowcase />
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* ── For whom ────────────────────────────────────────────── */
+    function ForWhom() {
+      const cards = [
+        { role: 'Nutricionista', icon: 'utensils', iconColor: '#0DB9D7', headline: 'Prescreva. Monitore. Ajuste.',
+          desc: 'Protocolos alimentares estruturados, rastreamento diário de aderência e histórico completo de composição corporal — integrados ao protocolo de treino.',
+          items: ['Protocolos alimentares por fase','Monitoramento de aderência por refeição','Histórico de composição corporal','Canal direto com o personal do paciente','Alertas de inadimplência e pausas'] },
+        { role: 'Personal Trainer', icon: 'activity', iconColor: 'var(--color-blue-glow)', headline: 'Programe. Acompanhe. Evolua.',
+          desc: 'Planejamento semanal de cargas, controle de progressão e acompanhamento de desempenho — com visão do protocolo nutricional para decisões mais precisas.',
+          items: ['Planejamento semanal de treinos','Controle de cargas e progressão','Acompanhamento de performance','Acesso ao protocolo nutricional','Feedback do paciente entre sessões'] },
+      ];
+      return (
+        <section id="para-quem" style={{ padding: '64px 0 112px' }}>
+          <div className="container">
+            <div className="reveal" style={{ textAlign: 'center', marginBottom: 56, display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'center' }}>
+              <div className="label">Para quem</div>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(26px, 3vw, 42px)', fontWeight: 700, letterSpacing: 'var(--tracking-tight)', color: 'var(--color-text)', maxWidth: 500, lineHeight: 1.1 }}>
+                Feito para profissionais que entendem que a constância do paciente é a principal receita para o sucesso.
+              </h2>
+            </div>
+            <div className="whom-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+              {cards.map(({ role, icon, iconColor, headline, desc, items }, i) => (
+                <div key={role} className={`glass reveal reveal-delay-${i + 1}`} style={{ padding: 32, display: 'flex', flexDirection: 'column', gap: 24 }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+                    <div style={{ width: 46, height: 46, borderRadius: 'var(--radius-md)', background: 'var(--color-blue-subtle)', border: 'var(--glass-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <Icon name={icon} size={20} color={iconColor} />
+                    </div>
+                    <div>
+                      <div className="label" style={{ marginBottom: 4 }}>{role}</div>
+                      <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700, color: 'var(--color-text)', letterSpacing: 'var(--tracking-tight)' }}>{headline}</h3>
+                    </div>
+                  </div>
+                  <p style={{ fontFamily: 'var(--font-interface)', fontSize: 14, lineHeight: 1.65, color: 'var(--color-text-muted)', margin: 0 }}>{desc}</p>
+                  <div style={{ height: 1, background: 'rgba(255,255,255,0.05)' }} />
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {items.map(item => (
+                      <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <div style={{ width: 18, height: 18, borderRadius: '50%', background: 'var(--color-blue-subtle)', border: 'var(--glass-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          <Icon name="check" size={10} color="var(--color-blue-glow)" />
+                        </div>
+                        <span style={{ fontFamily: 'var(--font-interface)', fontSize: 13, color: 'var(--color-text)' }}>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* ── Waitlist ─────────────────────────────────────────────── */
+    function Waitlist() {
+      const [form, setForm] = React.useState({ name: '', email: '', role: 'nutricionista' });
+      const [submitted, setSubmitted] = React.useState(false);
+      const handleSubmit = (e) => { e.preventDefault(); if (form.name.trim() && form.email.trim()) setSubmitted(true); };
+      return (
+        <section id="acesso" style={{ padding: '64px 0 120px', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 700, height: 500, background: 'radial-gradient(ellipse, rgba(109,164,183,0.13) 0%, transparent 70%)', pointerEvents: 'none' }} />
+          <div className="container reveal" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', position: 'relative' }}>
+            <div className="label" style={{ marginBottom: 16 }}>Acesso antecipado</div>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 4vw, 52px)', fontWeight: 800, letterSpacing: 'var(--tracking-tight)', color: 'var(--color-text)', lineHeight: 1.1, marginBottom: 14, maxWidth: 600 }}>
+              Seja dos primeiros a usar o Nūtrk.
+            </h2>
+            <p style={{ fontFamily: 'var(--font-interface)', fontSize: 16, color: 'var(--color-text-muted)', marginBottom: 48, maxWidth: 440, lineHeight: 1.65 }}>
+              O acesso antecipado é limitado. Deixe seus dados e entraremos em contato assim que uma vaga abrir.
+            </p>
+            {submitted ? (
+              <div className="glass-elevated" style={{ padding: '40px', maxWidth: 440, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
+                <div style={{ width: 52, height: 52, borderRadius: '50%', background: 'var(--color-blue-subtle)', border: 'var(--glass-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 4 }}>
+                  <Icon name="check" size={24} color="var(--color-blue-glow)" />
+                </div>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700, color: 'var(--color-text)', letterSpacing: 'var(--tracking-tight)' }}>Solicitação recebida.</h3>
+                <p style={{ fontFamily: 'var(--font-interface)', fontSize: 14, color: 'var(--color-text-muted)', margin: 0 }}>Entraremos em contato em breve.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <div className="glass-elevated" style={{ padding: '28px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 7, textAlign: 'left' }}>
+                    <div className="label">Nome</div>
+                    <input type="text" className="field-input" placeholder="Seu nome completo" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 7, textAlign: 'left' }}>
+                    <div className="label">E-mail</div>
+                    <input type="email" className="field-input" placeholder="seu@email.com.br" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 7, textAlign: 'left' }}>
+                    <div className="label">Perfil</div>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      {['nutricionista','personal trainer','ambos'].map(r => (
+                        <button key={r} type="button" className={`role-btn ${form.role === r ? 'active' : 'inactive'}`} onClick={() => setForm(f => ({ ...f, role: r }))}>{r}</button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <button type="submit" className="btn-submit">Solicitar acesso antecipado</button>
+              </form>
+            )}
+          </div>
+        </section>
+      );
+    }
+
+    /* ── Footer ──────────────────────────────────────────────── */
+    function Footer() {
+      return (
+        <footer style={{ borderTop: '1px solid rgba(255,255,255,0.05)', padding: '36px 0' }}>
+          <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+              <img src="assets/nutrk-logo.svg" alt="Nūtrk" style={{ height: 18, opacity: 0.75 }} />
+              <span style={{ fontFamily: 'var(--font-interface)', fontSize: 12, color: 'var(--color-text-muted)', letterSpacing: '0.02em' }}>Feito de consistência.</span>
+            </div>
+            <span style={{ fontFamily: 'var(--font-data)', fontSize: 12, color: 'var(--color-text-disabled)' }}>© 2026 Nūtrk · Dup.Labs</span>
+          </div>
+        </footer>
+      );
+    }
+
+    /* ── App ─────────────────────────────────────────────────── */
+    function App() {
+      const scrollToWaitlist = () => {
+        const el = document.getElementById('acesso');
+        if (el) window.scrollTo({ top: el.offsetTop - 64, behavior: 'smooth' });
+      };
+
+      React.useEffect(() => {
+        const obs = new IntersectionObserver(
+          entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); }),
+          { threshold: 0.12 }
+        );
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+        return () => obs.disconnect();
+      }, []);
+
+      return (
+        <div>
+          <Nav onCTA={scrollToWaitlist} />
+          <Hero onCTA={scrollToWaitlist} />
+          <MarqueeStrip />
+          <GamificationSection onCTA={scrollToWaitlist} />
+          <Features />
+          <ShowcaseSection />
+          <MobileSection />
+          <ForWhom />
+          <Waitlist />
+          <Footer />
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

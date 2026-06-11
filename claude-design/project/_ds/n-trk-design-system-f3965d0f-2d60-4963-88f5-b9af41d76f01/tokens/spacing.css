@@ -1,0 +1,29 @@
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Nūtrk — Spacing, Radius & Z-Index Tokens
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+:root {
+  /* ── Spacing — Base-4 Scale ── */
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ── Border Radius ── */
+  --radius-sm:   6px;      /* Badges, tags, small chips */
+  --radius-md:  12px;      /* Cards, inputs, buttons */
+  --radius-lg:  16px;      /* Large panels, sheets, modal corners */
+  --radius-full: 9999px;   /* Pills, avatar circles, toggles */
+
+  /* ── Z-Index Scale ── */
+  --z-base:    0;    /* @kind other */
+  --z-raised: 10;    /* @kind other */
+  --z-sticky: 50;    /* @kind other */
+  --z-overlay: 100;  /* @kind other */
+  --z-modal:   200;  /* @kind other */
+  --z-toast:   300;  /* @kind other */
+}

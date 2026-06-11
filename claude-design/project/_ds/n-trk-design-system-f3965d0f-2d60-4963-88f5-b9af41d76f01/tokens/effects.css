@@ -1,0 +1,50 @@
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Nūtrk — Effects Tokens
+   Glass morphism, shadows, glows, and transitions
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+:root {
+  /* ── Glass Backgrounds ── */
+  --glass-bg:          rgba(12, 28, 34, 0.7);   /* @kind color */
+  --glass-bg-elevated: rgba(15, 47, 60, 0.7);   /* @kind color */
+  --glass-bg-streak:   rgba(20, 12, 4, 0.80);  /* @kind color */
+
+  /* ── Glass Blur ── */
+  --glass-blur:          blur(12px);   /* @kind other */
+  --glass-blur-elevated: blur(20px);   /* @kind other */
+
+  /* ── Glass Borders ── */
+  --glass-border:          1px solid rgba(109, 164, 183, 0.15); /* @kind other */
+  --glass-border-elevated: 1px solid rgba(109, 164, 183, 0.25); /* @kind other */
+  --glass-border-streak:   1px solid rgba(255, 178, 58, 0.25);   /* @kind other */
+
+  /* ── Shadows ── */
+  --shadow-sm:       0 1px 6px rgba(0, 0, 0, 0.30);
+  --shadow-card:     0 2px 16px rgba(0, 0, 0, 0.40),
+                     0 1px 4px rgba(0, 0, 0, 0.20);
+  --shadow-elevated: 0 8px 48px rgba(0, 0, 0, 0.60),
+                     0 2px 12px rgba(0, 0, 0, 0.30);
+
+  /* ── Blue Glows ── */
+  --glow-blue:        0 0 20px rgba(109, 164, 183, 0.30),
+                      0 0 40px rgba(109, 164, 183, 0.12); /* @kind shadow */
+  --glow-blue-strong: 0 0 30px rgba(109, 164, 183, 0.50),
+                      0 0 60px rgba(109, 164, 183, 0.22); /* @kind shadow */
+  --glow-blue-inset:  inset 0 0 20px rgba(109, 164, 183, 0.10); /* @kind shadow */
+
+  /* ── Amber Glows ── */
+  --glow-amber:        0 0 20px rgba(255, 178, 58, 0.40),
+                       0 0 40px rgba(255, 178, 58, 0.18); /* @kind shadow */
+  --glow-amber-strong: 0 0 30px rgba(255, 178, 58, 0.60),
+                       0 0 60px rgba(255, 178, 58, 0.28); /* @kind shadow */
+
+  /* ── Transitions ── */
+  --ease-out:    cubic-bezier(0.2, 0, 0, 1);             /* @kind other */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);      /* @kind other */
+  --ease-in:     cubic-bezier(0.4, 0, 1, 1);             /* @kind other */
+
+  --transition-fast:   150ms cubic-bezier(0.2, 0, 0, 1);            /* @kind other */
+  --transition-base:   250ms cubic-bezier(0.2, 0, 0, 1);            /* @kind other */
+  --transition-slow:   400ms cubic-bezier(0.2, 0, 0, 1);            /* @kind other */
+  --transition-spring: 350ms cubic-bezier(0.34, 1.56, 0.64, 1);     /* @kind other */
+}

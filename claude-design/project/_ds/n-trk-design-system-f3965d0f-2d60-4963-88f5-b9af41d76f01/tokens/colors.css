@@ -1,0 +1,71 @@
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Nūtrk — Color Tokens
+   Rule: Blue is the system. Amber is the reward. Never invert.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+:root {
+  /* ── Backgrounds / Surfaces ── */
+  --color-base:              rgba(15, 47, 60, 1);   /* Page background. Never white. */
+  --color-surface:           rgb(10, 28, 36);       /* Cards, panels, side-nav */
+  --color-surface-elevated:  rgb(8, 23, 29);        /* Elevated cards, dropdowns, tooltips */
+  --color-surface-overlay:   rgba(11, 16, 32, 0.70);  /* Modal/sheet scrim */
+
+  /* ── Blue — The System ──
+     Primary actions, active states, data accents, links.
+     Never use for achievements or gamification. */
+  --color-blue-core:   rgba(15, 47, 60, 1);
+  --color-blue-glow:   rgba(109, 164, 183, 1);
+  --color-blue-deep:   rgba(18, 34, 41, 1);
+  --color-blue-dim:    rgba(109, 164, 183, 0.20);
+  --color-blue-subtle: rgba(109, 164, 183, 0.08);
+
+  /* ── Amber — The Reward ──
+     Streaks, achievements, gamification ONLY.
+     Never use for primary actions, links, or system UI. */
+  --color-amber:         #FFB23A;
+  --color-amber-warm:    #FF8A00;
+  --color-amber-dim:     rgba(255, 178, 58, 0.20);
+  --color-amber-subtle:  rgba(255, 178, 58, 0.08);
+
+  /* ── Text ── */
+  --color-text:          #E8ECF4;   /* Body text, headings */
+  --color-text-muted:    rgb(55, 95, 111);    /* Labels, captions, secondary */
+  --color-text-disabled: rgb(93, 136, 152);   /* Disabled states */
+
+  /* ── Status ── */
+  --color-success:  #2ECC71;
+  --color-error:    #FF4B4B;
+  --color-info:     var(--color-blue-core);
+  --color-warning:  var(--color-amber);
+
+  /* ── Semantic Aliases ── */
+  --color-bg:             var(--color-base);
+  --color-card:           var(--color-surface);
+  --color-card-elevated:  var(--color-surface-elevated);
+  --color-accent:         var(--color-blue-core);
+  --color-accent-light:   var(--color-blue-glow);
+  --color-reward:         var(--color-amber);
+  --color-fg:             var(--color-text);
+  --color-fg-muted:       var(--color-text-muted);
+  --color-fg-disabled:    var(--color-text-disabled);
+
+  /* ── Brand Gradients ── */
+  --gradient-bg-glow: radial-gradient(
+    ellipse 80% 50% at 50% 100%,
+    rgba(109, 164, 183, 0.18) 0%,
+    rgba(18, 34, 41, 0.10) 40%,
+    transparent 70%
+  ); /* @kind color */
+  --gradient-amber-glow: radial-gradient(
+    ellipse 60% 40% at 50% 50%,
+    rgba(255, 178, 58, 0.30) 0%,
+    rgba(255, 138, 0, 0.12) 50%,
+    transparent 75%
+  ); /* @kind color */
+  --gradient-blue-radial: radial-gradient(
+    circle at 50% 50%,
+    var(--color-blue-core) 0%,
+    var(--color-blue-deep) 50%,
+    transparent 100%
+  ); /* @kind color */
+}
