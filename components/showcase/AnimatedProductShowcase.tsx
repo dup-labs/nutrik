@@ -63,11 +63,10 @@ function ShowDashboard() {
           {pts.map(p => (
             <div key={p.n} style={{ display: "flex", alignItems: "center", gap: 9, padding: "8px 14px", borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
               <div style={{ width: 24, height: 24, borderRadius: "50%", background: "var(--color-blue-subtle)", border: "var(--glass-border)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontFamily: "var(--font-interface)", fontWeight: 600, color: "var(--color-blue-glow)", flexShrink: 0 }}>{p.i}</div>
-              <span style={{ fontFamily: "var(--font-interface)", fontSize: 12, fontWeight: 500, color: "var(--color-text)", flex: 1 }}>{p.n}</span>
-              <span style={{ fontSize: 8, padding: "2px 6px", borderRadius: 4, fontFamily: "var(--font-interface)", fontWeight: 500, background: p.s === "ativo" ? "rgba(109,164,183,0.12)" : "rgba(255,255,255,0.06)", border: p.s === "ativo" ? "var(--glass-border)" : "1px solid rgba(255,255,255,0.06)", color: p.s === "ativo" ? "var(--color-blue-glow)" : "var(--color-text-muted)" }}>{p.s.toUpperCase()}</span>
-              <div style={{ width: 60 }}><div style={{ height: 2, background: "rgba(255,255,255,0.07)", borderRadius: 9999 }}><div style={{ width: `${p.p}%`, height: "100%", background: p.p >= 85 ? "var(--color-blue-glow)" : p.p >= 65 ? "#4a8fa0" : "var(--color-error)", borderRadius: 9999 }}/></div></div>
-              <span style={{ fontFamily: "var(--font-data)", fontSize: 10, color: "var(--color-text-muted)", minWidth: 24, textAlign: "right" }}>{p.p}%</span>
-              {p.d && <span style={{ fontSize: 8, fontFamily: "var(--font-interface)", color: "var(--color-error)", background: "rgba(255,75,75,0.1)", border: "1px solid rgba(255,75,75,0.2)", borderRadius: 4, padding: "1px 5px", fontWeight: 500 }}>ATRASO</span>}
+              <span style={{ fontFamily: "var(--font-interface)", fontSize: 12, fontWeight: 500, color: "var(--color-text)", flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.n}</span>
+              <span style={{ fontSize: 8, padding: "2px 6px", borderRadius: 4, fontFamily: "var(--font-interface)", fontWeight: 500, background: p.s === "ativo" ? "rgba(109,164,183,0.12)" : "rgba(255,255,255,0.06)", border: p.s === "ativo" ? "var(--glass-border)" : "1px solid rgba(255,255,255,0.06)", color: p.s === "ativo" ? "var(--color-blue-glow)" : "var(--color-text-muted)", flexShrink: 0 }}>{p.s.toUpperCase()}</span>
+              <div style={{ width: 48, flexShrink: 0 }}><div style={{ height: 2, background: "rgba(255,255,255,0.07)", borderRadius: 9999 }}><div style={{ width: `${p.p}%`, height: "100%", background: p.p >= 85 ? "var(--color-blue-glow)" : p.p >= 65 ? "#4a8fa0" : "var(--color-error)", borderRadius: 9999 }}/></div></div>
+              <span style={{ fontFamily: "var(--font-data)", fontSize: 10, color: "var(--color-text-muted)", minWidth: 24, textAlign: "right", flexShrink: 0 }}>{p.p}%</span>
             </div>
           ))}
         </div>
@@ -91,18 +90,17 @@ function ShowPaciente() {
         <div style={{ fontFamily: "var(--font-interface)", fontSize: 12, color: "var(--color-text-muted)", marginBottom: 10 }}>Pacientes <span style={{ color: "var(--color-text)" }}>› João Ferreira</span></div>
         <div style={{ background: "var(--color-surface-elevated)", borderRadius: "var(--radius-md)", border: "var(--glass-border)", padding: "12px 14px", marginBottom: 10, display: "flex", alignItems: "center", gap: 14 }}>
           <div style={{ width: 44, height: 44, borderRadius: "50%", background: "var(--color-blue-subtle)", border: "var(--glass-border)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-interface)", fontWeight: 700, fontSize: 14, color: "var(--color-blue-glow)", flexShrink: 0 }}>JF</div>
-          <div style={{ flex: 1 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 5 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 5, flexWrap: "wrap" }}>
               <span style={{ fontFamily: "var(--font-display)", fontSize: 15, fontWeight: 700, color: "var(--color-text)", letterSpacing: "var(--tracking-tight)" }}>João Ferreira</span>
-              <span style={{ fontSize: 8, padding: "2px 6px", borderRadius: 4, fontFamily: "var(--font-interface)", fontWeight: 500, background: "rgba(109,164,183,0.12)", border: "var(--glass-border)", color: "var(--color-blue-glow)" }}>ATIVO</span>
+              <span style={{ fontSize: 8, padding: "2px 6px", borderRadius: 4, fontFamily: "var(--font-interface)", fontWeight: 500, background: "rgba(109,164,183,0.12)", border: "var(--glass-border)", color: "var(--color-blue-glow)", flexShrink: 0 }}>ATIVO</span>
             </div>
-            <div style={{ display: "flex", gap: 5 }}>
+            <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
               {["Musculação","Emagrecimento","26 anos","84 kg"].map(t => (
                 <span key={t} style={{ fontSize: 9, padding: "1px 5px", borderRadius: 3, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", fontFamily: "var(--font-interface)", color: "var(--color-text-muted)" }}>{t}</span>
               ))}
             </div>
           </div>
-          {/* Streak ring small */}
           <div style={{ position: "relative", width: 52, height: 52, flexShrink: 0 }}>
             <svg width="52" height="52" viewBox="0 0 52 52" style={{ position: "absolute", inset: 0 }}>
               <defs>
@@ -173,10 +171,10 @@ function ShowAgenda() {
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           {appts.map(({ t, n, tp, i }) => (
             <div key={n} style={{ display: "flex", alignItems: "center", gap: 12, padding: "9px 14px", background: "var(--color-surface-elevated)", borderRadius: "var(--radius-md)", border: "var(--glass-border)" }}>
-              <span style={{ fontFamily: "var(--font-data)", fontSize: 12, color: "var(--color-text-muted)", minWidth: 42 }}>{t}</span>
+              <span style={{ fontFamily: "var(--font-data)", fontSize: 12, color: "var(--color-text-muted)", minWidth: 38, flexShrink: 0 }}>{t}</span>
               <div style={{ width: 26, height: 26, borderRadius: "50%", background: "var(--color-blue-subtle)", border: "var(--glass-border)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontFamily: "var(--font-interface)", fontWeight: 700, color: "var(--color-blue-glow)", flexShrink: 0 }}>{i}</div>
-              <span style={{ fontFamily: "var(--font-interface)", fontSize: 13, fontWeight: 500, color: "var(--color-text)", flex: 1 }}>{n}</span>
-              <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 4, fontFamily: "var(--font-interface)", color: "var(--color-text-muted)", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>{tp}</span>
+              <span style={{ fontFamily: "var(--font-interface)", fontSize: 13, fontWeight: 500, color: "var(--color-text)", flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{n}</span>
+              <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 4, fontFamily: "var(--font-interface)", color: "var(--color-text-muted)", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", flexShrink: 0 }}>{tp}</span>
             </div>
           ))}
         </div>
@@ -207,22 +205,22 @@ function ShowProtocolo() {
             <div style={{ fontFamily: "var(--font-display)", fontSize: 14, fontWeight: 700, color: "var(--color-text)", letterSpacing: "var(--tracking-tight)" }}>Hipertrofia — Fase 2</div>
             <div style={{ fontFamily: "var(--font-data)", fontSize: 10, color: "var(--color-text-muted)", marginTop: 2 }}>01 Jun — 01 Jul 2026 · {names[day]}</div>
           </div>
-          <span style={{ fontSize: 8, padding: "2px 7px", borderRadius: 4, fontFamily: "var(--font-interface)", fontWeight: 500, background: "var(--color-blue-subtle)", border: "var(--glass-border)", color: "var(--color-blue-glow)" }}>ATIVO</span>
+          <span style={{ fontSize: 8, padding: "2px 7px", borderRadius: 4, fontFamily: "var(--font-interface)", fontWeight: 500, background: "var(--color-blue-subtle)", border: "var(--glass-border)", color: "var(--color-blue-glow)", flexShrink: 0 }}>ATIVO</span>
         </div>
-        <div style={{ display: "flex", gap: 5, marginBottom: 10 }}>
+        <div style={{ display: "flex", gap: 5, marginBottom: 10, flexWrap: "wrap" }}>
           {days.map((d, i) => (
-            <button key={d} onClick={() => setDay(i)} style={{ padding: "5px 12px", borderRadius: "var(--radius-md)", border: day === i ? "var(--glass-border-elevated)" : "1px solid rgba(255,255,255,0.07)", background: day === i ? "var(--color-blue-subtle)" : "var(--color-surface)", color: day === i ? "var(--color-blue-glow)" : "var(--color-text-muted)", fontSize: 11, fontFamily: "var(--font-data)", cursor: "pointer" }}>{d}</button>
+            <button key={d} onClick={() => setDay(i)} style={{ padding: "5px 10px", borderRadius: "var(--radius-md)", border: day === i ? "var(--glass-border-elevated)" : "1px solid rgba(255,255,255,0.07)", background: day === i ? "var(--color-blue-subtle)" : "var(--color-surface)", color: day === i ? "var(--color-blue-glow)" : "var(--color-text-muted)", fontSize: 11, fontFamily: "var(--font-data)", cursor: "pointer" }}>{d}</button>
           ))}
         </div>
         <div style={{ background: "var(--color-surface-elevated)", borderRadius: "var(--radius-md)", border: "var(--glass-border)", overflow: "hidden" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 44px 60px 70px", gap: 8, padding: "7px 14px", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 36px 52px 60px", gap: 8, padding: "7px 14px", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
             {["EXERCÍCIO","SÉR","REPS","CARGA"].map(h => <SL key={h}>{h}</SL>)}
           </div>
           {day === 2
             ? <div style={{ padding: "20px 14px", fontFamily: "var(--font-interface)", fontSize: 13, color: "var(--color-text-muted)", textAlign: "center" }}>Dia de descanso.</div>
             : exs.map(({ n, s, r, l }) => (
-              <div key={n} style={{ display: "grid", gridTemplateColumns: "1fr 44px 60px 70px", gap: 8, padding: "8px 14px", borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
-                <span style={{ fontFamily: "var(--font-interface)", fontSize: 12, fontWeight: 500, color: "var(--color-text)" }}>{n}</span>
+              <div key={n} style={{ display: "grid", gridTemplateColumns: "1fr 36px 52px 60px", gap: 8, padding: "8px 14px", borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
+                <span style={{ fontFamily: "var(--font-interface)", fontSize: 12, fontWeight: 500, color: "var(--color-text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{n}</span>
                 <span style={{ fontFamily: "var(--font-data)", fontSize: 11, color: "var(--color-text-muted)" }}>{s}</span>
                 <span style={{ fontFamily: "var(--font-data)", fontSize: 11, color: "var(--color-text-muted)" }}>{r}</span>
                 <span style={{ fontFamily: "var(--font-data)", fontSize: 11, color: "var(--color-blue-glow)" }}>{l}</span>
@@ -253,8 +251,16 @@ export default function AnimatedProductShowcase() {
   const [fading,    setFading   ] = useState(false);
   const [clicking,  setClicking ] = useState(false);
   const [cursorPos, setCursorPos] = useState({ x: -100, y: -100 });
+  const [isMobile,  setIsMobile ] = useState(false);
   const navRefs      = useRef<(HTMLDivElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 700);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const getPos = (idx: number) => {
     const el = navRefs.current[idx];
@@ -295,7 +301,7 @@ export default function AnimatedProductShowcase() {
   const ActiveScreen = SCREENS[screenIdx];
 
   return (
-    <div ref={containerRef} className="app-frame" style={{ display: "flex", flexDirection: "column", height: 530, position: "relative", overflow: "hidden" }}>
+    <div ref={containerRef} className="app-frame" style={{ display: "flex", flexDirection: "column", height: isMobile ? 480 : 530, position: "relative", overflow: "hidden" }}>
       {/* Browser chrome */}
       <div className="frame-chrome">
         <div className="frame-dots">
@@ -304,31 +310,53 @@ export default function AnimatedProductShowcase() {
         <div className="frame-url">app.nutrk.com/{NAV_ITEMS[screenIdx].id}</div>
       </div>
 
+      {/* Mobile nav — replaces sidebar on small screens */}
+      {isMobile && (
+        <div style={{ display: "flex", background: "var(--color-surface)", borderBottom: "1px solid rgba(255,255,255,0.05)", flexShrink: 0 }}>
+          {SCREENS.map((_, i) => {
+            const item = NAV_ITEMS[i];
+            const active = screenIdx === i;
+            return (
+              <div
+                key={item.id}
+                ref={el => { navRefs.current[i] = el; }}
+                style={{ flex: 1, padding: "8px 0 6px", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, borderBottom: `2px solid ${active ? "var(--color-blue-glow)" : "transparent"}` }}
+              >
+                <Icon name={item.icon} size={14} color={active ? "var(--color-blue-glow)" : "var(--color-text-muted)"} />
+                <span style={{ fontFamily: "var(--font-interface)", fontSize: 9, color: active ? "var(--color-blue-glow)" : "var(--color-text-muted)" }}>{item.label}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       {/* App body */}
       <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
-        {/* Sidebar */}
-        <div style={{ width: 196, flexShrink: 0, background: "var(--color-surface)", borderRight: "1px solid rgba(255,255,255,0.05)", padding: "14px 10px", display: "flex", flexDirection: "column", gap: 2 }}>
-          <Image src="/nutrk-logo.svg" alt="Nūtrk" width={80} height={14} style={{ height: 14, width: "auto", marginBottom: 18, marginLeft: 8, opacity: 0.9 }} />
-          <div style={{ fontFamily: "var(--font-interface)", fontSize: 9, fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--color-text-muted)", marginBottom: 3, marginLeft: 8 }}>Menu</div>
-          {NAV_ITEMS.map((item, i) => (
-            <div
-              key={item.id}
-              ref={el => { navRefs.current[i] = el; }}
-              style={{ padding: "6px 9px", borderRadius: "var(--radius-md)", background: screenIdx === i ? "var(--color-blue-subtle)" : "transparent", color: screenIdx === i ? "var(--color-text)" : "var(--color-text-muted)", fontFamily: "var(--font-interface)", fontSize: 12, fontWeight: screenIdx === i ? 500 : 400, display: "flex", alignItems: "center", gap: 7, transition: "all var(--transition-fast)", borderLeft: screenIdx === i ? "2px solid var(--color-blue-glow)" : "2px solid transparent" }}
-            >
-              <Icon name={item.icon} size={13} color={screenIdx === i ? "var(--color-blue-glow)" : "var(--color-text-muted)"} />
-              {item.label}
-            </div>
-          ))}
-          {/* User profile */}
-          <div style={{ marginTop: "auto", padding: "8px 9px", borderTop: "1px solid rgba(255,255,255,0.05)", display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ width: 26, height: 26, borderRadius: "50%", background: "var(--color-blue-subtle)", border: "var(--glass-border)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontFamily: "var(--font-interface)", fontWeight: 700, color: "var(--color-blue-glow)", flexShrink: 0 }}>BS</div>
-            <div>
-              <div style={{ fontFamily: "var(--font-interface)", fontSize: 11, fontWeight: 500, color: "var(--color-text)" }}>Dr. Bruno Silva</div>
-              <div style={{ fontFamily: "var(--font-interface)", fontSize: 9, color: "var(--color-text-muted)" }}>Nutricionista</div>
+
+        {/* Sidebar — desktop only */}
+        {!isMobile && (
+          <div style={{ width: 196, flexShrink: 0, background: "var(--color-surface)", borderRight: "1px solid rgba(255,255,255,0.05)", padding: "14px 10px", display: "flex", flexDirection: "column", gap: 2 }}>
+            <Image src="/nutrk-logo.svg" alt="Nūtrk" width={80} height={14} style={{ height: 14, width: "auto", marginBottom: 18, marginLeft: 8, opacity: 0.9 }} />
+            <div style={{ fontFamily: "var(--font-interface)", fontSize: 9, fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--color-text-muted)", marginBottom: 3, marginLeft: 8 }}>Menu</div>
+            {NAV_ITEMS.map((item, i) => (
+              <div
+                key={item.id}
+                ref={el => { navRefs.current[i] = el; }}
+                style={{ padding: "6px 9px", borderRadius: "var(--radius-md)", background: screenIdx === i ? "var(--color-blue-subtle)" : "transparent", color: screenIdx === i ? "var(--color-text)" : "var(--color-text-muted)", fontFamily: "var(--font-interface)", fontSize: 12, fontWeight: screenIdx === i ? 500 : 400, display: "flex", alignItems: "center", gap: 7, transition: "all var(--transition-fast)", borderLeft: screenIdx === i ? "2px solid var(--color-blue-glow)" : "2px solid transparent" }}
+              >
+                <Icon name={item.icon} size={13} color={screenIdx === i ? "var(--color-blue-glow)" : "var(--color-text-muted)"} />
+                {item.label}
+              </div>
+            ))}
+            <div style={{ marginTop: "auto", padding: "8px 9px", borderTop: "1px solid rgba(255,255,255,0.05)", display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ width: 26, height: 26, borderRadius: "50%", background: "var(--color-blue-subtle)", border: "var(--glass-border)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontFamily: "var(--font-interface)", fontWeight: 700, color: "var(--color-blue-glow)", flexShrink: 0 }}>BS</div>
+              <div>
+                <div style={{ fontFamily: "var(--font-interface)", fontSize: 11, fontWeight: 500, color: "var(--color-text)" }}>Dr. Bruno Silva</div>
+                <div style={{ fontFamily: "var(--font-interface)", fontSize: 9, color: "var(--color-text-muted)" }}>Nutricionista</div>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Content */}
         <div style={{ flex: 1, minWidth: 0, overflow: "hidden", opacity: fading ? 0 : 1, transition: "opacity 0.2s ease" }}>
@@ -336,24 +364,26 @@ export default function AnimatedProductShowcase() {
         </div>
       </div>
 
-      {/* Animated cursor */}
-      <div style={{
-        position: "absolute",
-        left: cursorPos.x,
-        top: cursorPos.y,
-        transform: `translate(-3px,-2px) scale(${clicking ? 0.7 : 1})`,
-        transition: `left 0.52s cubic-bezier(0.2,0,0,1), top 0.52s cubic-bezier(0.2,0,0,1), transform ${clicking ? "0.1s" : "0.18s"}`,
-        pointerEvents: "none",
-        zIndex: 30,
-        filter: "drop-shadow(0 1px 4px rgba(0,0,0,0.7))",
-      }}>
-        <svg width="14" height="18" viewBox="0 0 14 18" fill="none">
-          <path d="M1.5 1.5 13 10.5 8 12 5.5 17.5Z" fill="white" stroke="rgba(0,0,0,0.35)" strokeWidth="1.5" strokeLinejoin="round" />
-        </svg>
-        {clicking && (
-          <div style={{ position: "absolute", top: 2, left: 2, width: 18, height: 18, borderRadius: "50%", background: "rgba(255,255,255,0.22)", animation: "ripple 0.35s ease-out forwards" }} />
-        )}
-      </div>
+      {/* Animated cursor — desktop only */}
+      {!isMobile && (
+        <div style={{
+          position: "absolute",
+          left: cursorPos.x,
+          top: cursorPos.y,
+          transform: `translate(-3px,-2px) scale(${clicking ? 0.7 : 1})`,
+          transition: `left 0.52s cubic-bezier(0.2,0,0,1), top 0.52s cubic-bezier(0.2,0,0,1), transform ${clicking ? "0.1s" : "0.18s"}`,
+          pointerEvents: "none",
+          zIndex: 30,
+          filter: "drop-shadow(0 1px 4px rgba(0,0,0,0.7))",
+        }}>
+          <svg width="14" height="18" viewBox="0 0 14 18" fill="none">
+            <path d="M1.5 1.5 13 10.5 8 12 5.5 17.5Z" fill="white" stroke="rgba(0,0,0,0.35)" strokeWidth="1.5" strokeLinejoin="round" />
+          </svg>
+          {clicking && (
+            <div style={{ position: "absolute", top: 2, left: 2, width: 18, height: 18, borderRadius: "50%", background: "rgba(255,255,255,0.22)", animation: "ripple 0.35s ease-out forwards" }} />
+          )}
+        </div>
+      )}
     </div>
   );
 }
