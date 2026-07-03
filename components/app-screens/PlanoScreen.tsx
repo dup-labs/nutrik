@@ -1,7 +1,7 @@
 import Icon from "@/components/ui/Icon";
 import TabBar from "./TabBar";
 
-const GRAD = "linear-gradient(115deg,#FE5F33 0%,#FEAF4C 30%,#ADB7F7 66%,#ADF3F3 100%)";
+const GRAD = "var(--grad)";
 const PAD: React.CSSProperties = { padding: "14px 18px 74px", height: "100%", overflow: "hidden", display: "flex", flexDirection: "column" };
 
 const items = [

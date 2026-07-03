@@ -24,7 +24,7 @@
   --font-display: 'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-body:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
-  --grad: linear-gradient(115deg, #FE5F33 0%, #FEAF4C 30%, #ADB7F7 66%, #ADF3F3 100%);
+  --grad: linear-gradient(115deg, #FE5F33 0%, #FEAF4C 45%, #ADF3F3 100%);
 }
 
 /* ── Reset ─────────────────────────────────────────────── */

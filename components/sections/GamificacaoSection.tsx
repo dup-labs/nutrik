@@ -2,7 +2,7 @@ import Icon from "@/components/ui/Icon";
 import GradText from "@/components/ui/GradText";
 import GradientRing from "@/components/ui/GradientRing";
 
-const GRAD = "linear-gradient(115deg,#FE5F33 0%,#FEAF4C 30%,#ADB7F7 66%,#ADF3F3 100%)";
+const GRAD = "var(--grad)";
 
 const week = [
   { d: "S", done: true  },

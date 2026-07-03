@@ -2,7 +2,7 @@ import GradientRing from "@/components/ui/GradientRing";
 import Icon from "@/components/ui/Icon";
 import TabBar from "./TabBar";
 
-const GRAD = "linear-gradient(115deg,#FE5F33 0%,#FEAF4C 30%,#ADB7F7 66%,#ADF3F3 100%)";
+const GRAD = "var(--grad)";
 const PAD: React.CSSProperties = { padding: "14px 18px 74px", height: "100%", overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", background: "radial-gradient(120% 90% at 50% 0%, rgba(173,183,247,0.28), rgba(173,243,243,0.14) 55%, transparent 80%)" };
 
 export default function RespiracaoScreen() {
