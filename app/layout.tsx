@@ -5,10 +5,12 @@ export const metadata: Metadata = {
   title: "Nūtrk — Sua melhor versão é um processo diário.",
   description: "Nutrição inteligente, treino personalizado e equilíbrio mental — tudo em um app só. Feito pra quem cuida da saúde no seu ritmo, sem neurose.",
   keywords: ["nutrição", "treino", "saúde", "bem-estar", "hábitos", "processo diário"],
+  icons: { icon: "/icon.png" },
   openGraph: {
     title: "Nūtrk — Sua melhor versão é um processo diário.",
     description: "Nutrição inteligente, treino personalizado e equilíbrio mental — tudo em um app só.",
     type: "website",
+    images: [{ url: "/icon.png" }],
   },
 };
 
