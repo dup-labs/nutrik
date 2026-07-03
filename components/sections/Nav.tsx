@@ -1,23 +1,33 @@
 "use client";
 
-import Image from "next/image";
-import Button from "@/components/ui/Button";
+import { useState, useEffect } from "react";
 
-interface NavProps {
-  onCTA: () => void;
+function scrollTo(id: string) {
+  const el = document.getElementById(id);
+  if (el) window.scrollTo({ top: el.offsetTop - 60, behavior: "smooth" });
 }
 
-export default function Nav({ onCTA }: NavProps) {
+export default function Nav({ onCTA }: { onCTA: () => void }) {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll);
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <nav className="site-nav">
+    <nav className={`site-nav${scrolled ? " scrolled" : ""}`}>
       <div className="nav-inner">
-        <Image src="/nutrk-logo.svg" alt="Nūtrk" width={80} height={20} style={{ height: 20, width: "auto" }} priority />
+        <img src="/nutrk-logo-dark.svg" alt="Nūtrk" style={{ height: 22 }} />
         <div className="nav-links">
-          <a href="#funcionalidades" className="nav-link">Funcionalidades</a>
-          <a href="#para-quem" className="nav-link">Para quem</a>
-          <a href="#acesso" className="nav-link">Acesso antecipado</a>
+          <a className="nav-link" onClick={() => scrollTo("pilares")}>Pilares</a>
+          <a className="nav-link" onClick={() => scrollTo("app")}>O app</a>
+          <a className="nav-link" onClick={() => scrollTo("como-funciona")}>Como funciona</a>
+          <a className="nav-link" onClick={() => scrollTo("faq")}>Dúvidas</a>
         </div>
-        <Button variant="primary" size="sm" onClick={onCTA}>Solicitar acesso</Button>
+        <button className="btn btn-primary btn-sm" onClick={onCTA}>Solicitar acesso</button>
       </div>
     </nav>
   );

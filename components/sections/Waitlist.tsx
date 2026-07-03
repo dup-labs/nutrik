@@ -3,40 +3,30 @@
 import { useState } from "react";
 import Icon from "@/components/ui/Icon";
 
-type Role = "nutricionista" | "personal trainer" | "ambos";
-
-interface FormState {
-  name:  string;
-  email: string;
-  role:  Role;
-}
+type Who = "pessoa" | "profissional";
 
 export default function Waitlist() {
-  const [form, setForm]           = useState<FormState>({ name: "", email: "", role: "nutricionista" });
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading]     = useState(false);
-  const [error, setError]         = useState<string | null>(null);
+  const [form, setForm]   = useState({ name: "", email: "", who: "pessoa" as Who });
+  const [sent, setSent]   = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name.trim() || !form.email.trim()) return;
-
     setLoading(true);
     setError(null);
-
     try {
       const res = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ name: form.name, email: form.email, role: form.who }),
       });
-
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || "Erro ao enviar solicitação.");
       }
-
-      setSubmitted(true);
+      setSent(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro ao enviar solicitação.");
     } finally {
@@ -44,86 +34,49 @@ export default function Waitlist() {
     }
   };
 
-  const roles: Role[] = ["nutricionista", "personal trainer", "ambos"];
-
   return (
-    <section id="acesso" style={{ padding: "64px 0 120px", position: "relative", overflow: "hidden" }}>
-      {/* Glow */}
-      <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 700, height: 500, background: "radial-gradient(ellipse, rgba(109,164,183,0.13) 0%, transparent 70%)", pointerEvents: "none" }} />
+    <section id="acesso" style={{ padding: "40px 0 96px" }}>
+      <div className="container">
+        <div className="cta-band reveal">
+          <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 14 }}>
+            <span style={{ fontFamily: "var(--font-body)", fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.9)" }}>
+              Acesso antecipado
+            </span>
+            <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(28px, 3.6vw, 46px)", fontWeight: 900, letterSpacing: "-0.03em", color: "#fff", lineHeight: 1.08, maxWidth: 560, textShadow: "0 2px 20px rgba(24,25,29,0.2)" }}>
+              Comece sua melhor versão antes de todo mundo.
+            </h2>
+            <p style={{ fontFamily: "var(--font-body)", fontSize: 16.5, color: "rgba(255,255,255,0.94)", maxWidth: 440, lineHeight: 1.55, marginBottom: 12 }}>
+              Entre na lista de espera. Assim que abrirmos novas vagas, você é avisado em primeira mão.
+            </p>
 
-      <div className="container reveal" style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", position: "relative" }}>
-        <div className="label" style={{ marginBottom: 16 }}>Acesso antecipado</div>
-        <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(28px, 4vw, 52px)", fontWeight: 800, letterSpacing: "var(--tracking-tight)", color: "var(--color-text)", lineHeight: 1.1, marginBottom: 14, maxWidth: 600 }}>
-          Seja dos primeiros a usar o Nūtrk.
-        </h2>
-        <p style={{ fontFamily: "var(--font-interface)", fontSize: 16, color: "var(--color-text-muted)", marginBottom: 48, maxWidth: 440, lineHeight: 1.65 }}>
-          O acesso antecipado é limitado. Deixe seus dados e entraremos em contato assim que uma vaga abrir.
-        </p>
-
-        {submitted ? (
-          <div className="glass-elevated" style={{ padding: 40, maxWidth: 440, width: "100%", display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
-            <div style={{ width: 52, height: 52, borderRadius: "50%", background: "var(--color-blue-subtle)", border: "var(--glass-border)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 4 }}>
-              <Icon name="check" size={24} color="var(--color-blue-glow)" />
-            </div>
-            <h3 style={{ fontFamily: "var(--font-display)", fontSize: 22, fontWeight: 700, color: "var(--color-text)", letterSpacing: "var(--tracking-tight)" }}>Solicitação recebida.</h3>
-            <p style={{ fontFamily: "var(--font-interface)", fontSize: 14, color: "var(--color-text-muted)", margin: 0 }}>Entraremos em contato em breve.</p>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} style={{ width: "100%", maxWidth: 480, display: "flex", flexDirection: "column", gap: 12 }}>
-            <div className="glass-elevated" style={{ padding: 28, display: "flex", flexDirection: "column", gap: 14 }}>
-              {/* Name */}
-              <div style={{ display: "flex", flexDirection: "column", gap: 7, textAlign: "left" }}>
-                <div className="label">Nome</div>
-                <input
-                  type="text"
-                  className="field-input"
-                  placeholder="Seu nome completo"
-                  value={form.name}
-                  onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                  required
-                />
+            {sent ? (
+              <div style={{ background: "#fff", borderRadius: 20, padding: "32px 36px", maxWidth: 440, width: "100%", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
+                <div style={{ width: 54, height: 54, borderRadius: "50%", background: "rgba(82,212,138,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Icon name="check" size={26} color="#52D48A" strokeWidth={2.4} />
+                </div>
+                <div style={{ fontFamily: "var(--font-display)", fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", color: "var(--ink)" }}>Você está na lista!</div>
+                <p style={{ fontFamily: "var(--font-body)", fontSize: 15, color: "var(--ink-2)", margin: 0 }}>A gente avisa assim que sua vaga abrir. Até já.</p>
               </div>
-
-              {/* Email */}
-              <div style={{ display: "flex", flexDirection: "column", gap: 7, textAlign: "left" }}>
-                <div className="label">E-mail</div>
-                <input
-                  type="email"
-                  className="field-input"
-                  placeholder="seu@email.com.br"
-                  value={form.email}
-                  onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                  required
-                />
-              </div>
-
-              {/* Role */}
-              <div style={{ display: "flex", flexDirection: "column", gap: 7, textAlign: "left" }}>
-                <div className="label">Perfil</div>
-                <div style={{ display: "flex", gap: 6 }}>
-                  {roles.map(r => (
-                    <button
-                      key={r}
-                      type="button"
-                      className={`role-btn ${form.role === r ? "active" : "inactive"}`}
-                      onClick={() => setForm(f => ({ ...f, role: r }))}
-                    >
-                      {r}
+            ) : (
+              <form onSubmit={handleSubmit} style={{ background: "#fff", borderRadius: 20, padding: 22, maxWidth: 460, width: "100%", display: "flex", flexDirection: "column", gap: 12, boxShadow: "0 20px 50px rgba(24,25,29,0.22)" }}>
+                <div className="seg">
+                  {([["pessoa", "Quero pra mim"], ["profissional", "Sou profissional"]] as [Who, string][]).map(([v, l]) => (
+                    <button key={v} type="button" className={`seg-btn ${form.who === v ? "on" : "off"}`} onClick={() => setForm(f => ({ ...f, who: v }))}>
+                      {l}
                     </button>
                   ))}
                 </div>
-              </div>
-            </div>
-
-            {error && (
-              <p style={{ fontFamily: "var(--font-interface)", fontSize: 13, color: "var(--color-error)", textAlign: "center" }}>{error}</p>
+                <input className="field" placeholder="Seu nome" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required />
+                <input className="field" type="email" placeholder="seu@email.com.br" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required />
+                {error && <span style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "#FF5A5A" }}>{error}</span>}
+                <button type="submit" className="btn btn-primary btn-md" style={{ width: "100%" }} disabled={loading}>
+                  {loading ? "Enviando..." : "Entrar na lista de espera"}
+                </button>
+                <span style={{ fontFamily: "var(--font-body)", fontSize: 12, color: "var(--ink-3)" }}>Sem spam. Só o aviso quando sua vaga abrir.</span>
+              </form>
             )}
-
-            <button type="submit" className="btn-submit" disabled={loading}>
-              {loading ? "Enviando..." : "Solicitar acesso antecipado"}
-            </button>
-          </form>
-        )}
+          </div>
+        </div>
       </div>
     </section>
   );

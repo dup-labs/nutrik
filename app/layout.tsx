@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Nūtrk — Feito de consistência.",
-  description: "Nūtrk conecta nutricionistas e personal trainers em uma plataforma única — do registro ao resultado, sem lacunas no protocolo.",
-  keywords: ["nutricionista", "personal trainer", "protocolo", "aderência", "saúde"],
+  title: "Nūtrk — Sua melhor versão é um processo diário.",
+  description: "Nutrição inteligente, treino personalizado e equilíbrio mental — tudo em um app só. Feito pra quem cuida da saúde no seu ritmo, sem neurose.",
+  keywords: ["nutrição", "treino", "saúde", "bem-estar", "hábitos", "processo diário"],
   openGraph: {
-    title: "Nūtrk — Feito de consistência.",
-    description: "Do registro ao resultado, sem lacunas no protocolo.",
+    title: "Nūtrk — Sua melhor versão é um processo diário.",
+    description: "Nutrição inteligente, treino personalizado e equilíbrio mental — tudo em um app só.",
     type: "website",
   },
 };
