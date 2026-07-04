@@ -76,8 +76,8 @@ export default function Nav({ onCTA }: { onCTA: () => void }) {
                   }}
                 >
                   {[
-                    { label: "entrar · paciente", href: "https://app.nutrk.io/entrada" },
-                    { label: "entrar · profissional", href: "https://app.nutrk.io/pro/entrada" },
+                    { label: "entrar · paciente", href: "https://app.nutrk.io/trocar?para=paciente" },
+                    { label: "entrar · profissional", href: "https://app.nutrk.io/trocar?para=pro" },
                   ].map((item) => (
                     <a
                       key={item.href}

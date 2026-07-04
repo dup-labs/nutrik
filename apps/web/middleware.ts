@@ -11,6 +11,7 @@ const PUBLIC_PATHS = [
   "/auth",
   "/pro/cadastro",
   "/pro/entrada",
+  "/trocar",
 ];
 
 export async function middleware(request: NextRequest) {
