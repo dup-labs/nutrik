@@ -277,6 +277,12 @@
                         <x-import component-from-global-scope="NTrkDesignSystem_f3965d.Badge" variant="{{ meal.badgeVariant }}" dot="{{ true }}" hint-size="auto,24px">{{ meal.statusLabel }}</x-import>
                       </div>
                       <div style="margin-top:10px;font-size:14px;line-height:1.55;color:var(--color-text-secondary);">{{ meal.items }}</div>
+                      <div style="margin-top:10px;display:flex;align-items:center;gap:10px;">
+                        <span style="font-family:var(--font-data);font-weight:700;font-size:13px;color:var(--color-orange);">{{ meal.mac.kcal }} kcal</span>
+                        <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--color-text-muted);"><span style="width:7px;height:7px;border-radius:2px;background:var(--color-orange);"></span>P {{ meal.mac.p }}g</span>
+                        <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--color-text-muted);"><span style="width:7px;height:7px;border-radius:2px;background:var(--warm-amber);"></span>C {{ meal.mac.c }}g</span>
+                        <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--color-text-muted);"><span style="width:7px;height:7px;border-radius:2px;background:var(--cool-lav);"></span>G {{ meal.mac.g }}g</span>
+                      </div>
                       <div style="margin-top:12px;display:flex;align-items:center;justify-content:space-between;">
                         <span style="font-size:13px;font-weight:600;color:var(--color-orange);">{{ meal.cta }}</span>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
@@ -300,7 +306,13 @@
               </div>
             </div>
 
-            <div style="font-size:14px;line-height:1.55;color:var(--color-text-secondary);margin-bottom:18px;">{{ mealD.items }}</div>
+            <div style="font-size:14px;line-height:1.55;color:var(--color-text-secondary);margin-bottom:12px;">{{ mealD.items }}</div>
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;padding:12px 14px;border-radius:10px;background:var(--color-surface);border:1px solid var(--color-border);">
+              <span style="font-family:var(--font-data);font-weight:700;font-size:14px;color:var(--color-orange);">{{ mealD.mac.kcal }} kcal</span>
+              <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--color-text-muted);"><span style="width:7px;height:7px;border-radius:2px;background:var(--color-orange);"></span>P {{ mealD.mac.p }}g</span>
+              <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--color-text-muted);"><span style="width:7px;height:7px;border-radius:2px;background:var(--warm-amber);"></span>C {{ mealD.mac.c }}g</span>
+              <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--color-text-muted);"><span style="width:7px;height:7px;border-radius:2px;background:var(--cool-lav);"></span>G {{ mealD.mac.g }}g</span>
+            </div>
 
             <div style="font-size:13px;font-weight:600;color:var(--color-text-secondary);margin-bottom:8px;">uma foto, se quiser</div>
             <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ mealD.photoId }}" shape="rounded" radius="14" placeholder="toque ou arraste uma foto" style="width:100%;height:176px;display:block;margin-bottom:22px;" hint-size="100%,176px"></x-import>
@@ -1858,10 +1870,10 @@ class Component extends DCLogic {
 
     // refeições
     const mealDefs = [
-      { id: 'm1', time: '07:30', name: 'café da manhã', items: 'ovos mexidos, pão integral, mamão e um café.' },
-      { id: 'm2', time: '12:30', name: 'almoço', items: 'arroz, feijão, frango grelhado e uma salada colorida.' },
-      { id: 'm3', time: '16:00', name: 'lanche', items: 'iogurte natural com banana e aveia.' },
-      { id: 'm4', time: '20:00', name: 'jantar', items: 'omelete de legumes com salada verde.' },
+      { id: 'm1', time: '07:30', name: 'café da manhã', items: 'ovos mexidos, pão integral, mamão e um café.', mac: { kcal: 380, p: 22, c: 38, g: 15 } },
+      { id: 'm2', time: '12:30', name: 'almoço', items: 'arroz, feijão, frango grelhado e uma salada colorida.', mac: { kcal: 520, p: 38, c: 58, g: 14 } },
+      { id: 'm3', time: '16:00', name: 'lanche', items: 'iogurte natural com banana e aveia.', mac: { kcal: 260, p: 10, c: 38, g: 8 } },
+      { id: 'm4', time: '20:00', name: 'jantar', items: 'omelete de legumes com salada verde.', mac: { kcal: 330, p: 24, c: 18, g: 17 } },
     ];
     const todayKey = 'qui';
     const refPastKeys = ['seg', 'ter', 'qua'];
@@ -1896,7 +1908,7 @@ class Component extends DCLogic {
     const amMode = s.mealMode[amId], amFollow = s.mealFollow[amId];
     const segBtn = (active, color) => ({ flex: '1', height: '44px', borderRadius: 'var(--radius-pill)', cursor: 'pointer', fontFamily: 'var(--font-interface)', fontWeight: 600, fontSize: '14px', border: active ? 'none' : '1px solid var(--color-border-strong)', background: active ? color : 'var(--color-surface-elevated)', color: active ? '#fff' : 'var(--color-text-secondary)' });
     const mealD = {
-      name: amDef.name, time: amDef.time, items: amDef.items, photoId: 'meal-' + amId,
+      name: amDef.name, time: amDef.time, items: amDef.items, mac: amDef.mac, photoId: 'meal-' + amId,
       isFeito: amMode === 'feito', isPulei: amMode === 'pulei', isAdaptei: amFollow === 'adaptei',
       note: s.mealNote[amId] || '',
       feitoStyle: segBtn(amMode === 'feito', 'var(--color-orange)'),
