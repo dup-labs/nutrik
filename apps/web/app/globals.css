@@ -1,0 +1,33 @@
+/* ── Fonts ──────────────────────────────────────────────── */
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@import "tailwindcss";
+
+/* ── Design Tokens (espelhados da landing — extrair pra packages/ quando compartilhar) ── */
+:root {
+  --page-bg: #FAF9F7;
+  --panel:   #EEF0F7;
+  --ink:     #18191D;
+  --ink-2:   rgba(24,25,29,0.60);
+  --ink-3:   rgba(24,25,29,0.40);
+  --card:    #FFFFFF;
+  --border:  rgba(24,25,29,0.08);
+
+  --color-orange:   #FE5F33;
+  --color-amber:    #FEAF4C;
+  --color-lavender: #ADB7F7;
+  --color-teal:     #ADF3F3;
+  --color-success:  #52D48A;
+
+  --font-display: 'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --grad: linear-gradient(115deg, #FE5F33 0%, #FEAF4C 45%, #ADF3F3 100%);
+}
+
+body {
+  background: var(--page-bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+}

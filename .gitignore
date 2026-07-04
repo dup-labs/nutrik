@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# dependencies (each app manages its own)
+node_modules/
+
+# brand assets (local only — heavy binaries; promote tokens/SVGs into packages/ when needed)
+/brand/
+
+# vercel
+.vercel
