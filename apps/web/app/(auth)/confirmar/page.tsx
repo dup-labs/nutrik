@@ -2,7 +2,14 @@ import Link from "next/link";
 import { MeshAura } from "@/components/ui";
 import { IconMail } from "@/components/ui/icons";
 
-export default function ConfirmarPage() {
+export default async function ConfirmarPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ pro?: string }>;
+}) {
+  const { pro } = await searchParams;
+  const isPro = pro === "1";
+
   return (
     <div
       style={{
@@ -50,10 +57,12 @@ export default function ConfirmarPage() {
           fontSize: 15,
           lineHeight: 1.5,
           color: "var(--color-text-secondary)",
-          maxWidth: 280,
+          maxWidth: 300,
         }}
       >
-        te enviamos um link. é só tocar nele que sua conta entra no ar e a gente continua daqui.
+        {isPro
+          ? "te enviamos um link. é só tocar nele que seu painel profissional fica pronto — com seu código de convite te esperando."
+          : "te enviamos um link. é só tocar nele que sua conta entra no ar e a gente continua daqui."}
       </div>
       <Link
         href="/login"

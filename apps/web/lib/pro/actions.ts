@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { generateInviteCode } from "@/lib/roles";
 
 async function requireUser() {
   const supabase = await createClient();
@@ -22,22 +23,6 @@ async function requirePro() {
     .maybeSingle();
   if (!pro) redirect("/pro/cadastro");
   return { supabase, user, pro };
-}
-
-function generateInviteCode(name: string): string {
-  const initials = name
-    .replace(/^Dra?\. /i, "")
-    .split(" ")
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase()
-    .replace(/[^A-Z]/g, "")
-    .slice(0, 2)
-    .padEnd(2, "X");
-  const rand = Array.from({ length: 2 }, () =>
-    "23456789ABCDEFGHJKMNPQRSTUVWXYZ".charAt(Math.floor(Math.random() * 31)),
-  ).join("");
-  return `NUTRK-${initials}${rand}`;
 }
 
 export async function createProfessionalProfile(input: {

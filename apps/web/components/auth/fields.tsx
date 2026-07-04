@@ -68,12 +68,20 @@ export function ErrorNote({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function GoogleButton({ label = "continuar com Google" }: { label?: string }) {
+export function GoogleButton({
+  label = "continuar com Google",
+  flow,
+}: {
+  label?: string;
+  flow?: "pro";
+}) {
   async function signInWithGoogle() {
     const supabase = createClient();
     await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback${flow ? `?flow=${flow}` : ""}`,
+      },
     });
   }
   return (

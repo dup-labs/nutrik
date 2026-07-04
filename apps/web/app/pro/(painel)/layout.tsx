@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { ProShell } from "@/components/pro/ProShell";
 import { createClient } from "@/lib/supabase/server";
+import { ensureProfessionalFromMetadata } from "@/lib/roles";
 
 export default async function ProPainelLayout({
   children,
@@ -11,11 +12,18 @@ export default async function ProPainelLayout({
   } = await supabase.auth.getUser();
   if (!user) redirect("/pro/entrada");
 
-  const { data: pro } = await supabase
+  let { data: pro } = await supabase
     .from("professionals")
     .select("id, name, type")
     .eq("user_id", user.id)
     .maybeSingle();
+  if (!pro && (await ensureProfessionalFromMetadata(supabase, user))) {
+    ({ data: pro } = await supabase
+      .from("professionals")
+      .select("id, name, type")
+      .eq("user_id", user.id)
+      .maybeSingle());
+  }
   if (!pro) redirect("/pro/cadastro");
 
   const { count } = await supabase

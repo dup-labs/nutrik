@@ -1,34 +1,28 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { resolveDestination } from "@/lib/roles";
 
-// troca do code (OAuth Google / links de email) por sessão
+// troca do code (OAuth Google / links de email) por sessão e roteia por papel
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const next = searchParams.get("next");
+  const flow = searchParams.get("flow");
 
   if (code) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
       if (next) return NextResponse.redirect(`${origin}${next}`);
-
-      // sem perfil ainda (ex.: primeiro login com Google) → completar cadastro
       const {
         data: { user },
       } = await supabase.auth.getUser();
       if (user) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("id, onboarding_completed_at")
-          .eq("id", user.id)
-          .maybeSingle();
-        if (!profile) return NextResponse.redirect(`${origin}/cadastro?completar=1`);
-        if (!profile.onboarding_completed_at)
-          return NextResponse.redirect(`${origin}/anamnese`);
+        const dest = await resolveDestination(supabase, user, flow);
+        return NextResponse.redirect(`${origin}${dest}`);
       }
       return NextResponse.redirect(`${origin}/`);
     }
   }
-  return NextResponse.redirect(`${origin}/login`);
+  return NextResponse.redirect(`${origin}${flow === "pro" ? "/pro/entrada" : "/login"}`);
 }

@@ -50,7 +50,16 @@ function CadastroForm() {
       const { data, error: signUpErr } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { name: nome.trim() } },
+        options: {
+          // o papel viaja nos metadados e sobrevive ao email de confirmação
+          data: {
+            role: "patient",
+            name: nome.trim(),
+            objective: objetivo,
+            invite_code: codigo || null,
+          },
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
       });
       if (signUpErr) {
         setError(
@@ -62,11 +71,7 @@ function CadastroForm() {
         return;
       }
       if (!data.session) {
-        // confirmação de email ativada no projeto
-        sessionStorage.setItem(
-          "ntrk-pending-cadastro",
-          JSON.stringify({ nome: nome.trim(), objetivo, codigo }),
-        );
+        // confirmação de email ativada — o callback completa o perfil pelos metadados
         router.push("/confirmar");
         return;
       }

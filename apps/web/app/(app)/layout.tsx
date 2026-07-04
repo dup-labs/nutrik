@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { BottomNav } from "@/components/BottomNav";
 import { createClient } from "@/lib/supabase/server";
+import { resolveDestination } from "@/lib/roles";
 
 export default async function AppLayout({
   children,
@@ -11,21 +12,9 @@ export default async function AppLayout({
   } = await supabase.auth.getUser();
   if (!user) redirect("/entrada");
 
-  // profissional logado vai pro painel dele
-  const { data: pro } = await supabase
-    .from("professionals")
-    .select("id")
-    .eq("user_id", user.id)
-    .maybeSingle();
-  if (pro) redirect("/pro");
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("id, onboarding_completed_at")
-    .eq("id", user.id)
-    .maybeSingle();
-  if (!profile) redirect("/cadastro?completar=1");
-  if (!profile.onboarding_completed_at) redirect("/anamnese");
+  // roteia por papel: pro vai pro painel; paciente sem perfil completa o cadastro
+  const dest = await resolveDestination(supabase, user);
+  if (dest !== "/") redirect(dest);
 
   return (
     <div

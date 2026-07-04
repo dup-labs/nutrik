@@ -46,7 +46,16 @@ export default function ProCadastroPage() {
       const { data, error: signUpErr } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { name: nome.trim() } },
+        options: {
+          // papel + tipo viajam nos metadados; o callback do email cria o painel
+          data: {
+            role: "pro",
+            name: nome.trim(),
+            pro_type: tipo,
+            reg_code: reg || null,
+          },
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
       });
       if (signUpErr) {
         setError(
@@ -58,8 +67,7 @@ export default function ProCadastroPage() {
         return;
       }
       if (!data.session) {
-        setError("confirma seu email primeiro (te enviamos um link) e volta aqui pra concluir.");
-        setBusy(false);
+        router.push("/confirmar?pro=1");
         return;
       }
     }
@@ -74,7 +82,13 @@ export default function ProCadastroPage() {
       setBusy(false);
       return;
     }
-    setInviteCode(result.inviteCode ?? null);
+    if (!result.inviteCode) {
+      // painel já existia — segue direto
+      router.push("/pro");
+      router.refresh();
+      return;
+    }
+    setInviteCode(result.inviteCode);
     setBusy(false);
   }
 
@@ -257,7 +271,7 @@ export default function ProCadastroPage() {
           {hasSession === false && (
             <>
               <OrDivider />
-              <GoogleButton label="continuar com Google" />
+              <GoogleButton label="continuar com Google" flow="pro" />
               <div style={{ textAlign: "center", fontSize: 14, color: "var(--color-text-secondary)", marginTop: 24 }}>
                 já tem conta?{" "}
                 <Link href="/login" style={{ color: "var(--color-orange)", fontWeight: 600, textDecoration: "none" }}>
