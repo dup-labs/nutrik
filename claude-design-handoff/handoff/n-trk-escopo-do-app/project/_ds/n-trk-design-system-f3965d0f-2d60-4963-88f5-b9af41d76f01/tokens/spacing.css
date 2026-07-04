@@ -1,0 +1,37 @@
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Nūtrk — Spacing, Radius & Z-Index Tokens
+   Cards radius ~10px soft. Botões pill 40px. Leve, arejado.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+:root {
+  /* ── Spacing — Base-4 Scale ── */
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ── Border Radius ── */
+  --radius-sm:    6px;      /* Badges, tags, chips pequenos */
+  --radius-md:   10px;      /* Cards, inputs — o soft padrão da marca */
+  --radius-lg:   16px;      /* Painéis grandes, sheets, modais */
+  --radius-xl:   24px;      /* Auras / blocos hero */
+  --radius-pill: 40px;      /* Botões pill */
+  --radius-full: 9999px;    /* Círculos, toggles */
+
+  /* ── Ícones ──
+     Outline fino-médio, temática fitness/saúde. Container 50×50px. */
+  --icon-container: 50px;
+  --icon-stroke:    1.5px;
+
+  /* ── Z-Index Scale ── */
+  --z-base:    0;    /* @kind other */
+  --z-raised: 10;    /* @kind other */
+  --z-sticky: 50;    /* @kind other */
+  --z-overlay: 100;  /* @kind other */
+  --z-modal:   200;  /* @kind other */
+  --z-toast:   300;  /* @kind other */
+}

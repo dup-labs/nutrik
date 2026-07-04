@@ -1,0 +1,79 @@
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Nūtrk — Effects Tokens
+   Mesh gradients (as auras), liquid glass e sombra leve.
+   A profundidade vem do gradiente, não do preto. Sem ruído.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+:root {
+  /* ── Mesh gradients (auras) ──
+     4 swatches, extraídos do Figma e convertidos para % (escalam a
+     qualquer container). Cor fixa por componente, não interativa.
+     Flutuam como auras decorativas em cards e slides.
+       warm  → paciente   ·   cool  → nutri/profissional   ·   mist → coringa */
+  --mesh-warm:
+    radial-gradient(80.4% 73.7% at 95.38% 26%,   rgba(245,166,35,0.8) 0%, rgba(245,166,35,0) 99%),
+    radial-gradient(76.9% 76.9% at -46% -46%,     rgba(192,132,252,0.8) 0%, rgba(192,132,252,0) 60%),
+    radial-gradient(112% 112% at -19% 100%,       rgb(239,68,68) 0%, rgba(239,68,68,0) 100%),
+    linear-gradient(#adb4fc, #adb4fc); /* @kind color */
+
+  --mesh-cool:
+    radial-gradient(90.5% 105.8% at 97.13% 54.37%, rgba(127,225,252,0.8) 0%, rgba(129,225,252,0) 100%),
+    radial-gradient(207% 59.5% at 91.5% 8.38%,     rgba(181,187,251,0.9) 0%, rgba(174,181,252,0.09) 100%),
+    radial-gradient(120% 92.5% at 79.75% 100%,     rgb(254,99,36) 0%, rgba(255,106,48,0) 100%),
+    linear-gradient(#feda97, #feda97); /* @kind color */
+
+  --mesh-mist:
+    radial-gradient(58.5% 50.7% at 100% 5.87%,     rgba(127,225,252,0.8) 0%, rgba(129,225,252,0) 100%),
+    radial-gradient(51.4% 39.7% at 5.5% 0%,        rgba(252,99,47,0.9) 0%, rgba(183,167,240,0.45) 100%),
+    radial-gradient(107.7% 144.7% at 100% 41.25%,  rgb(253,173,36) 0%, rgba(253,171,34,0.5) 100%),
+    linear-gradient(#a9b2fd, #a9b2fd); /* @kind color */
+
+  --mesh-fresh:
+    radial-gradient(98.3% 102.3% at -16.5% -6.75%, rgba(253,171,40,0.8) 0%, rgba(253,170,39,0) 100%),
+    radial-gradient(58.9% 59.2% at 108.13% 13.13%, rgba(181,187,251,0.9) 0%, rgba(174,181,252,0.09) 100%),
+    radial-gradient(96.3% 66% at 52.63% 8%,        rgb(184,168,240) 0%, rgba(186,170,241,0.3) 100%),
+    linear-gradient(#83d8e8, #83d8e8); /* @kind color */
+
+  /* ── Liquid glass ──
+     Vidro sobre claro: branco translúcido + blur/saturate, borda de luz
+     e um brilho especular interno no topo. Usar em barras, chips flutuantes,
+     botões sobre mesh, sheets. */
+  --glass-bg:          rgba(255, 255, 255, 0.55);  /* @kind color */
+  --glass-bg-strong:   rgba(255, 255, 255, 0.72);  /* @kind color */
+  --glass-bg-tint:     rgba(255, 255, 255, 0.22);  /* @kind color */ /* sobre mesh saturado */
+
+  --glass-blur:        blur(16px) saturate(1.6);   /* @kind other */
+  --glass-blur-strong: blur(28px) saturate(1.8);   /* @kind other */
+
+  --glass-border:      1px solid rgba(255, 255, 255, 0.60); /* @kind other */
+  --glass-border-soft: 1px solid rgba(255, 255, 255, 0.35); /* @kind other */
+
+  /* Sombra do vidro: ambiente suave + brilho especular interno (o "líquido"). */
+  --glass-shadow:
+    0 8px 32px rgba(27, 28, 29, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.70),
+    inset 0 -1px 1px rgba(27, 28, 29, 0.04); /* @kind shadow */
+  --glass-shadow-lift:
+    0 16px 48px rgba(27, 28, 29, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.80),
+    inset 0 -1px 1px rgba(27, 28, 29, 0.05); /* @kind shadow */
+
+  /* ── Sombras (leves — o gradiente faz a profundidade) ── */
+  --shadow-sm:       0 2px 8px rgba(27, 28, 29, 0.05);
+  --shadow-card:     0 4px 24px rgba(27, 28, 29, 0.06);
+  --shadow-elevated: 0 12px 40px rgba(27, 28, 29, 0.10);
+
+  /* ── Halo suave do accent (substitui os glows duros) ── */
+  --halo-orange: 0 6px 24px rgba(254, 95, 51, 0.28); /* @kind shadow */
+  --halo-warm:   0 6px 24px rgba(254, 175, 76, 0.30); /* @kind shadow */
+
+  /* ── Transitions ── */
+  --ease-out:    cubic-bezier(0.2, 0, 0, 1);             /* @kind other */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);      /* @kind other */
+  --ease-in:     cubic-bezier(0.4, 0, 1, 1);             /* @kind other */
+
+  --transition-fast:   150ms cubic-bezier(0.2, 0, 0, 1);            /* @kind other */
+  --transition-base:   250ms cubic-bezier(0.2, 0, 0, 1);            /* @kind other */
+  --transition-slow:   400ms cubic-bezier(0.2, 0, 0, 1);            /* @kind other */
+  --transition-spring: 350ms cubic-bezier(0.34, 1.56, 0.64, 1);     /* @kind other */
+}

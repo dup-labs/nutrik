@@ -1,0 +1,71 @@
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Nūtrk — Color Tokens
+   Light-only. Laranja é o calor. As temperaturas conversam:
+   warm puxa paciente · cool puxa nutri/profissional · neutro coringa.
+   O contraste vem das auras mesh e das imagens tratadas — nunca do preto.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+:root {
+  /* ── Canvas / Backgrounds ──
+     Fundo sólido claro com gradiente suave #fff → #e7ecf7. */
+  --canvas-1:  #ffffff;   /* canvas: início */
+  --canvas-2:  #e7ecf7;   /* canvas: fim */
+  --color-base:             #ffffff;   /* Page background */
+  --color-surface:          #EDF0F8;   /* Cards, panels — muted surface */
+  --color-surface-elevated: #ffffff;   /* Elevated cards, dropdowns, sheets */
+  --color-surface-overlay:  rgba(27, 28, 29, 0.28);  /* Modal/sheet scrim */
+
+  /* ── Laranja — o accent principal ──
+     Ações primárias, CTA, destaque, marca. É o calor da Nūtrk. */
+  --color-orange:        #fe5f33;   /* --P — accent principal */
+  --color-orange-bright: #fe7031;   /* topo do gradient de marca */
+  --color-orange-deep:   #e94f22;   /* hover/pressed */
+  --color-orange-dim:    rgba(254, 95, 51, 0.16);
+  --color-orange-subtle: rgba(254, 95, 51, 0.08);
+
+  /* ── Temperaturas — decorativas e semânticas ──
+     warm → paciente · cool → nutri/profissional · neutro → coringa. */
+  --warm-amber: #feaf4c;   /* warm — energia, corpo, movimento */
+  --cool-lav:   #adb7f7;   /* cool — cuidado, profissional, nutri */
+  --cool-mint:  #adf3f3;   /* cool — frescor, hidratação, leveza */
+
+  /* ── Bases dos mesh gradients (auras) ──
+     Cor de preenchimento sob os radiais. Ver effects.css. */
+  --mesh-base-lav:       #adb4fc;   /* aura warm  */
+  --mesh-base-amber:     #feda97;   /* aura cool  */
+  --mesh-base-peri:      #a9b2fd;   /* aura mista */
+  --mesh-base-mint:      #83d8e8;   /* aura mista */
+
+  /* ── Texto ── */
+  --color-text:          #1b1c1d;   /* --INK — primário sobre claro */
+  --color-text-secondary:#333333;   /* --INK2 — secundário */
+  --color-text-muted:    #6b6f78;   /* labels, captions terciárias */
+  --color-text-disabled: #a6abb5;   /* disabled */
+  --color-text-on-mesh:  #ffffff;   /* texto branco sobre mesh saturado */
+
+  /* ── Status ── */
+  --color-success:  #2f9e6b;
+  --color-error:    #ef4444;
+  --color-info:     var(--color-cool-lav, #adb7f7);
+  --color-warning:  var(--warm-amber);
+
+  /* ── Semantic Aliases ── */
+  --color-bg:             var(--color-base);
+  --color-card:           var(--color-surface);
+  --color-card-elevated:  var(--color-surface-elevated);
+  --color-accent:         var(--color-orange);
+  --color-accent-light:   var(--color-orange-bright);
+  --color-reward:         var(--warm-amber);
+  --color-fg:             var(--color-text);
+  --color-fg-muted:       var(--color-text-muted);
+  --color-fg-disabled:    var(--color-text-disabled);
+  --color-border:         rgba(27, 28, 29, 0.10);   /* hairline sobre claro */
+  --color-border-strong:  rgba(27, 28, 29, 0.18);
+
+  /* ── Gradiente do canvas ── */
+  --gradient-canvas: linear-gradient(180deg, var(--canvas-1) 0%, var(--canvas-2) 100%); /* @kind color */
+
+  /* ── Gradient de marca (accent em keyword) ──
+     Só em palavra isolada, background-clip: text. Máx 1–2 por slide. */
+  --gradient-accent: linear-gradient(90deg, #fe7031, #b6b8f6); /* @kind color */
+}

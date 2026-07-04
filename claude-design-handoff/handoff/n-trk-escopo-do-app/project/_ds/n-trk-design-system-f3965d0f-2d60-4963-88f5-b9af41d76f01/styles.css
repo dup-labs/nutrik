@@ -1,0 +1,9 @@
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Nūtrk Design System — Global CSS Entry Point
+   This file is imports only. All rules live in token files.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+@import './tokens/typography.css';
+@import './tokens/colors.css';
+@import './tokens/spacing.css';
+@import './tokens/effects.css';

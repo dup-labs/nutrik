@@ -1,0 +1,111 @@
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Nūtrk — Typography Tokens
+   Duas famílias. Satoshi para display, Inter para corpo.
+   Sentence case em TUDO — sem all-caps (diferencia da SWTCHR).
+   Satoshi Black = impacto/cover · Medium = subhead/label.
+
+   NOTE: Satoshi hospedada localmente (fonts/*.otf) · Inter via Google Fonts CDN.
+   Família completa: 300 Light, 400 Regular, 500 Medium, 700 Bold, 900 Black (+ itálicos).
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('../fonts/Satoshi-Light.otf') format('opentype');
+  font-weight: 300; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('../fonts/Satoshi-LightItalic.otf') format('opentype');
+  font-weight: 300; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('../fonts/Satoshi-Regular.otf') format('opentype');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('../fonts/Satoshi-Italic.otf') format('opentype');
+  font-weight: 400; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('../fonts/Satoshi-Medium.otf') format('opentype');
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('../fonts/Satoshi-MediumItalic.otf') format('opentype');
+  font-weight: 500; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('../fonts/Satoshi-Bold.otf') format('opentype');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('../fonts/Satoshi-BoldItalic.otf') format('opentype');
+  font-weight: 700; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('../fonts/Satoshi-Black.otf') format('opentype');
+  font-weight: 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('../fonts/Satoshi-BlackItalic.otf') format('opentype');
+  font-weight: 900; font-style: italic; font-display: swap;
+}
+
+:root {
+  /* ── Font Families ── */
+  --font-display:   'Satoshi', 'Inter', sans-serif;   /* Headlines, display, cover */
+  --font-interface: 'Inter', sans-serif;               /* Body, labels, UI text */
+  --font-data:      'Satoshi', sans-serif;             /* Números, métricas (não-prescritivas) */
+
+  /* ── Type Scale ── */
+  --text-xs:   0.75rem;    /* 12px — captions, timestamps */
+  --text-sm:   0.875rem;   /* 14px — secondary labels, metadata */
+  --text-base: 1rem;       /* 16px — body text */
+  --text-lg:   1.25rem;    /* 20px — section labels, subheadings */
+  --text-xl:   1.5rem;     /* 24px — card titles, feature headers */
+  --text-2xl:  2rem;       /* 32px — section headings */
+  --text-3xl:  3rem;       /* 48px — hero, display */
+  --text-4xl:  4rem;       /* 64px — cover impact */
+
+  /* ── Line Heights ── */
+  --leading-tight:   1.05;   /* Cover / display */
+  --leading-snug:    1.2;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.7;
+
+  /* ── Letter Spacing ──
+     Sentence case não pede tracking largo. Nada de caps espaçado. */
+  --tracking-tight:  -0.03em;   /* Display / headlines */
+  --tracking-snug:   -0.015em;  /* Subheads */
+  --tracking-normal: -0.005em;  /* Body */
+
+  /* ── Font Weights ── */
+  --weight-regular: 400;
+  --weight-medium:  500;   /* subhead / label */
+  --weight-semi:    600;
+  --weight-bold:    700;   /* gradient keyword */
+  --weight-black:   900;   /* impacto / cover */
+}
+
+/* ── Gradient de texto (accent em keyword) ──
+   Satoshi Bold + gradient #fe7031 → #b6b8f6, background-clip: text.
+   Só em palavra isolada, máx 1–2 por slide. Marcador no copy: *palavra*. */
+.ntrk-grad-text {
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}

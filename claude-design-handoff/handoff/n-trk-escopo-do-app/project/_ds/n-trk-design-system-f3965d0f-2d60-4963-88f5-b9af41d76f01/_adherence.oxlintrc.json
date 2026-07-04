@@ -1,0 +1,404 @@
+{
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "react/forbid-elements": [
+      "warn",
+      {
+        "forbid": []
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": [
+          {
+            "group": [
+              "components/core/**"
+            ],
+            "message": "Import design-system components from 'index.js', not component internals."
+          }
+        ]
+      }
+    ],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "Literal[value=/#[0-9a-fA-F]{3,8}\\b/]",
+        "message": "Raw hex color — use a design-system color token via var()."
+      },
+      {
+        "selector": "Literal[value=/\\b\\d+px\\b/]",
+        "message": "Raw px value — use a design-system spacing token via var()."
+      },
+      {
+        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:Satoshi|Inter))/i]",
+        "message": "Font not provided by the design system. Available: Satoshi, Inter."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Badge'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|variant|dot|size|key|ref|className|style|children)$/]",
+        "message": "<Badge> doesn't accept that prop. Declared props: children, variant, dot, size."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Badge'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:accent|warm|cool|neutral|success|error)$/]",
+        "message": "<Badge> variant must be one of 'accent' | 'warm' | 'cool' | 'neutral' | 'success' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Badge'] > JSXAttribute[name.name='size'] > Literal[value!=/^(?:sm|md|lg)$/]",
+        "message": "<Badge> size must be one of 'sm' | 'md' | 'lg'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|variant|size|disabled|fullWidth|type|icon|iconRight|onClick|key|ref|className|style|children)$/]",
+        "message": "<Button> doesn't accept that prop. Declared props: children, variant, size, disabled, fullWidth, type, icon, iconRight, onClick."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:primary|gradient|secondary|ghost|warm|glass)$/]",
+        "message": "<Button> variant must be one of 'primary' | 'gradient' | 'secondary' | 'ghost' | 'warm' | 'glass'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute[name.name='size'] > Literal[value!=/^(?:sm|md|lg)$/]",
+        "message": "<Button> size must be one of 'sm' | 'md' | 'lg'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute[name.name='type'] > Literal[value!=/^(?:button|submit|reset)$/]",
+        "message": "<Button> type must be one of 'button' | 'submit' | 'reset'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Card'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|variant|temp|padding|radius|style|onClick|key|ref|className|style|children)$/]",
+        "message": "<Card> doesn't accept that prop. Declared props: children, variant, temp, padding, radius, style, onClick."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Card'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:base|elevated|glass|mesh)$/]",
+        "message": "<Card> variant must be one of 'base' | 'elevated' | 'glass' | 'mesh'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Card'] > JSXAttribute[name.name='temp'] > Literal[value!=/^(?:warm|cool|mist|fresh)$/]",
+        "message": "<Card> temp must be one of 'warm' | 'cool' | 'mist' | 'fresh'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Card'] > JSXAttribute[name.name='padding'] > Literal[value!=/^(?:none|sm|md|lg)$/]",
+        "message": "<Card> padding must be one of 'none' | 'sm' | 'md' | 'lg'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Card'] > JSXAttribute[name.name='radius'] > Literal[value!=/^(?:sm|md|lg|xl)$/]",
+        "message": "<Card> radius must be one of 'sm' | 'md' | 'lg' | 'xl'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Input'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|placeholder|value|onChange|type|error|hint|disabled|icon|unit|size|key|ref|className|style|children)$/]",
+        "message": "<Input> doesn't accept that prop. Declared props: label, placeholder, value, onChange, type, error, hint, disabled, icon, unit, size."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Input'] > JSXAttribute[name.name='size'] > Literal[value!=/^(?:sm|md|lg)$/]",
+        "message": "<Input> size must be one of 'sm' | 'md' | 'lg'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='MeshAura'] > JSXAttribute > JSXIdentifier[name!=/^(?:temp|shape|size|float|children|style|className|key|ref|className|style|children)$/]",
+        "message": "<MeshAura> doesn't accept that prop. Declared props: temp, shape, size, float, children, style, className."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='MeshAura'] > JSXAttribute[name.name='temp'] > Literal[value!=/^(?:warm|cool|mist|fresh)$/]",
+        "message": "<MeshAura> temp must be one of 'warm' | 'cool' | 'mist' | 'fresh'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='MeshAura'] > JSXAttribute[name.name='shape'] > Literal[value!=/^(?:blob|card|circle|pill)$/]",
+        "message": "<MeshAura> shape must be one of 'blob' | 'card' | 'circle' | 'pill'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Stat'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|unit|label|delta|deltaDirection|variant|size|key|ref|className|style|children)$/]",
+        "message": "<Stat> doesn't accept that prop. Declared props: value, unit, label, delta, deltaDirection, variant, size."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Stat'] > JSXAttribute[name.name='deltaDirection'] > Literal[value!=/^(?:up|down|neutral)$/]",
+        "message": "<Stat> deltaDirection must be one of 'up' | 'down' | 'neutral'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Stat'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:default|accent|warm|muted)$/]",
+        "message": "<Stat> variant must be one of 'default' | 'accent' | 'warm' | 'muted'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Stat'] > JSXAttribute[name.name='size'] > Literal[value!=/^(?:sm|md|lg)$/]",
+        "message": "<Stat> size must be one of 'sm' | 'md' | 'lg'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='StreakRing'] > JSXAttribute > JSXIdentifier[name!=/^(?:days|max|size|showLabel|label|key|ref|className|style|children)$/]",
+        "message": "<StreakRing> doesn't accept that prop. Declared props: days, max, size, showLabel, label."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Tag'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|variant|onRemove|key|ref|className|style|children)$/]",
+        "message": "<Tag> doesn't accept that prop. Declared props: children, variant, onRemove."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Tag'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:accent|warm|cool|neutral)$/]",
+        "message": "<Tag> variant must be one of 'accent' | 'warm' | 'cool' | 'neutral'."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/index.js"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ],
+  "x-omelette": {
+    "components": {
+      "Badge": {
+        "replaces": []
+      },
+      "Button": {
+        "replaces": []
+      },
+      "Card": {
+        "replaces": []
+      },
+      "Input": {
+        "replaces": []
+      },
+      "MeshAura": {
+        "replaces": []
+      },
+      "Stat": {
+        "replaces": []
+      },
+      "StreakRing": {
+        "replaces": []
+      },
+      "Tag": {
+        "replaces": []
+      }
+    },
+    "tokens": [
+      "--canvas-1",
+      "--canvas-2",
+      "--color-accent",
+      "--color-accent-light",
+      "--color-base",
+      "--color-bg",
+      "--color-border",
+      "--color-border-strong",
+      "--color-card",
+      "--color-card-elevated",
+      "--color-error",
+      "--color-fg",
+      "--color-fg-disabled",
+      "--color-fg-muted",
+      "--color-info",
+      "--color-orange",
+      "--color-orange-bright",
+      "--color-orange-deep",
+      "--color-orange-dim",
+      "--color-orange-subtle",
+      "--color-reward",
+      "--color-success",
+      "--color-surface",
+      "--color-surface-elevated",
+      "--color-surface-overlay",
+      "--color-text",
+      "--color-text-disabled",
+      "--color-text-muted",
+      "--color-text-on-mesh",
+      "--color-text-secondary",
+      "--color-warning",
+      "--cool-lav",
+      "--cool-mint",
+      "--ease-in",
+      "--ease-out",
+      "--ease-spring",
+      "--font-data",
+      "--font-display",
+      "--font-interface",
+      "--glass-bg",
+      "--glass-bg-strong",
+      "--glass-bg-tint",
+      "--glass-blur",
+      "--glass-blur-strong",
+      "--glass-border",
+      "--glass-border-soft",
+      "--glass-shadow",
+      "--glass-shadow-lift",
+      "--gradient-accent",
+      "--gradient-canvas",
+      "--halo-orange",
+      "--halo-warm",
+      "--icon-container",
+      "--icon-stroke",
+      "--leading-normal",
+      "--leading-relaxed",
+      "--leading-snug",
+      "--leading-tight",
+      "--mesh-base-amber",
+      "--mesh-base-lav",
+      "--mesh-base-mint",
+      "--mesh-base-peri",
+      "--mesh-cool",
+      "--mesh-fresh",
+      "--mesh-mist",
+      "--mesh-warm",
+      "--radius-full",
+      "--radius-lg",
+      "--radius-md",
+      "--radius-pill",
+      "--radius-sm",
+      "--radius-xl",
+      "--shadow-card",
+      "--shadow-elevated",
+      "--shadow-sm",
+      "--space-1",
+      "--space-12",
+      "--space-16",
+      "--space-2",
+      "--space-3",
+      "--space-4",
+      "--space-6",
+      "--space-8",
+      "--text-2xl",
+      "--text-3xl",
+      "--text-4xl",
+      "--text-base",
+      "--text-lg",
+      "--text-sm",
+      "--text-xl",
+      "--text-xs",
+      "--tracking-normal",
+      "--tracking-snug",
+      "--tracking-tight",
+      "--transition-base",
+      "--transition-fast",
+      "--transition-slow",
+      "--transition-spring",
+      "--warm-amber",
+      "--weight-black",
+      "--weight-bold",
+      "--weight-medium",
+      "--weight-regular",
+      "--weight-semi",
+      "--z-base",
+      "--z-modal",
+      "--z-overlay",
+      "--z-raised",
+      "--z-sticky",
+      "--z-toast"
+    ],
+    "tokenKinds": {
+      "--font-display": "font",
+      "--font-interface": "font",
+      "--font-data": "font",
+      "--text-xs": "font",
+      "--text-sm": "font",
+      "--text-base": "font",
+      "--text-lg": "font",
+      "--text-xl": "font",
+      "--text-2xl": "font",
+      "--text-3xl": "font",
+      "--text-4xl": "font",
+      "--leading-tight": "font",
+      "--leading-snug": "font",
+      "--leading-normal": "font",
+      "--leading-relaxed": "font",
+      "--tracking-tight": "font",
+      "--tracking-snug": "font",
+      "--tracking-normal": "font",
+      "--weight-regular": "font",
+      "--weight-medium": "font",
+      "--weight-semi": "font",
+      "--weight-bold": "font",
+      "--weight-black": "font",
+      "--canvas-1": "color",
+      "--canvas-2": "color",
+      "--color-base": "color",
+      "--color-surface": "color",
+      "--color-surface-elevated": "color",
+      "--color-surface-overlay": "color",
+      "--color-orange": "color",
+      "--color-orange-bright": "color",
+      "--color-orange-deep": "color",
+      "--color-orange-dim": "color",
+      "--color-orange-subtle": "color",
+      "--warm-amber": "color",
+      "--cool-lav": "color",
+      "--cool-mint": "color",
+      "--mesh-base-lav": "color",
+      "--mesh-base-amber": "color",
+      "--mesh-base-peri": "color",
+      "--mesh-base-mint": "color",
+      "--color-text": "font",
+      "--color-text-secondary": "font",
+      "--color-text-muted": "font",
+      "--color-text-disabled": "font",
+      "--color-text-on-mesh": "font",
+      "--color-success": "color",
+      "--color-error": "color",
+      "--color-info": "color",
+      "--color-warning": "color",
+      "--color-bg": "color",
+      "--color-card": "color",
+      "--color-card-elevated": "color",
+      "--color-accent": "color",
+      "--color-accent-light": "color",
+      "--color-reward": "color",
+      "--color-fg": "color",
+      "--color-fg-muted": "color",
+      "--color-fg-disabled": "color",
+      "--color-border": "color",
+      "--color-border-strong": "color",
+      "--gradient-canvas": "color",
+      "--gradient-accent": "color",
+      "--space-1": "spacing",
+      "--space-2": "spacing",
+      "--space-3": "spacing",
+      "--space-4": "spacing",
+      "--space-6": "spacing",
+      "--space-8": "spacing",
+      "--space-12": "spacing",
+      "--space-16": "spacing",
+      "--radius-sm": "radius",
+      "--radius-md": "radius",
+      "--radius-lg": "radius",
+      "--radius-xl": "radius",
+      "--radius-pill": "radius",
+      "--radius-full": "radius",
+      "--icon-container": "spacing",
+      "--icon-stroke": "color",
+      "--z-base": "other",
+      "--z-raised": "other",
+      "--z-sticky": "other",
+      "--z-overlay": "other",
+      "--z-modal": "other",
+      "--z-toast": "other",
+      "--mesh-warm": "color",
+      "--mesh-cool": "color",
+      "--mesh-mist": "color",
+      "--mesh-fresh": "color",
+      "--glass-bg": "color",
+      "--glass-bg-strong": "color",
+      "--glass-bg-tint": "color",
+      "--glass-blur": "other",
+      "--glass-blur-strong": "other",
+      "--glass-border": "other",
+      "--glass-border-soft": "other",
+      "--glass-shadow": "shadow",
+      "--glass-shadow-lift": "shadow",
+      "--shadow-sm": "shadow",
+      "--shadow-card": "shadow",
+      "--shadow-elevated": "shadow",
+      "--halo-orange": "shadow",
+      "--halo-warm": "shadow",
+      "--ease-out": "other",
+      "--ease-spring": "other",
+      "--ease-in": "other",
+      "--transition-fast": "other",
+      "--transition-base": "other",
+      "--transition-slow": "other",
+      "--transition-spring": "other"
+    },
+    "fontFamilies": [
+      "Inter",
+      "Satoshi"
+    ]
+  }
+}

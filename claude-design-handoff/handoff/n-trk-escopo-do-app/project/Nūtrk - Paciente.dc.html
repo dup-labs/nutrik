@@ -1,0 +1,2128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/n-trk-design-system-f3965d0f-2d60-4963-88f5-b9af41d76f01/tokens/typography.css">
+<link rel="stylesheet" href="_ds/n-trk-design-system-f3965d0f-2d60-4963-88f5-b9af41d76f01/tokens/colors.css">
+<link rel="stylesheet" href="_ds/n-trk-design-system-f3965d0f-2d60-4963-88f5-b9af41d76f01/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/n-trk-design-system-f3965d0f-2d60-4963-88f5-b9af41d76f01/tokens/effects.css">
+<link rel="stylesheet" href="_ds/n-trk-design-system-f3965d0f-2d60-4963-88f5-b9af41d76f01/styles.css">
+<script src="_ds/n-trk-design-system-f3965d0f-2d60-4963-88f5-b9af41d76f01/_ds_bundle.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .ntrk-scroll::-webkit-scrollbar { width: 0; height: 0; }
+  .ntrk-scroll { scrollbar-width: none; }
+  @keyframes ntrkPop { 0% { transform: scale(0.6); opacity: 0; } 60% { transform: scale(1.06); } 100% { transform: scale(1); opacity: 1; } }
+  @keyframes ntrkFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+</style>
+</helmet>
+
+<div style="min-height:100vh;width:100%;background:var(--gradient-canvas);font-family:var(--font-interface);display:flex;flex-direction:column;align-items:center;padding:36px 20px 64px;gap:24px;">
+
+  <!-- ── Cabeçalho do protótipo ── -->
+  <div style="display:flex;flex-direction:column;align-items:center;gap:14px;max-width:520px;text-align:center;">
+    <div style="font-family:var(--font-display);font-weight:900;font-size:34px;letter-spacing:-0.03em;color:var(--color-text);">Nūtrk</div>
+    <div style="font-size:14px;color:var(--color-text-muted);letter-spacing:-0.005em;">app do paciente · etapa 1 · alta fidelidade · pt-br</div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:4px;">
+      <!-- Solo / Vinculado -->
+      <div style="display:inline-flex;background:var(--glass-bg-strong);border:1px solid var(--color-border);border-radius:var(--radius-pill);padding:4px;gap:2px;box-shadow:var(--shadow-sm);">
+        <button onClick="{{ setSolo }}" style="{{ soloBtnStyle }}">solo</button>
+        <button onClick="{{ setVinc }}" style="{{ vincBtnStyle }}">vinculado</button>
+      </div>
+      <!-- Cheio / Vazio -->
+      <div style="display:inline-flex;background:var(--glass-bg-strong);border:1px solid var(--color-border);border-radius:var(--radius-pill);padding:4px;gap:2px;box-shadow:var(--shadow-sm);">
+        <button onClick="{{ setCheio }}" style="{{ cheioBtnStyle }}">cheio</button>
+        <button onClick="{{ setVazio }}" style="{{ vazioBtnStyle }}">vazio</button>
+      </div>
+      <button onClick="{{ reset }}" style="height:34px;padding:0 16px;border-radius:var(--radius-pill);border:1px solid var(--color-border-strong);background:var(--color-surface-elevated);font-family:var(--font-interface);font-size:13px;font-weight:600;color:var(--color-text-secondary);cursor:pointer;">reiniciar</button>
+    </div>
+  </div>
+
+  <!-- ── Aparelho ── -->
+  <div style="position:relative;padding:12px;background:#15161a;border-radius:56px;box-shadow:0 40px 90px rgba(27,28,29,0.30),0 8px 24px rgba(27,28,29,0.18);">
+    <div style="position:relative;width:390px;height:844px;border-radius:46px;overflow:hidden;background:var(--gradient-canvas);display:flex;flex-direction:column;">
+
+      <!-- Status bar -->
+      <div style="height:50px;flex-shrink:0;display:flex;align-items:flex-end;justify-content:space-between;padding:0 26px 8px;position:relative;z-index:20;">
+        <span style="font-family:var(--font-data);font-weight:700;font-size:15px;color:var(--color-text);letter-spacing:-0.01em;">9:41</span>
+        <div style="position:absolute;left:50%;top:9px;transform:translateX(-50%);width:118px;height:30px;background:#15161a;border-radius:18px;"></div>
+        <div style="display:flex;align-items:center;gap:6px;color:var(--color-text);">
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="1" fill="currentColor"/><rect x="5" y="4" width="3" height="8" rx="1" fill="currentColor"/><rect x="10" y="1.5" width="3" height="10.5" rx="1" fill="currentColor"/><rect x="15" y="0" width="3" height="12" rx="1" fill="currentColor" opacity="0.35"/></svg>
+          <svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x="0.5" y="0.5" width="21" height="12" rx="3" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="9" rx="1.5" fill="currentColor"/><rect x="23" y="4" width="2" height="5" rx="1" fill="currentColor" opacity="0.5"/></svg>
+        </div>
+      </div>
+
+      <!-- Área de conteúdo -->
+      <div class="ntrk-scroll" style="flex:1;overflow-y:auto;overflow-x:hidden;position:relative;">
+
+        <!-- ══════════ ENTRADA / BIFURCAÇÃO ══════════ -->
+        <sc-if value="{{ isEntry }}" hint-placeholder-val="{{ true }}">
+          <div style="position:relative;min-height:794px;display:flex;flex-direction:column;">
+            <div style="position:absolute;top:-40px;right:-60px;width:280px;height:280px;background:var(--mesh-warm);filter:blur(30px);opacity:0.6;border-radius:50%;pointer-events:none;"></div>
+            <div style="position:absolute;top:180px;left:-80px;width:220px;height:220px;background:var(--mesh-cool);filter:blur(34px);opacity:0.45;border-radius:50%;pointer-events:none;"></div>
+
+            <div style="position:relative;padding:48px 28px 0;flex:1;display:flex;flex-direction:column;">
+              <div style="font-family:var(--font-display);font-weight:900;font-size:40px;letter-spacing:-0.03em;color:var(--color-text);">Nūtrk</div>
+              <div style="margin-top:14px;font-family:var(--font-display);font-weight:500;font-size:26px;line-height:1.15;letter-spacing:-0.02em;color:var(--color-text);max-width:280px;">a jornada, <span class="ntrk-grad-text">todo dia</span>.</div>
+              <div style="margin-top:12px;font-size:15px;line-height:1.5;color:var(--color-text-secondary);max-width:270px;">nutrição, treino e mente no seu ritmo. o que importa é a consistência.</div>
+
+              <div style="margin-top:auto;display:flex;flex-direction:column;gap:14px;padding-bottom:40px;">
+                <div onClick="{{ enterVinc }}" style="cursor:pointer;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow-card);display:flex;align-items:center;gap:16px;">
+                  <div style="width:52px;height:52px;border-radius:var(--radius-md);background:var(--mesh-cool);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-3"/><path d="M9 17H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h3"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                  </div>
+                  <div style="flex:1;">
+                    <div style="font-family:var(--font-display);font-weight:700;font-size:17px;letter-spacing:-0.02em;color:var(--color-text);">tenho um código</div>
+                    <div style="font-size:13px;color:var(--color-text-muted);margin-top:2px;">seu nutri ou personal te convidou</div>
+                  </div>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+
+                <div onClick="{{ enterSolo }}" style="cursor:pointer;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow-card);display:flex;align-items:center;gap:16px;">
+                  <div style="width:52px;height:52px;border-radius:var(--radius-md);background:var(--mesh-warm);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg>
+                  </div>
+                  <div style="flex:1;">
+                    <div style="font-family:var(--font-display);font-weight:700;font-size:17px;letter-spacing:-0.02em;color:var(--color-text);">começar sozinho</div>
+                    <div style="font-size:13px;color:var(--color-text-muted);margin-top:2px;">um plano base já pra hoje</div>
+                  </div>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+
+                <div style="text-align:center;font-size:13px;color:var(--color-text-muted);margin-top:4px;">dá pra vincular um profissional depois.</div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ══════════ HOME ══════════ -->
+        <sc-if value="{{ isHome }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 20px 28px;">
+            <!-- saudação -->
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px;">
+              <div>
+                <div style="font-size:14px;color:var(--color-text-muted);">{{ today }}</div>
+                <div style="font-family:var(--font-display);font-weight:900;font-size:28px;letter-spacing:-0.03em;color:var(--color-text);margin-top:2px;">oi, Marina.</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <sc-if value="{{ showPro }}" hint-placeholder-val="{{ false }}">
+                  <div onClick="{{ goNotificacoes }}" style="cursor:pointer;position:relative;width:36px;height:36px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface-elevated);display:flex;align-items:center;justify-content:center;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+                    <sc-if value="{{ hasUnread }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:6px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--color-orange);border:1.5px solid var(--color-surface-elevated);"></span></sc-if>
+                  </div>
+                </sc-if>
+                <div onClick="{{ goStreak }}" style="cursor:pointer;display:flex;align-items:center;gap:6px;background:rgba(254,175,76,0.16);border:1px solid rgba(254,175,76,0.32);border-radius:var(--radius-pill);height:36px;padding:0 14px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fe5f33" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                  <span style="font-family:var(--font-data);font-weight:700;font-size:15px;color:#c67518;">{{ streakDays }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- estado vazio vinculado: aguardando protocolo -->
+            <sc-if value="{{ homeWaiting }}" hint-placeholder-val="{{ false }}">
+              <div style="background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:28px 22px;box-shadow:var(--shadow-card);text-align:center;margin-bottom:16px;">
+                <div style="width:64px;height:64px;margin:0 auto;border-radius:50%;background:var(--mesh-cool);display:flex;align-items:center;justify-content:center;">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+                </div>
+                <div style="font-family:var(--font-display);font-weight:700;font-size:19px;letter-spacing:-0.02em;color:var(--color-text);margin-top:16px;">seu plano está a caminho.</div>
+                <div style="font-size:14px;line-height:1.5;color:var(--color-text-secondary);margin-top:8px;max-width:250px;margin-left:auto;margin-right:auto;">Dra. Camila está montando seu protocolo. a gente te avisa assim que estiver pronto.</div>
+              </div>
+            </sc-if>
+
+            <!-- progresso do dia -->
+            <sc-if value="{{ homeReady }}" hint-placeholder-val="{{ false }}">
+            <div onClick="{{ goDiaFechado }}" style="cursor:pointer;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow-card);margin-bottom:16px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-size:14px;font-weight:600;color:var(--color-text-secondary);">seu dia</span>
+                <div style="display:flex;align-items:center;gap:6px;"><span style="font-family:var(--font-data);font-weight:700;font-size:14px;color:var(--color-orange);">{{ dayLabel }}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+              </div>
+              <div style="margin-top:12px;height:10px;border-radius:99px;background:var(--color-orange-subtle);overflow:hidden;">
+                <div style="height:100%;border-radius:99px;background:linear-gradient(90deg,#fe5f33,#feaf4c);width:{{ dayWidth }};transition:width .5s var(--ease-out);"></div>
+              </div>
+              <div style="margin-top:10px;font-size:13px;color:var(--color-text-muted);">{{ daySub }}</div>
+            </div>
+            </sc-if>
+
+            <!-- cards dos mundos -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <!-- Nutrição -->
+              <div onClick="{{ goRefeicoes }}" style="cursor:pointer;position:relative;overflow:hidden;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow-card);min-height:132px;display:flex;flex-direction:column;justify-content:space-between;">
+                <div style="position:absolute;top:-30px;right:-30px;width:90px;height:90px;background:var(--mesh-warm);filter:blur(18px);opacity:0.5;border-radius:50%;"></div>
+                <div style="position:relative;width:44px;height:44px;border-radius:var(--radius-md);background:rgba(254,175,76,0.16);display:flex;align-items:center;justify-content:center;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c67518" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h0a2 2 0 0 0 2-2V2"/><path d="M5 2v20"/><path d="M17 2v20"/><path d="M17 8c0-3 2-5 2-5s2 2 2 5-2 4-2 4"/></svg>
+                </div>
+                <div style="position:relative;">
+                  <div style="font-family:var(--font-display);font-weight:700;font-size:16px;letter-spacing:-0.02em;color:var(--color-text);">nutrição</div>
+                  <div style="font-size:12px;color:var(--color-text-muted);margin-top:2px;">{{ refeicoesSub }}</div>
+                </div>
+              </div>
+              <!-- Treino -->
+              <div onClick="{{ goTreinos }}" style="cursor:pointer;position:relative;overflow:hidden;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow-card);min-height:132px;display:flex;flex-direction:column;justify-content:space-between;">
+                <div style="position:absolute;top:-30px;right:-30px;width:90px;height:90px;background:var(--mesh-warm);filter:blur(18px);opacity:0.5;border-radius:50%;"></div>
+                <div style="position:relative;width:44px;height:44px;border-radius:var(--radius-md);background:var(--color-orange-subtle);display:flex;align-items:center;justify-content:center;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fe5f33" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6.5 6.5 11 11"/><path d="m21 21-1-1"/><path d="m3 3 1 1"/><path d="m18 22 4-4"/><path d="m2 6 4-4"/><path d="m3 10 7-7"/><path d="m14 21 7-7"/></svg>
+                </div>
+                <div style="position:relative;">
+                  <div style="font-family:var(--font-display);font-weight:700;font-size:16px;letter-spacing:-0.02em;color:var(--color-text);">treino</div>
+                  <div style="font-size:12px;color:var(--color-text-muted);margin-top:2px;">{{ treinoSub }}</div>
+                </div>
+              </div>
+              <!-- Água -->
+              <div onClick="{{ goAgua }}" style="cursor:pointer;position:relative;overflow:hidden;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow-card);min-height:132px;display:flex;flex-direction:column;justify-content:space-between;">
+                <div style="position:absolute;top:-30px;right:-30px;width:90px;height:90px;background:var(--mesh-mist);filter:blur(18px);opacity:0.5;border-radius:50%;"></div>
+                <div style="position:relative;width:44px;height:44px;border-radius:var(--radius-md);background:rgba(173,243,243,0.28);display:flex;align-items:center;justify-content:center;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2b93a8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7s6 6.1 6 10.3a6 6 0 0 1-12 0c0-4.2 6-10.3 6-10.3z"/></svg>
+                </div>
+                <div style="position:relative;">
+                  <div style="font-family:var(--font-display);font-weight:700;font-size:16px;letter-spacing:-0.02em;color:var(--color-text);">água</div>
+                  <div style="font-size:12px;color:var(--color-text-muted);margin-top:2px;">{{ aguaSub }}</div>
+                </div>
+              </div>
+              <!-- Mente -->
+              <div onClick="{{ goMente }}" style="cursor:pointer;position:relative;overflow:hidden;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow-card);min-height:132px;display:flex;flex-direction:column;justify-content:space-between;">
+                <div style="position:absolute;top:-30px;right:-30px;width:90px;height:90px;background:var(--mesh-fresh);filter:blur(18px);opacity:0.5;border-radius:50%;"></div>
+                <div style="position:relative;width:44px;height:44px;border-radius:var(--radius-md);background:rgba(173,183,247,0.24);display:flex;align-items:center;justify-content:center;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5a63c4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.142 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.142 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/></svg>
+                </div>
+                <div style="position:relative;">
+                  <div style="font-family:var(--font-display);font-weight:700;font-size:16px;letter-spacing:-0.02em;color:var(--color-text);">mente</div>
+                  <div style="font-size:12px;color:var(--color-text-muted);margin-top:2px;">{{ menteSub }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- avisos do pro (só vinculado) -->
+            <sc-if value="{{ showPro }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:16px;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow-card);">
+                <div onClick="{{ openChatNutri }}" style="cursor:pointer;display:flex;align-items:center;gap:10px;">
+                  <div style="width:40px;height:40px;border-radius:50%;background:var(--mesh-cool);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-display);font-weight:700;font-size:15px;">C</div>
+                  <div style="flex:1;">
+                    <div style="font-size:14px;font-weight:600;color:var(--color-text);">Dra. Camila Reis <span style="font-weight:500;color:var(--color-text-muted);">· nutri</span></div>
+                    <div style="font-size:13px;color:var(--color-text-secondary);margin-top:1px;">deixei uma troca no seu almoço. dá uma olhada.</div>
+                  </div>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+                <div style="height:1px;background:var(--color-border);margin:14px 0;"></div>
+                <div onClick="{{ openChatPersonal }}" style="cursor:pointer;display:flex;align-items:center;gap:10px;">
+                  <div style="width:40px;height:40px;border-radius:50%;background:var(--mesh-warm);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-display);font-weight:700;font-size:15px;">R</div>
+                  <div style="flex:1;">
+                    <div style="font-size:14px;font-weight:600;color:var(--color-text);">Rafa Nunes <span style="font-weight:500;color:var(--color-text-muted);">· personal</span></div>
+                    <div style="font-size:13px;color:var(--color-text-secondary);margin-top:1px;">treino de hoje é perna. bora com calma.</div>
+                  </div>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+              </div>
+            </sc-if>
+
+
+          </div>
+        </sc-if>
+
+        <!-- ══════════ REFEIÇÕES ══════════ -->
+        <sc-if value="{{ isRefeicoes }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 20px 28px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+              <button onClick="{{ goHome }}" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface-elevated);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div>
+                <div style="font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:-0.03em;color:var(--color-text);">refeições de hoje</div>
+                <div style="font-size:13px;color:var(--color-text-muted);">o convite é comer bem, no seu tempo.</div>
+              </div>
+            </div>
+
+            <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+              <div style="background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:32px 22px;text-align:center;box-shadow:var(--shadow-card);">
+                <div style="width:60px;height:60px;margin:0 auto;border-radius:50%;background:var(--mesh-warm);display:flex;align-items:center;justify-content:center;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg></div>
+                <div style="font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--color-text);margin-top:14px;">nada por aqui ainda.</div>
+                <div style="font-size:14px;color:var(--color-text-secondary);margin-top:6px;line-height:1.5;">{{ refeicoesEmptyMsg }}</div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ notEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;gap:6px;margin-bottom:16px;">
+                <sc-for list="{{ refDays }}" as="d" hint-placeholder-count="7">
+                  <div onClick="{{ d.onPick }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;">
+                    <span style="font-size:11px;font-weight:600;color:{{ d.labelColor }};">{{ d.label }}</span>
+                    <div style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-data);font-weight:700;font-size:14px;background:{{ d.numBg }};color:{{ d.numColor }};border:{{ d.numBorder }};">{{ d.date }}</div>
+                    <div style="width:5px;height:5px;border-radius:50%;background:{{ d.dot }};"></div>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div style="font-size:13px;color:var(--color-text-muted);margin-bottom:12px;">{{ refDayLabel }}</div>
+
+              <sc-if value="{{ refFuture }}" hint-placeholder-val="{{ false }}">
+                <div style="background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:28px 22px;text-align:center;box-shadow:var(--shadow-card);">
+                  <div style="font-family:var(--font-display);font-weight:700;font-size:17px;color:var(--color-text);">esse dia ainda não chegou.</div>
+                  <div style="font-size:14px;color:var(--color-text-secondary);margin-top:6px;">seu cardápio aparece quando o dia começar.</div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ refShowList }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;gap:12px;">
+                  <sc-for list="{{ meals }}" as="meal" hint-placeholder-count="4">
+                    <div onClick="{{ meal.onOpen }}" style="cursor:pointer;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow-card);opacity:{{ meal.opacity }};">
+                      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                          <span style="font-family:var(--font-data);font-weight:700;font-size:13px;color:var(--color-text-muted);">{{ meal.time }}</span>
+                          <span style="font-family:var(--font-display);font-weight:700;font-size:16px;letter-spacing:-0.02em;color:var(--color-text);">{{ meal.name }}</span>
+                        </div>
+                        <x-import component-from-global-scope="NTrkDesignSystem_f3965d.Badge" variant="{{ meal.badgeVariant }}" dot="{{ true }}" hint-size="auto,24px">{{ meal.statusLabel }}</x-import>
+                      </div>
+                      <div style="margin-top:10px;font-size:14px;line-height:1.55;color:var(--color-text-secondary);">{{ meal.items }}</div>
+                      <div style="margin-top:12px;display:flex;align-items:center;justify-content:space-between;">
+                        <span style="font-size:13px;font-weight:600;color:var(--color-orange);">{{ meal.cta }}</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- ══════════ DETALHE DA REFEIÇÃO ══════════ -->
+        <sc-if value="{{ isMealDetalhe }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 20px 40px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+              <button onClick="{{ goRefeicoes }}" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface-elevated);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div>
+                <div style="font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:-0.03em;color:var(--color-text);">{{ mealD.name }}</div>
+                <div style="font-family:var(--font-data);font-size:13px;color:var(--color-text-muted);">{{ mealD.time }}</div>
+              </div>
+            </div>
+
+            <div style="font-size:14px;line-height:1.55;color:var(--color-text-secondary);margin-bottom:18px;">{{ mealD.items }}</div>
+
+            <div style="font-size:13px;font-weight:600;color:var(--color-text-secondary);margin-bottom:8px;">uma foto, se quiser</div>
+            <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ mealD.photoId }}" shape="rounded" radius="14" placeholder="toque ou arraste uma foto" style="width:100%;height:176px;display:block;margin-bottom:22px;" hint-size="100%,176px"></x-import>
+
+            <div style="font-size:13px;font-weight:600;color:var(--color-text-secondary);margin-bottom:8px;">como foi?</div>
+            <div style="display:flex;gap:10px;margin-bottom:18px;">
+              <button onClick="{{ mealD.onFeito }}" style="{{ mealD.feitoStyle }}">feito</button>
+              <button onClick="{{ mealD.onPulei }}" style="{{ mealD.puleiStyle }}">pulei</button>
+            </div>
+
+            <sc-if value="{{ mealD.isFeito }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:13px;font-weight:600;color:var(--color-text-secondary);margin-bottom:8px;">seguiu o convite ou adaptou?</div>
+              <div style="display:flex;gap:10px;margin-bottom:16px;">
+                <button onClick="{{ mealD.onSegui }}" style="{{ mealD.seguiStyle }}">segui</button>
+                <button onClick="{{ mealD.onAdaptei }}" style="{{ mealD.adapteiStyle }}">adaptei</button>
+              </div>
+              <sc-if value="{{ mealD.isAdaptei }}" hint-placeholder-val="{{ false }}">
+                <textarea value="{{ mealD.note }}" onInput="{{ mealD.onNote }}" placeholder="o que você trocou?" style="width:100%;min-height:78px;border-radius:var(--radius-md);border:1px solid var(--color-border-strong);background:var(--color-surface);padding:12px 14px;font-family:var(--font-interface);font-size:14px;color:var(--color-text);outline:none;resize:none;box-sizing:border-box;margin-bottom:4px;"></textarea>
+              </sc-if>
+            </sc-if>
+
+            <sc-if value="{{ mealD.isPulei }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:13px;font-weight:600;color:var(--color-text-secondary);margin-bottom:8px;">o que rolou? <span style="font-weight:400;color:var(--color-text-muted);">sem julgamento</span></div>
+              <textarea value="{{ mealD.note }}" onInput="{{ mealD.onNote }}" placeholder="sem tempo, sem fome, comi outra coisa..." style="width:100%;min-height:78px;border-radius:var(--radius-md);border:1px solid var(--color-border-strong);background:var(--color-surface);padding:12px 14px;font-family:var(--font-interface);font-size:14px;color:var(--color-text);outline:none;resize:none;box-sizing:border-box;margin-bottom:4px;"></textarea>
+            </sc-if>
+
+            <button onClick="{{ mealD.onSave }}" style="margin-top:18px;width:100%;height:52px;border-radius:var(--radius-pill);border:none;background:var(--color-orange);color:#fff;font-family:var(--font-interface);font-weight:600;font-size:16px;cursor:pointer;box-shadow:0 4px 16px rgba(254,95,51,0.24);opacity:{{ mealD.saveOpacity }};">salvar</button>
+          </div>
+        </sc-if>
+
+        <!-- ══════════ DETALHE DO EXERCÍCIO ══════════ -->
+        <sc-if value="{{ isExDetalhe }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 20px 40px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+              <button onClick="{{ exD.onBack }}" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface-elevated);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div>
+                <div style="font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:-0.03em;color:var(--color-text);">{{ exD.name }}</div>
+                <div style="font-family:var(--font-data);font-size:13px;color:var(--color-text-muted);">{{ exD.target }}</div>
+              </div>
+            </div>
+
+            <div style="position:relative;width:100%;aspect-ratio:16/9;border-radius:var(--radius-lg);overflow:hidden;background:#15161a;display:flex;align-items:center;justify-content:center;margin-bottom:22px;box-shadow:var(--shadow-card);cursor:pointer;">
+              <div style="position:absolute;inset:0;background:var(--mesh-warm);opacity:0.55;"></div>
+              <div style="position:relative;width:58px;height:58px;border-radius:50%;background:var(--glass-bg-strong);backdrop-filter:var(--glass-blur);border:var(--glass-border-soft);display:flex;align-items:center;justify-content:center;box-shadow:var(--glass-shadow-lift);"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fe5f33" stroke="none"><polygon points="7 4 20 12 7 20 7 4"/></svg></div>
+              <div style="position:absolute;bottom:12px;left:14px;color:#fff;font-size:13px;font-weight:600;text-shadow:0 1px 4px rgba(27,28,29,0.3);">ver como fazer</div>
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+              <span style="font-size:14px;font-weight:600;color:var(--color-text-secondary);">marque cada série</span>
+              <span style="font-family:var(--font-data);font-size:12px;color:var(--color-text-muted);">sugestão: {{ exD.suggested }}</span>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:22px;">
+              <sc-for list="{{ exD.series }}" as="se" hint-placeholder-count="4">
+                <div style="display:flex;align-items:center;gap:10px;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:10px 12px;box-shadow:var(--shadow-sm);">
+                  <div onClick="{{ se.onDone }}" style="width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;background:{{ se.checkBg }};border:{{ se.checkBorder }};">
+                    <sc-if value="{{ se.done }}" hint-placeholder-val="{{ false }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></sc-if>
+                  </div>
+                  <span style="font-size:14px;font-weight:600;color:var(--color-text);width:58px;flex-shrink:0;">{{ se.label }}</span>
+                  <sc-if value="{{ se.noLoad }}" hint-placeholder-val="{{ false }}">
+                    <div style="flex:1;font-size:13px;font-weight:500;color:var(--color-text-muted);">sem carga</div>
+                  </sc-if>
+                  <sc-if value="{{ se.showInput }}" hint-placeholder-val="{{ true }}">
+                    <div style="flex:1;display:flex;align-items:center;gap:6px;">
+                      <input value="{{ se.load }}" onInput="{{ se.onLoad }}" inputmode="decimal" placeholder="carga" style="width:100%;min-width:0;height:38px;border-radius:var(--radius-md);border:1px solid var(--color-border-strong);background:var(--color-surface);padding:0 12px;font-family:var(--font-data);font-size:14px;color:var(--color-text);outline:none;box-sizing:border-box;"/>
+                      <span style="font-family:var(--font-data);font-size:13px;color:var(--color-text-muted);">kg</span>
+                    </div>
+                  </sc-if>
+                  <button onClick="{{ se.onToggleNoLoad }}" style="{{ se.noLoadBtnStyle }}">{{ se.noLoadLabel }}</button>
+                </div>
+              </sc-for>
+            </div>
+
+            <button onClick="{{ exD.onConclude }}" style="width:100%;height:52px;border-radius:var(--radius-pill);border:none;background:var(--color-orange);color:#fff;font-family:var(--font-interface);font-weight:600;font-size:16px;cursor:pointer;box-shadow:0 4px 16px rgba(254,95,51,0.24);">concluir exercício</button>
+          </div>
+        </sc-if>
+
+        <!-- ══════════ TREINO ══════════ -->
+        <sc-if value="{{ isTreino }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 20px 28px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+              <button onClick="{{ goHome }}" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface-elevated);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div>
+                <div style="font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:-0.03em;color:var(--color-text);">treino de hoje</div>
+                <div style="font-size:13px;color:var(--color-text-muted);">movimento como prazer, não obrigação.</div>
+              </div>
+            </div>
+
+            <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+              <div style="background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:32px 22px;text-align:center;box-shadow:var(--shadow-card);">
+                <div style="width:60px;height:60px;margin:0 auto;border-radius:50%;background:var(--mesh-warm);display:flex;align-items:center;justify-content:center;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6.5 6.5 11 11"/><path d="m21 21-1-1"/><path d="m3 3 1 1"/><path d="m18 22 4-4"/><path d="m2 6 4-4"/></svg></div>
+                <div style="font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--color-text);margin-top:14px;">sem treino montado ainda.</div>
+                <div style="font-size:14px;color:var(--color-text-secondary);margin-top:6px;line-height:1.5;">{{ treinoEmptyMsg }}</div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ notEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="position:relative;overflow:hidden;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow-card);margin-bottom:14px;">
+                <div style="position:absolute;top:-40px;right:-30px;width:120px;height:120px;background:var(--mesh-warm);filter:blur(24px);opacity:0.5;border-radius:50%;"></div>
+                <div style="position:relative;display:flex;align-items:center;justify-content:space-between;">
+                  <div>
+                    <div style="font-family:var(--font-display);font-weight:900;font-size:20px;letter-spacing:-0.02em;color:var(--color-text);">inferiores · força</div>
+                    <div style="display:flex;gap:6px;margin-top:8px;">
+                      <x-import component-from-global-scope="NTrkDesignSystem_f3965d.Tag" variant="warm" hint-size="auto,26px">~45 min</x-import>
+                      <x-import component-from-global-scope="NTrkDesignSystem_f3965d.Tag" variant="neutral" hint-size="auto,26px">5 exercícios</x-import>
+                    </div>
+                  </div>
+                  <div style="font-family:var(--font-data);font-weight:700;font-size:15px;color:var(--color-orange);">{{ treinoProgress }}</div>
+                </div>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <sc-for list="{{ exercises }}" as="ex" hint-placeholder-count="4">
+                  <div onClick="{{ ex.onOpen }}" style="cursor:pointer;display:flex;align-items:center;gap:12px;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:14px;box-shadow:var(--shadow-sm);">
+                    <div style="width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:{{ ex.checkBg }};border:{{ ex.checkBorder }};">
+                      <sc-if value="{{ ex.done }}" hint-placeholder-val="{{ false }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></sc-if>
+                    </div>
+                    <div style="flex:1;">
+                      <div style="font-weight:600;font-size:15px;color:var(--color-text);">{{ ex.name }}</div>
+                      <div style="font-family:var(--font-data);font-size:13px;color:var(--color-text-muted);margin-top:2px;">{{ ex.detail }}</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:5px;color:var(--color-text-muted);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg><span style="font-size:12px;font-weight:500;">vídeo</span></div>
+                  </div>
+                </sc-for>
+              </div>
+
+              <button onClick="{{ concludeTreino }}" style="margin-top:16px;width:100%;height:52px;border-radius:var(--radius-pill);border:none;background:var(--color-orange);color:#fff;font-family:var(--font-interface);font-weight:600;font-size:16px;cursor:pointer;box-shadow:0 4px 16px rgba(254,95,51,0.24);">{{ treinoBtnLabel }}</button>
+
+              <div onClick="{{ goTreinos }}" style="cursor:pointer;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;font-weight:600;color:var(--color-text-secondary);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3.5 9.5h17M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg> ver a semana toda</div>
+
+              <sc-if value="{{ showPro }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:14px;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;font-weight:600;color:var(--color-orange);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg> pedir troca de treino pro personal</div>
+              </sc-if>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- ══════════ ÁGUA ══════════ -->
+        <sc-if value="{{ isAgua }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 20px 28px;display:flex;flex-direction:column;min-height:640px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+              <button onClick="{{ goHome }}" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface-elevated);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div style="flex:1;">
+                <div style="font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:-0.03em;color:var(--color-text);">hidratação</div>
+                <div style="font-size:13px;color:var(--color-text-muted);">um gole de cada vez.</div>
+              </div>
+              <button onClick="{{ toggleWaterCfg }}" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--color-border);background:{{ waterCfgBtnBg }};display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{ waterCfgBtnColor }}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+            </div>
+
+            <sc-if value="{{ waterCfgOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow-card);margin-bottom:8px;">
+                <div style="font-size:13px;font-weight:600;color:var(--color-text-secondary);margin-bottom:10px;">quanto você quer beber por dia?</div>
+                <div style="display:flex;gap:8px;">
+                  <sc-for list="{{ waterGoals }}" as="g" hint-placeholder-count="4">
+                    <button onClick="{{ g.onPick }}" style="{{ g.style }}">{{ g.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;">
+              <div style="position:relative;width:200px;height:200px;">
+                <div style="position:absolute;inset:-20px;background:var(--mesh-mist);filter:blur(30px);opacity:0.4;border-radius:50%;"></div>
+                <svg width="200" height="200" viewBox="0 0 200 200" style="position:relative;transform:rotate(-90deg);">
+                  <circle cx="100" cy="100" r="86" fill="none" stroke="rgba(43,147,168,0.14)" stroke-width="16"/>
+                  <circle cx="100" cy="100" r="86" fill="none" stroke="url(#aguaGrad)" stroke-width="16" stroke-linecap="round" stroke-dasharray="{{ waterC }}" stroke-dashoffset="{{ waterOffset }}" style="transition:stroke-dashoffset .5s var(--ease-out);"/>
+                  <defs><linearGradient id="aguaGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#adf3f3"/><stop offset="100%" stop-color="#2b93a8"/></linearGradient></defs>
+                </svg>
+                <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                  <span style="font-family:var(--font-data);font-weight:900;font-size:44px;letter-spacing:-0.03em;color:var(--color-text);line-height:1;">{{ waterLiters }}</span>
+                  <span style="font-size:13px;color:var(--color-text-muted);margin-top:4px;">de {{ waterGoalLiters }}</span>
+                </div>
+              </div>
+              <div style="font-size:14px;font-weight:600;color:{{ waterMsgColor }};margin-top:8px;">{{ waterMsg }}</div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;">
+              <sc-for list="{{ waterOptions }}" as="o" hint-placeholder-count="5">
+                <button onClick="{{ o.onAdd }}" style="height:66px;border-radius:var(--radius-lg);border:1px solid var(--color-border-strong);background:var(--color-surface-elevated);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2b93a8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ o.iconPath }}"/></svg>
+                  <span style="font-size:12px;font-weight:600;color:var(--color-text-secondary);">{{ o.label }}</span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ══════════ MENTE — HUB ══════════ -->
+        <sc-if value="{{ isMenteHub }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 20px 28px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+              <button onClick="{{ goHome }}" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface-elevated);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div>
+                <div style="font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:-0.03em;color:var(--color-text);">mente</div>
+                <div style="font-size:13px;color:var(--color-text-muted);">uma pausa também é treino.</div>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:22px;">
+              <div onClick="{{ goHumor }}" style="cursor:pointer;position:relative;overflow:hidden;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow-card);display:flex;align-items:center;gap:14px;">
+                <div style="position:absolute;top:-30px;left:-20px;width:100px;height:100px;background:var(--mesh-fresh);filter:blur(22px);opacity:0.45;border-radius:50%;"></div>
+                <div style="position:relative;width:48px;height:48px;border-radius:var(--radius-md);background:rgba(173,183,247,0.24);display:flex;align-items:center;justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5a63c4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+                <div style="position:relative;flex:1;">
+                  <div style="font-family:var(--font-display);font-weight:700;font-size:17px;letter-spacing:-0.02em;color:var(--color-text);">registrar humor</div>
+                  <div style="font-size:13px;color:var(--color-text-muted);margin-top:2px;">{{ humorSub }}</div>
+                </div>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </div>
+              <div onClick="{{ goSono }}" style="cursor:pointer;position:relative;overflow:hidden;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow-card);display:flex;align-items:center;gap:14px;">
+                <div style="position:absolute;top:-30px;left:-20px;width:100px;height:100px;background:var(--mesh-cool);filter:blur(22px);opacity:0.4;border-radius:50%;"></div>
+                <div style="position:relative;width:48px;height:48px;border-radius:var(--radius-md);background:rgba(173,183,247,0.24);display:flex;align-items:center;justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5a63c4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg></div>
+                <div style="position:relative;flex:1;">
+                  <div style="font-family:var(--font-display);font-weight:700;font-size:17px;letter-spacing:-0.02em;color:var(--color-text);">registrar sono</div>
+                  <div style="font-size:13px;color:var(--color-text-muted);margin-top:2px;">como foi sua noite?</div>
+                </div>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </div>
+            </div>
+
+            <div style="font-size:14px;font-weight:600;color:var(--color-text-secondary);margin-bottom:12px;">respirar</div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <sc-for list="{{ presets }}" as="p" hint-placeholder-count="2">
+                <div onClick="{{ p.onStart }}" style="cursor:pointer;position:relative;overflow:hidden;border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow-card);background:{{ p.bg }};min-height:96px;display:flex;flex-direction:column;justify-content:space-between;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;">
+                    <div style="font-family:var(--font-display);font-weight:700;font-size:18px;letter-spacing:-0.02em;color:#fff;">{{ p.name }}</div>
+                    <div style="width:40px;height:40px;border-radius:50%;background:var(--glass-bg-tint);backdrop-filter:var(--glass-blur);border:var(--glass-border-soft);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" stroke="none"><polygon points="7 4 20 12 7 20 7 4"/></svg></div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.92);font-size:13px;font-weight:500;"><span>{{ p.duration }}</span><span style="opacity:0.6;">·</span><span>{{ p.goal }}</span></div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ══════════ HUMOR ══════════ -->
+        <sc-if value="{{ isHumor }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 20px 28px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px;">
+              <button onClick="{{ goMente }}" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface-elevated);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div style="font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:-0.03em;color:var(--color-text);">como você tá hoje?</div>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:26px;">
+              <sc-for list="{{ moods }}" as="m" hint-placeholder-count="5">
+                <div onClick="{{ m.onPick }}" style="cursor:pointer;flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;">
+                  <div style="width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:{{ m.bg }};border:{{ m.border }};transition:all .2s var(--ease-spring);transform:{{ m.scale }};">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="{{ m.stroke }}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="9" y1="9.5" x2="9.01" y2="9.5"/><line x1="15" y1="9.5" x2="15.01" y2="9.5"/><path d="{{ m.mouth }}"/></svg>
+                  </div>
+                  <span style="font-size:11px;font-weight:500;color:{{ m.labelColor }};">{{ m.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="font-size:14px;font-weight:600;color:var(--color-text-secondary);margin-bottom:10px;">o que pesou hoje?</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;">
+              <sc-for list="{{ moodTags }}" as="t" hint-placeholder-count="5">
+                <div onClick="{{ t.onToggle }}" style="cursor:pointer;height:34px;padding:0 14px;border-radius:var(--radius-pill);display:flex;align-items:center;font-size:13px;font-weight:500;background:{{ t.bg }};color:{{ t.color }};border:{{ t.border }};">{{ t.label }}</div>
+              </sc-for>
+            </div>
+
+            <button onClick="{{ saveMood }}" style="width:100%;height:52px;border-radius:var(--radius-pill);border:none;background:var(--color-orange);color:#fff;font-family:var(--font-interface);font-weight:600;font-size:16px;cursor:pointer;box-shadow:0 4px 16px rgba(254,95,51,0.24);opacity:{{ saveMoodOpacity }};">registrar</button>
+
+            <sc-if value="{{ moodSaved }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:18px;background:rgba(47,158,107,0.10);border:1px solid rgba(47,158,107,0.24);border-radius:var(--radius-md);padding:16px;display:flex;align-items:center;gap:12px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2f9e6b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span style="font-size:14px;color:#2f9e6b;font-weight:500;">registrado. obrigado por chegar até aqui hoje.</span>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- ══════════ DIA FECHADO ══════════ -->
+        <sc-if value="{{ isDiaFechado }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 20px 28px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+              <button onClick="{{ goHome }}" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface-elevated);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div style="font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:-0.03em;color:var(--color-text);">seu dia</div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+              <sc-for list="{{ dayItems }}" as="d" hint-placeholder-count="4">
+                <div style="display:flex;align-items:center;gap:12px;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:15px;box-shadow:var(--shadow-sm);">
+                  <div style="width:34px;height:34px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:{{ d.iconBg }};"><span style="font-size:16px;">{{ d.dummy }}</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{ d.iconStroke }}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;"><path d="{{ d.icon }}"/></svg>
+                  </div>
+                  <div style="flex:1;">
+                    <div style="font-weight:600;font-size:15px;color:var(--color-text);">{{ d.label }}</div>
+                    <div style="font-size:12px;color:var(--color-text-muted);">{{ d.status }}</div>
+                  </div>
+                  <sc-if value="{{ d.complete }}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2f9e6b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></sc-if>
+                  <sc-if value="{{ d.incomplete }}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-disabled)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg></sc-if>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="position:relative;overflow:hidden;border-radius:var(--radius-lg);padding:22px;background:var(--mesh-warm);box-shadow:var(--shadow-card);text-align:center;color:#fff;">
+              <div style="font-family:var(--font-display);font-weight:900;font-size:20px;letter-spacing:-0.02em;">{{ diaFechadoTitle }}</div>
+              <div style="font-size:14px;line-height:1.5;margin-top:8px;opacity:0.95;">{{ diaFechadoMsg }}</div>
+            </div>
+
+            <button onClick="{{ confirmDia }}" style="margin-top:16px;width:100%;height:52px;border-radius:var(--radius-pill);border:none;background:var(--color-orange);color:#fff;font-family:var(--font-interface);font-weight:600;font-size:16px;cursor:pointer;box-shadow:0 4px 16px rgba(254,95,51,0.24);">ver meu progresso</button>
+          </div>
+        </sc-if>
+
+        <!-- ══════════ STREAK ══════════ -->
+        <sc-if value="{{ isStreak }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 20px 28px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+              <button onClick="{{ goHome }}" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface-elevated);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div style="font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:-0.03em;color:var(--color-text);">sua consistência</div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;margin:12px 0 24px;">
+              <div style="position:relative;">
+                <div style="position:absolute;inset:-16px;background:var(--mesh-warm);filter:blur(28px);opacity:0.45;border-radius:50%;"></div>
+                <div style="position:relative;"><x-import component-from-global-scope="NTrkDesignSystem_f3965d.StreakRing" days="{{ streakDays }}" max="{{ 30 }}" size="{{ 180 }}" label="dias seguidos" hint-size="180px,180px"></x-import></div>
+              </div>
+              <div style="font-size:14px;color:var(--color-text-secondary);text-align:center;max-width:250px;margin-top:8px;">{{ streakMsg }}</div>
+            </div>
+
+            <div style="display:flex;gap:10px;margin-bottom:24px;">
+              <div style="flex:1;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:16px;box-shadow:var(--shadow-sm);"><x-import component-from-global-scope="NTrkDesignSystem_f3965d.Stat" value="{{ streakBest }}" unit="dias" label="melhor ofensiva" size="md" hint-size="auto,auto"></x-import></div>
+              <div style="flex:1;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:16px;box-shadow:var(--shadow-sm);"><x-import component-from-global-scope="NTrkDesignSystem_f3965d.Stat" value="{{ weeksCount }}" unit="sem" label="registrando" size="md" variant="warm" hint-size="auto,auto"></x-import></div>
+            </div>
+
+            <div style="display:flex;gap:8px;margin-bottom:14px;">
+              <div onClick="{{ setProgDia }}" style="{{ progDiaStyle }}">dia</div>
+              <div onClick="{{ setProgSemana }}" style="{{ progSemanaStyle }}">semana</div>
+              <div onClick="{{ setProgMes }}" style="{{ progMesStyle }}">mês</div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-size:14px;font-weight:600;color:var(--color-text-secondary);">{{ progRangeLabel }}</span>
+                <span style="font-size:12px;color:var(--color-text-muted);">{{ progRangeSub }}</span>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <sc-for list="{{ weekDots }}" as="d" hint-placeholder-count="7">
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;">
+                    <div style="width:100%;aspect-ratio:1;max-width:34px;border-radius:10px;background:{{ d.bg }};border:{{ d.border }};display:flex;align-items:center;justify-content:center;">
+                      <sc-if value="{{ d.on }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c67518" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></sc-if>
+                    </div>
+                    <span style="font-size:10px;color:var(--color-text-muted);text-transform:uppercase;">{{ d.letter }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+              <sc-for list="{{ weekMetrics }}" as="m" hint-placeholder-count="4">
+                <div style="background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:14px;box-shadow:var(--shadow-sm);">
+                  <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;"><span style="width:9px;height:9px;border-radius:3px;background:{{ m.accent }};"></span><span style="font-size:13px;color:var(--color-text-secondary);">{{ m.label }}</span></div>
+                  <div style="font-family:var(--font-data);font-weight:700;font-size:26px;color:{{ m.accent }};line-height:1;margin-bottom:8px;">{{ m.pct }}%</div>
+                  <div style="display:flex;gap:4px;">
+                    <sc-for list="{{ m.cells }}" as="c" hint-placeholder-count="7">
+                      <div style="flex:1;height:6px;border-radius:2px;background:{{ c.bg }};"></div>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="display:flex;gap:10px;margin-bottom:24px;">
+              <button onClick="{{ goEvolucao }}" style="flex:1;height:48px;border-radius:var(--radius-pill);border:1px solid var(--color-border-strong);background:var(--color-surface-elevated);color:var(--color-text);font-family:var(--font-interface);font-weight:600;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c67518" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg> evolução</button>
+              <button onClick="{{ goAvaliacao }}" style="flex:1;height:48px;border-radius:var(--radius-pill);border:1px solid var(--color-border-strong);background:var(--color-surface-elevated);color:var(--color-text);font-family:var(--font-interface);font-weight:600;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fe5f33" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg> check-in</button>
+            </div>
+
+            <div style="font-size:14px;font-weight:600;color:var(--color-text-secondary);margin-bottom:12px;">conquistas</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+              <sc-for list="{{ achievements }}" as="a" hint-placeholder-count="6">
+                <div style="background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:14px 8px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;opacity:{{ a.opacity }};">
+                  <div style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:{{ a.bg }};"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{ a.stroke }}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ a.icon }}"/></svg></div>
+                  <span style="font-size:11px;font-weight:500;color:var(--color-text-secondary);line-height:1.25;">{{ a.title }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ══════════ CADASTRO (onboarding) ══════════ -->
+        <sc-if value="{{ isCadastro }}" hint-placeholder-val="{{ false }}">
+          <div style="position:relative;padding:20px 24px 32px;min-height:760px;">
+            <div style="position:absolute;top:-30px;right:-50px;width:220px;height:220px;background:var(--mesh-warm);filter:blur(30px);opacity:0.5;border-radius:50%;pointer-events:none;"></div>
+            <div style="position:relative;display:flex;align-items:center;gap:12px;margin-bottom:22px;">
+              <button onClick="{{ reset }}" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface-elevated);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div>
+                <div style="font-family:var(--font-display);font-weight:900;font-size:24px;letter-spacing:-0.03em;color:var(--color-text);">vamos começar.</div>
+                <div style="font-size:13px;color:var(--color-text-muted);">só o essencial pra te conhecer.</div>
+              </div>
+            </div>
+
+            <div style="position:relative;font-size:14px;font-weight:600;color:var(--color-text-secondary);margin-bottom:8px;">como a gente te chama?</div>
+            <input value="{{ cadNome }}" onInput="{{ setCadNome }}" placeholder="seu nome" style="width:100%;box-sizing:border-box;height:52px;padding:0 16px;border-radius:var(--radius-md);border:1px solid var(--color-border-strong);background:var(--color-surface-elevated);font-family:var(--font-interface);font-size:16px;color:var(--color-text);outline:none;margin-bottom:22px;" />
+
+            <div style="font-size:14px;font-weight:600;color:var(--color-text-secondary);margin-bottom:10px;">o que te move agora?</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;">
+              <sc-for list="{{ cadObjetivos }}" as="o" hint-placeholder-count="4">
+                <div onClick="{{ o.onPick }}" style="cursor:pointer;height:40px;padding:0 16px;border-radius:var(--radius-pill);display:flex;align-items:center;font-size:14px;font-weight:500;background:{{ o.bg }};border:{{ o.border }};color:{{ o.color }};">{{ o.label }}</div>
+              </sc-for>
+            </div>
+
+            <div style="font-size:14px;font-weight:600;color:var(--color-text-secondary);margin-bottom:8px;">tem um código de convite? <span style="font-weight:400;color:var(--color-text-muted);">opcional</span></div>
+            <input value="{{ cadCodigo }}" onInput="{{ setCadCodigo }}" placeholder="NUTRK-XXXX" style="width:100%;box-sizing:border-box;height:52px;padding:0 16px;border-radius:var(--radius-md);border:1px solid var(--color-border-strong);background:var(--color-surface-elevated);font-family:var(--font-data);font-size:15px;letter-spacing:0.06em;color:var(--color-text);outline:none;margin-bottom:8px;" />
+            <div style="font-size:12px;color:var(--color-text-muted);margin-bottom:28px;">com um código, seu nutri ou personal já entra junto. sem código, você começa sozinho.</div>
+
+            <button onClick="{{ cadNext }}" style="width:100%;height:54px;border-radius:var(--radius-pill);border:none;background:var(--color-orange);color:#fff;font-family:var(--font-interface);font-weight:600;font-size:16px;cursor:pointer;box-shadow:0 4px 16px rgba(254,95,51,0.24);opacity:{{ cadNextOpacity }};">continuar</button>
+          </div>
+        </sc-if>
+
+        <!-- ══════════ ANAMNESE ══════════ -->
+        <sc-if value="{{ isAnamnese }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:20px 24px 32px;">
+            <sc-if value="{{ anSent }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:620px;gap:6px;">
+                <div style="width:76px;height:76px;border-radius:50%;background:var(--mesh-cool);display:flex;align-items:center;justify-content:center;animation:ntrkPop .5s var(--ease-spring) both;"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+                <div style="margin-top:20px;font-family:var(--font-display);font-weight:900;font-size:24px;letter-spacing:-0.03em;color:var(--color-text);">tudo pronto.</div>
+                <div style="margin-top:8px;font-size:15px;line-height:1.5;color:var(--color-text-secondary);max-width:280px;">a gente já sabe por onde começar com você. bem-vinda à Nūtrk.</div>
+                <button onClick="{{ finishOnboarding }}" style="margin-top:32px;height:54px;padding:0 40px;border-radius:var(--radius-pill);border:none;background:var(--color-orange);color:#fff;font-family:var(--font-interface);font-weight:600;font-size:16px;cursor:pointer;box-shadow:var(--shadow-elevated);">entrar no meu dia</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showAnamneseForm }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px;">
+                <button onClick="{{ goCadastro }}" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface-elevated);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+                <div>
+                  <div style="font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:-0.03em;color:var(--color-text);">como você chega.</div>
+                  <div style="font-size:13px;color:var(--color-text-muted);">sem certo ou errado. só pra entender seu momento.</div>
+                </div>
+              </div>
+
+              <div style="font-size:14px;font-weight:600;color:var(--color-text-secondary);margin-bottom:6px;">como você tá se sentindo hoje?</div>
+              <div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:8px;">
+                <sc-for list="{{ anBemFaces }}" as="f" hint-placeholder-count="5">
+                  <button onClick="{{ f.onPick }}" style="flex:1;aspect-ratio:1;max-width:56px;border-radius:50%;cursor:pointer;background:{{ f.bg }};border:{{ f.border }};display:flex;align-items:center;justify-content:center;transform:{{ f.scale }};transition:all .2s var(--ease-spring);padding:0;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="{{ f.stroke }}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="9" y1="9.5" x2="9.01" y2="9.5"/><line x1="15" y1="9.5" x2="15.01" y2="9.5"/><path d="{{ f.mouth }}"/></svg>
+                  </button>
+                </sc-for>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--color-text-muted);margin-bottom:20px;"><span>difícil</span><span>ótimo</span></div>
+
+              <div style="font-size:14px;font-weight:600;color:var(--color-text-secondary);margin-bottom:6px;">seu nível de energia essa semana</div>
+              <div style="display:flex;gap:6px;margin-bottom:8px;">
+                <sc-for list="{{ anEnergiaBar }}" as="c" hint-placeholder-count="5">
+                  <div onClick="{{ c.onPick }}" style="flex:1;height:22px;border-radius:7px;cursor:pointer;border:1px solid var(--color-border-strong);background:{{ c.bg }};transition:background .25s var(--ease-out);"></div>
+                </sc-for>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--color-text-muted);margin-bottom:20px;"><span>sem energia</span><span>cheia</span></div>
+
+              <div style="font-size:14px;font-weight:600;color:var(--color-text-secondary);margin-bottom:10px;">tem algo pesando? <span style="font-weight:400;color:var(--color-text-muted);">o que quiser marcar</span></div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;">
+                <sc-for list="{{ anSintomas }}" as="t" hint-placeholder-count="8">
+                  <div onClick="{{ t.onToggle }}" style="cursor:pointer;height:36px;padding:0 14px;border-radius:var(--radius-pill);display:flex;align-items:center;font-size:13px;font-weight:500;background:{{ t.bg }};border:{{ t.border }};color:{{ t.color }};">{{ t.label }}</div>
+                </sc-for>
+              </div>
+
+              <div style="font-size:14px;font-weight:600;color:var(--color-text-secondary);margin-bottom:6px;">como anda seu sono?</div>
+              <div style="display:flex;gap:8px;margin-bottom:22px;">
+                <sc-for list="{{ anSonoScale }}" as="n" hint-placeholder-count="5">
+                  <button onClick="{{ n.onPick }}" style="flex:1;height:46px;border-radius:var(--radius-md);cursor:pointer;background:{{ n.bg }};border:{{ n.border }};color:{{ n.color }};font-family:var(--font-data);font-size:15px;">{{ n.n }}</button>
+                </sc-for>
+              </div>
+
+              <div style="font-size:14px;font-weight:600;color:var(--color-text-secondary);margin-bottom:8px;">quer contar mais alguma coisa? <span style="font-weight:400;color:var(--color-text-muted);">opcional</span></div>
+              <textarea value="{{ anObs }}" onInput="{{ setAnObs }}" placeholder="qualquer coisa que ajude a gente a te acompanhar melhor..." style="width:100%;box-sizing:border-box;min-height:88px;padding:14px 16px;border-radius:var(--radius-md);border:1px solid var(--color-border-strong);background:var(--color-surface-elevated);font-family:var(--font-interface);font-size:14px;line-height:1.5;color:var(--color-text);outline:none;resize:none;margin-bottom:24px;"></textarea>
+
+              <button onClick="{{ sendAnamnese }}" style="width:100%;height:54px;border-radius:var(--radius-pill);border:none;background:var(--color-orange);color:#fff;font-family:var(--font-interface);font-weight:600;font-size:16px;cursor:pointer;box-shadow:0 4px 16px rgba(254,95,51,0.24);opacity:{{ anSendOpacity }};">enviar e continuar</button>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- ══════════ CONSULTAS ══════════ -->
+        <sc-if value="{{ isConsultas }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 20px 28px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+              <button onClick="{{ goPerfil }}" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface-elevated);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div>
+                <div style="font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:-0.03em;color:var(--color-text);">suas consultas</div>
+                <div style="font-size:13px;color:var(--color-text-muted);">o que vem pela frente.</div>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px;">
+              <sc-for list="{{ appts }}" as="a" hint-placeholder-count="4">
+                <div style="display:flex;align-items:center;gap:14px;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:14px 16px;box-shadow:var(--shadow-card);">
+                  <div style="width:50px;height:50px;border-radius:var(--radius-md);flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:{{ a.bg }};border:{{ a.border }};">
+                    <span style="font-family:var(--font-data);font-weight:700;font-size:16px;line-height:1;color:{{ a.accent }};">{{ a.d }}</span>
+                    <span style="font-size:9px;text-transform:uppercase;letter-spacing:0.06em;color:{{ a.accent }};">{{ a.mo }}</span>
+                  </div>
+                  <div style="flex:1;">
+                    <div style="font-weight:600;font-size:15px;color:var(--color-text);text-transform:capitalize;">{{ a.type }}</div>
+                    <div style="display:flex;gap:8px;align-items:center;margin-top:2px;">
+                      <span style="font-family:var(--font-data);font-size:13px;color:{{ a.accent }};">{{ a.time }}</span>
+                      <span style="font-size:12px;color:var(--color-text-muted);">{{ a.short }}</span>
+                    </div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:5px;height:26px;padding:0 10px;border-radius:var(--radius-pill);background:{{ a.soft }};border:{{ a.border }};">
+                    <span style="width:5px;height:5px;border-radius:50%;background:{{ a.accent }};"></span>
+                    <span style="font-size:11px;color:{{ a.accent }};">{{ a.roleLabel }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--mesh-cool);border-radius:var(--radius-lg);padding:14px 16px;box-shadow:var(--shadow-card);margin-bottom:16px;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3.5 9.5h17M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>
+                <div>
+                  <div style="font-weight:600;font-size:14px;color:#fff;">anamnese pendente</div>
+                  <div style="font-size:12px;color:rgba(255,255,255,0.85);">preencha antes do retorno de 18 jul.</div>
+                </div>
+              </div>
+              <button onClick="{{ goAnamnese }}" style="height:32px;padding:0 14px;border-radius:var(--radius-pill);border:none;background:#fff;color:#5a63c4;font-family:var(--font-interface);font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;">preencher</button>
+            </div>
+
+            <button onClick="{{ goAgendamento }}" style="width:100%;height:54px;border-radius:var(--radius-pill);border:none;background:var(--color-orange);color:#fff;font-family:var(--font-interface);font-weight:600;font-size:16px;cursor:pointer;box-shadow:0 4px 16px rgba(254,95,51,0.24);display:flex;align-items:center;justify-content:center;gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3.5 9.5h17M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM12 14v4M10 16h4"/></svg> solicitar agendamento</button>
+          </div>
+        </sc-if>
+
+        <!-- ══════════ AGENDAMENTO ══════════ -->
+        <sc-if value="{{ isAgendamento }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 20px 28px;">
+            <sc-if value="{{ agConfirmed }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:600px;gap:6px;">
+                <div style="width:76px;height:76px;border-radius:50%;background:var(--mesh-cool);display:flex;align-items:center;justify-content:center;animation:ntrkPop .5s var(--ease-spring) both;"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3.5 9.5h17M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="m9 15 2 2 4-4"/></svg></div>
+                <div style="margin-top:20px;font-family:var(--font-display);font-weight:900;font-size:23px;letter-spacing:-0.03em;color:var(--color-text);">solicitação enviada.</div>
+                <div style="margin-top:8px;font-size:15px;line-height:1.5;color:var(--color-text-secondary);max-width:280px;">{{ agProfName }} recebe seu pedido e confirma o horário com você.</div>
+                <button onClick="{{ goConsultas }}" style="margin-top:30px;height:52px;padding:0 36px;border-radius:var(--radius-pill);border:none;background:var(--color-orange);color:#fff;font-family:var(--font-interface);font-weight:600;font-size:16px;cursor:pointer;box-shadow:var(--shadow-elevated);">ver consultas</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ agFormVisible }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+                <button onClick="{{ goConsultas }}" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface-elevated);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+                <div style="font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:-0.03em;color:var(--color-text);">novo agendamento</div>
+              </div>
+
+              <div style="font-size:13px;font-weight:600;color:var(--color-text-secondary);margin-bottom:10px;">com quem?</div>
+              <div style="display:flex;gap:8px;margin-bottom:20px;">
+                <div onClick="{{ setAgNutri }}" style="{{ agNutriStyle }}">Camila · nutri</div>
+                <div onClick="{{ setAgPersonal }}" style="{{ agPersonalStyle }}">Rafa · personal</div>
+              </div>
+
+              <div style="font-size:13px;font-weight:600;color:var(--color-text-secondary);margin-bottom:10px;">tipo de consulta</div>
+              <div style="display:flex;gap:8px;margin-bottom:20px;">
+                <sc-for list="{{ agTypes }}" as="t" hint-placeholder-count="3">
+                  <div onClick="{{ t.onPick }}" style="{{ t.style }}"><span style="text-transform:capitalize;">{{ t.label }}</span></div>
+                </sc-for>
+              </div>
+
+              <div style="font-size:13px;font-weight:600;color:var(--color-text-secondary);margin-bottom:10px;">data</div>
+              <div class="ntrk-scroll" style="display:flex;gap:8px;overflow-x:auto;margin-bottom:20px;padding-bottom:2px;">
+                <sc-for list="{{ agDatesList }}" as="d" hint-placeholder-count="6">
+                  <div onClick="{{ d.onPick }}" style="flex-shrink:0;padding:10px 14px;border-radius:var(--radius-md);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;background:{{ d.cardBg }};border:{{ d.cardBorder }};">
+                    <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:{{ d.col }};">{{ d.wd }}</span>
+                    <span style="font-family:var(--font-data);font-size:19px;line-height:1;color:{{ d.col }};">{{ d.d }}</span>
+                    <span style="font-size:10px;color:var(--color-text-muted);">{{ d.mo }}</span>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div style="font-size:13px;font-weight:600;color:var(--color-text-secondary);margin-bottom:10px;">horário</div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px;">
+                <sc-for list="{{ agTimesList }}" as="t" hint-placeholder-count="7">
+                  <div onClick="{{ t.onPick }}" style="padding:10px 16px;border-radius:var(--radius-md);cursor:pointer;font-family:var(--font-data);font-size:14px;background:{{ t.cardBg }};border:{{ t.cardBorder }};color:{{ t.col }};">{{ t.label }}</div>
+                </sc-for>
+              </div>
+
+              <button onClick="{{ confirmAg }}" style="width:100%;height:54px;border-radius:var(--radius-pill);border:none;background:var(--color-orange);color:#fff;font-family:var(--font-interface);font-weight:600;font-size:16px;cursor:pointer;box-shadow:0 4px 16px rgba(254,95,51,0.24);opacity:{{ agConfirmOpacity }};">confirmar solicitação</button>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- ══════════ NOTIFICAÇÕES ══════════ -->
+        <sc-if value="{{ isNotificacoes }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 20px 28px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+              <button onClick="{{ goHome }}" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface-elevated);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div style="font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:-0.03em;color:var(--color-text);">novidades</div>
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:16px;">
+              <div style="display:flex;gap:8px;">
+                <div onClick="{{ setNotifTodas }}" style="{{ notifTodasStyle }}">todas</div>
+                <div onClick="{{ setNotifNutri }}" style="{{ notifNutriStyle }}">nutri</div>
+                <div onClick="{{ setNotifPersonal }}" style="{{ notifPersonalStyle }}">personal</div>
+              </div>
+              <sc-if value="{{ hasUnread }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ markAllRead }}" style="background:none;border:none;cursor:pointer;font-family:var(--font-interface);font-size:11px;color:var(--color-text-muted);">marcar lidas</button>
+              </sc-if>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <sc-for list="{{ notifs }}" as="n" hint-placeholder-count="6">
+                <div onClick="{{ n.onRead }}" style="display:flex;gap:12px;padding:13px 14px;border-radius:var(--radius-lg);cursor:pointer;background:{{ n.cardBg }};border:{{ n.cardBorder }};box-shadow:var(--shadow-sm);">
+                  <div style="width:38px;height:38px;border-radius:var(--radius-md);flex-shrink:0;display:flex;align-items:center;justify-content:center;background:{{ n.bg }};border:{{ n.border }};"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="{{ n.accent }}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{ n.iconPath }}"/></svg></div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+                      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                        <span style="font-size:13px;font-weight:{{ n.titleWeight }};color:var(--color-text);">{{ n.title }}</span>
+                        <span style="display:inline-flex;align-items:center;gap:3px;height:18px;padding:0 7px;border-radius:var(--radius-pill);background:{{ n.soft }};"><span style="width:4px;height:4px;border-radius:50%;background:{{ n.accent }};"></span><span style="font-size:10px;color:{{ n.accent }};">{{ n.roleLabel }}</span></span>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
+                        <span style="font-family:var(--font-data);font-size:10px;color:var(--color-text-muted);">{{ n.time }}</span>
+                        <sc-if value="{{ n.showDot }}" hint-placeholder-val="{{ false }}"><span style="width:6px;height:6px;border-radius:50%;background:{{ n.accent }};"></span></sc-if>
+                      </div>
+                    </div>
+                    <div style="font-size:12px;color:var(--color-text-secondary);margin-top:4px;line-height:1.45;">{{ n.body }}</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ══════════ PERFIL ══════════ -->
+        <sc-if value="{{ isPerfil }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 20px 28px;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:22px;">
+              <div style="width:80px;height:80px;border-radius:50%;background:var(--mesh-warm);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:900;font-size:30px;color:#fff;box-shadow:var(--shadow-card);">M</div>
+              <div style="text-align:center;">
+                <div style="font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:-0.03em;color:var(--color-text);">Marina Alves</div>
+                <div style="font-size:13px;color:var(--color-text-muted);margin-top:2px;">na Nūtrk desde fev 2025</div>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:22px;">
+              <div style="position:relative;"><x-import component-from-global-scope="NTrkDesignSystem_f3965d.StreakRing" days="{{ streakDays }}" max="{{ 30 }}" size="{{ 96 }}" label="dias" hint-size="96px,96px"></x-import></div>
+            </div>
+
+            <div style="font-size:14px;font-weight:600;color:var(--color-text-secondary);margin-bottom:12px;">quem cuida de você</div>
+            <div style="background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:6px;box-shadow:var(--shadow-card);margin-bottom:16px;">
+              <div onClick="{{ openProfNutri }}" style="cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 12px;">
+                <div style="width:44px;height:44px;border-radius:50%;background:var(--mesh-cool);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-display);font-weight:700;font-size:17px;">C</div>
+                <div style="flex:1;">
+                  <div style="font-weight:600;font-size:15px;color:var(--color-text);">Dra. Camila Reis</div>
+                  <div style="font-size:12px;color:#5a63c4;">nutricionista</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:5px;height:24px;padding:0 10px;border-radius:var(--radius-pill);background:rgba(173,183,247,0.18);"><span style="width:5px;height:5px;border-radius:50%;background:#5a63c4;"></span><span style="font-size:11px;color:#5a63c4;">ativo</span></div>
+                <button onClick="{{ openChatNutriEv }}" style="width:34px;height:34px;border-radius:50%;border:1px solid var(--color-border-strong);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5a63c4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
+              </div>
+              <div style="height:1px;background:var(--color-border);margin:0 12px;"></div>
+              <div onClick="{{ openProfPersonal }}" style="cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 12px;">
+                <div style="width:44px;height:44px;border-radius:50%;background:var(--mesh-warm);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-display);font-weight:700;font-size:17px;">R</div>
+                <div style="flex:1;">
+                  <div style="font-weight:600;font-size:15px;color:var(--color-text);">Rafa Nunes</div>
+                  <div style="font-size:12px;color:#c67518;">personal</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:5px;height:24px;padding:0 10px;border-radius:var(--radius-pill);background:rgba(254,175,76,0.18);"><span style="width:5px;height:5px;border-radius:50%;background:#c67518;"></span><span style="font-size:11px;color:#c67518;">ativo</span></div>
+                <button onClick="{{ openChatPersonalEv }}" style="width:34px;height:34px;border-radius:50%;border:1px solid var(--color-border-strong);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c67518" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+              <div onClick="{{ goConsultas }}" style="cursor:pointer;display:flex;align-items:center;gap:12px;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:14px 16px;box-shadow:var(--shadow-sm);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3.5 9.5h17M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>
+                <span style="flex:1;font-weight:500;font-size:15px;color:var(--color-text);">consultas e agenda</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </div>
+              <div onClick="{{ goNotificacoes }}" style="cursor:pointer;display:flex;align-items:center;gap:12px;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:14px 16px;box-shadow:var(--shadow-sm);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+                <span style="flex:1;font-weight:500;font-size:15px;color:var(--color-text);">notificações</span>
+                <sc-if value="{{ hasUnread }}" hint-placeholder-val="{{ false }}"><span style="min-width:20px;height:20px;padding:0 6px;border-radius:99px;background:var(--color-orange);color:#fff;font-family:var(--font-data);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;">{{ notifUnread }}</span></sc-if>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </div>
+            </div>
+
+            <button onClick="{{ reset }}" style="width:100%;height:50px;border-radius:var(--radius-pill);border:1px solid rgba(239,68,68,0.25);background:rgba(239,68,68,0.06);color:#ef4444;font-family:var(--font-interface);font-weight:600;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg> sair da conta</button>
+          </div>
+        </sc-if>
+
+        <!-- ══════════ DETALHE DO PROFISSIONAL ══════════ -->
+        <sc-if value="{{ isProfDetalhe }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:0 0 28px;">
+            <div style="position:relative;height:150px;background:{{ apMesh }};overflow:hidden;">
+              <button onClick="{{ goPerfil }}" style="position:absolute;top:16px;left:16px;z-index:2;width:38px;height:38px;border-radius:50%;border:var(--glass-border-soft);background:var(--glass-bg-tint);backdrop-filter:var(--glass-blur);display:flex;align-items:center;justify-content:center;cursor:pointer;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div style="position:absolute;left:20px;bottom:-30px;width:64px;height:64px;border-radius:50%;background:{{ apBg }};border:3px solid var(--color-surface-elevated);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:900;font-size:24px;color:{{ apAccent }};box-shadow:var(--shadow-card);">{{ apInitial }}</div>
+            </div>
+            <div style="padding:44px 20px 0;">
+              <div style="font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:-0.03em;color:var(--color-text);">{{ apName }}</div>
+              <div style="font-size:13px;color:{{ apAccent }};margin-top:2px;text-transform:capitalize;">{{ apRole }}</div>
+              <div style="font-family:var(--font-data);font-size:12px;color:var(--color-text-muted);margin-top:2px;">{{ apReg }}</div>
+
+              <div style="background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow-card);margin-top:18px;">
+                <div style="font-size:12px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--color-text-muted);margin-bottom:8px;">sobre</div>
+                <div style="font-size:14px;line-height:1.55;color:var(--color-text-secondary);">{{ apBio }}</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;">
+                  <sc-for list="{{ apTags }}" as="t" hint-placeholder-count="3">
+                    <div style="height:26px;padding:0 12px;border-radius:var(--radius-pill);background:{{ apSoft }};display:flex;align-items:center;font-size:11px;color:{{ apAccent }};">{{ t.label }}</div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <div style="background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow-card);margin-top:12px;">
+                <div style="font-size:12px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--color-text-muted);margin-bottom:12px;">contato</div>
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;"><div style="width:34px;height:34px;border-radius:var(--radius-md);background:{{ apSoft }};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ apAccent }}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div><span style="font-size:13px;color:var(--color-text-secondary);">{{ apClinic }}</span></div>
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;"><div style="width:34px;height:34px;border-radius:var(--radius-md);background:{{ apSoft }};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ apAccent }}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.4 2.1L8 9.6a16 16 0 0 0 6 6l1.2-1.3a2 2 0 0 1 2.1-.4c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2z"/></svg></div><span style="font-family:var(--font-data);font-size:13px;color:var(--color-text-secondary);">{{ apPhone }}</span></div>
+                <div style="display:flex;align-items:center;gap:12px;"><div style="width:34px;height:34px;border-radius:var(--radius-md);background:{{ apSoft }};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ apAccent }}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></div><span style="font-size:13px;color:var(--color-text-secondary);">{{ apEmail }}</span></div>
+              </div>
+
+              <div style="display:flex;align-items:center;justify-content:space-between;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:14px 16px;box-shadow:var(--shadow-card);margin-top:12px;">
+                <div>
+                  <div style="font-size:11px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--color-text-muted);">código de convite</div>
+                  <div style="font-family:var(--font-data);font-size:16px;letter-spacing:0.06em;color:var(--color-text);margin-top:3px;">{{ apCode }}</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:5px;height:30px;padding:0 12px;border-radius:var(--radius-pill);background:{{ apSoft }};cursor:pointer;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="{{ apAccent }}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span style="font-size:12px;color:{{ apAccent }};">copiar</span></div>
+              </div>
+
+              <button onClick="{{ openChatActive }}" style="width:100%;height:54px;border-radius:var(--radius-pill);border:none;background:var(--color-orange);color:#fff;font-family:var(--font-interface);font-weight:600;font-size:16px;cursor:pointer;box-shadow:0 4px 16px rgba(254,95,51,0.24);margin-top:18px;display:flex;align-items:center;justify-content:center;gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> conversar</button>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ══════════ EVOLUÇÃO ══════════ -->
+        <sc-if value="{{ isEvolucao }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 20px 28px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+              <button onClick="{{ goStreakScreen }}" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface-elevated);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div>
+                <div style="font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:-0.03em;color:var(--color-text);">sua evolução</div>
+                <div style="font-size:13px;color:var(--color-text-muted);">cada quadradinho é um dia que você apareceu.</div>
+              </div>
+            </div>
+
+            <div style="background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:16px 14px;box-shadow:var(--shadow-card);margin-bottom:14px;">
+              <div style="font-size:13px;font-weight:600;color:var(--color-text-secondary);margin-bottom:12px;">consistência no ano</div>
+              {{ heatEl }}
+              <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:8px;">
+                <span style="font-family:var(--font-data);font-size:10px;color:var(--color-text-muted);">menos</span>
+                <span style="width:11px;height:11px;border-radius:3px;background:rgba(27,28,29,0.05);"></span>
+                <span style="width:11px;height:11px;border-radius:3px;background:rgba(254,175,76,0.38);"></span>
+                <span style="width:11px;height:11px;border-radius:3px;background:rgba(254,143,60,0.62);"></span>
+                <span style="width:11px;height:11px;border-radius:3px;background:rgba(254,95,51,0.92);"></span>
+                <span style="font-family:var(--font-data);font-size:10px;color:var(--color-text-muted);">mais</span>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+              <sc-for list="{{ evoGoals }}" as="g" hint-placeholder-count="4">
+                <div style="background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:13px 14px;box-shadow:var(--shadow-sm);">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><span style="font-size:11px;color:var(--color-text-muted);">{{ g.label }}</span><span style="font-family:var(--font-data);font-size:13px;color:{{ g.accent }};">{{ g.pct }}%</span></div>
+                  <div style="height:4px;border-radius:99px;background:var(--color-surface);overflow:hidden;"><div style="height:100%;border-radius:99px;background:{{ g.accent }};width:{{ g.pct }}%;"></div></div>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow-card);">
+              <div style="font-size:13px;font-weight:600;color:var(--color-text-secondary);margin-bottom:14px;">constância nas últimas semanas</div>
+              {{ barsEl }}
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ══════════ CHECK-IN DE BEM-ESTAR ══════════ -->
+        <sc-if value="{{ isAvaliacao }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 20px 28px;">
+            <sc-if value="{{ avSaved }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:600px;gap:6px;">
+                <div style="width:76px;height:76px;border-radius:50%;background:var(--mesh-warm);display:flex;align-items:center;justify-content:center;animation:ntrkPop .5s var(--ease-spring) both;"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+                <div style="margin-top:20px;font-family:var(--font-display);font-weight:900;font-size:23px;letter-spacing:-0.03em;color:var(--color-text);">registrado.</div>
+                <div style="margin-top:8px;font-size:15px;line-height:1.5;color:var(--color-text-secondary);max-width:280px;">seu check-in vai pro Rafa e pra Camila. é assim que a gente acompanha você de perto.</div>
+                <button onClick="{{ goStreakScreen }}" style="margin-top:30px;height:52px;padding:0 36px;border-radius:var(--radius-pill);border:none;background:var(--color-orange);color:#fff;font-family:var(--font-interface);font-weight:600;font-size:16px;cursor:pointer;box-shadow:var(--shadow-elevated);">voltar</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ avFormVisible }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+                <button onClick="{{ goStreakScreen }}" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface-elevated);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+                <div>
+                  <div style="font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:-0.03em;color:var(--color-text);">check-in do mês</div>
+                  <div style="font-size:13px;color:var(--color-text-muted);">como o corpo tá respondendo — sem balança.</div>
+                </div>
+              </div>
+
+              <div style="font-size:14px;font-weight:600;color:var(--color-text-secondary);margin-bottom:8px;">como você tá se sentindo no corpo?</div>
+              <div style="display:flex;gap:8px;margin-bottom:8px;">
+                <sc-for list="{{ avSensacao }}" as="n" hint-placeholder-count="5">
+                  <button onClick="{{ n.onPick }}" style="flex:1;height:46px;border-radius:var(--radius-md);cursor:pointer;background:{{ n.bg }};border:{{ n.border }};color:{{ n.color }};font-family:var(--font-data);font-size:15px;">{{ n.n }}</button>
+                </sc-for>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--color-text-muted);margin-bottom:20px;"><span>travado</span><span>leve</span></div>
+
+              <div style="font-size:14px;font-weight:600;color:var(--color-text-secondary);margin-bottom:8px;">sua energia no dia a dia</div>
+              <div style="display:flex;gap:8px;margin-bottom:8px;">
+                <sc-for list="{{ avEnergia }}" as="n" hint-placeholder-count="5">
+                  <button onClick="{{ n.onPick }}" style="flex:1;height:46px;border-radius:var(--radius-md);cursor:pointer;background:{{ n.bg }};border:{{ n.border }};color:{{ n.color }};font-family:var(--font-data);font-size:15px;">{{ n.n }}</button>
+                </sc-for>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--color-text-muted);margin-bottom:22px;"><span>baixa</span><span>alta</span></div>
+
+              <div style="font-size:14px;font-weight:600;color:var(--color-text-secondary);margin-bottom:10px;">e a roupa, como tá caindo?</div>
+              <div style="display:flex;gap:8px;margin-bottom:26px;">
+                <sc-for list="{{ avRoupaOpts }}" as="o" hint-placeholder-count="3">
+                  <div onClick="{{ o.onPick }}" style="flex:1;height:46px;border-radius:var(--radius-md);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;background:{{ o.bg }};border:{{ o.border }};color:{{ o.color }};">{{ o.label }}</div>
+                </sc-for>
+              </div>
+
+              <button onClick="{{ saveAval }}" style="width:100%;height:54px;border-radius:var(--radius-pill);border:none;background:var(--color-orange);color:#fff;font-family:var(--font-interface);font-weight:600;font-size:16px;cursor:pointer;box-shadow:0 4px 16px rgba(254,95,51,0.24);opacity:{{ avSaveOpacity }};">salvar check-in</button>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- ══════════ TODOS OS TREINOS ══════════ -->
+        <sc-if value="{{ isTreinos }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 20px 28px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+              <button onClick="{{ goHome }}" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface-elevated);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <div>
+                <div style="font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:-0.03em;color:var(--color-text);">sua semana de treino</div>
+                <div style="font-size:13px;color:var(--color-text-muted);">montada pelo Rafa, no seu ritmo.</div>
+              </div>
+            </div>
+
+            <div class="ntrk-scroll" style="display:flex;gap:8px;overflow-x:auto;margin-bottom:16px;padding-bottom:2px;">
+              <sc-for list="{{ splitTabs }}" as="w" hint-placeholder-count="7">
+                <div onClick="{{ w.onPick }}" style="flex-shrink:0;min-width:48px;padding:10px 6px;border-radius:var(--radius-md);cursor:pointer;text-align:center;position:relative;background:{{ w.cardBg }};border:{{ w.cardBorder }};">
+                  <span style="font-family:var(--font-data);font-size:13px;color:{{ w.col }};text-transform:uppercase;">{{ w.day }}</span>
+                </div>
+              </sc-for>
+            </div>
+
+            <sc-if value="{{ selDayRest }}" hint-placeholder-val="{{ false }}">
+              <div style="background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:36px 22px;text-align:center;box-shadow:var(--shadow-card);">
+                <div style="width:60px;height:60px;margin:0 auto;border-radius:50%;background:var(--mesh-fresh);display:flex;align-items:center;justify-content:center;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg></div>
+                <div style="font-family:var(--font-display);font-weight:700;font-size:19px;color:var(--color-text);margin-top:16px;">dia de descanso.</div>
+                <div style="font-size:14px;color:var(--color-text-secondary);margin-top:6px;line-height:1.5;">descanso também é treino. o corpo se constrói na pausa.</div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ selDayNotRest }}" hint-placeholder-val="{{ true }}">
+              <div style="position:relative;overflow:hidden;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow-card);margin-bottom:12px;">
+                <div style="position:absolute;top:-40px;right:-30px;width:120px;height:120px;background:var(--mesh-warm);filter:blur(24px);opacity:0.5;border-radius:50%;"></div>
+                <div style="position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                  <div>
+                    <div style="font-family:var(--font-display);font-weight:900;font-size:20px;letter-spacing:-0.02em;color:var(--color-text);">{{ selDayName }}</div>
+                    <div style="display:flex;gap:6px;margin-top:8px;">
+                      <sc-for list="{{ selDayTags }}" as="t" hint-placeholder-count="2">
+                        <x-import component-from-global-scope="NTrkDesignSystem_f3965d.Tag" variant="warm" hint-size="auto,26px">{{ t.label }}</x-import>
+                      </sc-for>
+                    </div>
+                  </div>
+                  <sc-if value="{{ selDayIsToday }}" hint-placeholder-val="{{ false }}"><div style="height:28px;padding:0 12px;border-radius:var(--radius-pill);background:var(--color-orange);color:#fff;font-family:var(--font-data);font-size:12px;font-weight:700;display:flex;align-items:center;">hoje</div></sc-if>
+                </div>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <sc-for list="{{ selDayEx }}" as="ex" hint-placeholder-count="4">
+                  <div onClick="{{ ex.onOpen }}" style="cursor:pointer;display:flex;align-items:center;gap:12px;background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:14px;box-shadow:var(--shadow-sm);">
+                    <div style="width:8px;height:8px;border-radius:50%;background:var(--color-orange-dim);flex-shrink:0;"></div>
+                    <div style="flex:1;">
+                      <div style="font-weight:600;font-size:15px;color:var(--color-text);">{{ ex.name }}</div>
+                      <div style="font-family:var(--font-data);font-size:13px;color:var(--color-text-muted);margin-top:2px;">{{ ex.detail }}</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:5px;color:var(--color-text-muted);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg><span style="font-size:12px;font-weight:500;">vídeo</span></div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- ══════════ SONO ══════════ -->
+        <sc-if value="{{ isSono }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 20px 28px;">
+            <sc-if value="{{ sonoSaved }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:600px;gap:6px;">
+                <div style="width:76px;height:76px;border-radius:50%;background:var(--mesh-fresh);display:flex;align-items:center;justify-content:center;animation:ntrkPop .5s var(--ease-spring) both;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg></div>
+                <div style="margin-top:20px;font-family:var(--font-display);font-weight:900;font-size:23px;letter-spacing:-0.03em;color:var(--color-text);">registrado.</div>
+                <div style="display:flex;gap:20px;margin-top:16px;">
+                  <div style="text-align:center;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-text-muted);">sono</div><div style="font-family:var(--font-data);font-size:22px;color:#5a63c4;margin-top:3px;">{{ sonoHLabel }}</div></div>
+                  <div style="text-align:center;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-text-muted);">qualidade</div><div style="font-family:var(--font-data);font-size:22px;color:#5a63c4;margin-top:3px;">{{ sonoQLabel }}</div></div>
+                  <div style="text-align:center;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-text-muted);">humor</div><div style="font-family:var(--font-data);font-size:22px;color:#5a63c4;margin-top:3px;">{{ sonoHumorLabel }}</div></div>
+                </div>
+                <button onClick="{{ goMente }}" style="margin-top:30px;height:52px;padding:0 36px;border-radius:var(--radius-pill);border:none;background:var(--color-orange);color:#fff;font-family:var(--font-interface);font-weight:600;font-size:16px;cursor:pointer;box-shadow:var(--shadow-elevated);">voltar</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ sonoFormVisible }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+                <button onClick="{{ goMente }}" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface-elevated);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+                <div>
+                  <div style="font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:-0.03em;color:var(--color-text);">seu sono</div>
+                  <div style="font-size:13px;color:var(--color-text-muted);">descanso é onde a evolução acontece.</div>
+                </div>
+              </div>
+
+              <div style="background:var(--color-surface-elevated);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:22px;box-shadow:var(--shadow-card);margin-bottom:16px;text-align:center;">
+                <div style="font-size:14px;font-weight:600;color:var(--color-text-secondary);margin-bottom:16px;">quanto você dormiu?</div>
+                <div style="display:flex;align-items:center;justify-content:center;gap:20px;">
+                  <button onClick="{{ decSonoH }}" style="width:44px;height:44px;border-radius:50%;border:1px solid var(--color-border-strong);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg></button>
+                  <div><span style="font-family:var(--font-data);font-weight:900;font-size:48px;letter-spacing:-0.03em;color:var(--color-text);line-height:1;">{{ sonoH }}</span><span style="font-size:16px;color:var(--color-text-muted);margin-left:4px;">h</span></div>
+                  <button onClick="{{ incSonoH }}" style="width:44px;height:44px;border-radius:50%;border:1px solid rgba(173,183,247,0.4);background:rgba(173,183,247,0.18);display:flex;align-items:center;justify-content:center;cursor:pointer;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5a63c4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button>
+                </div>
+              </div>
+
+              <div style="font-size:14px;font-weight:600;color:var(--color-text-secondary);margin-bottom:8px;">como foi a qualidade?</div>
+              <div style="display:flex;gap:8px;margin-bottom:22px;">
+                <sc-for list="{{ sonoQScale }}" as="n" hint-placeholder-count="5">
+                  <button onClick="{{ n.onPick }}" style="flex:1;height:46px;border-radius:var(--radius-md);cursor:pointer;background:{{ n.bg }};border:{{ n.border }};color:{{ n.color }};font-family:var(--font-data);font-size:15px;">{{ n.n }}</button>
+                </sc-for>
+              </div>
+
+              <div style="font-size:14px;font-weight:600;color:var(--color-text-secondary);margin-bottom:8px;">e o humor ao acordar?</div>
+              <div style="display:flex;gap:8px;margin-bottom:26px;">
+                <sc-for list="{{ sonoHumorScale }}" as="n" hint-placeholder-count="5">
+                  <button onClick="{{ n.onPick }}" style="flex:1;height:46px;border-radius:var(--radius-md);cursor:pointer;background:{{ n.bg }};border:{{ n.border }};color:{{ n.color }};font-family:var(--font-data);font-size:15px;">{{ n.n }}</button>
+                </sc-for>
+              </div>
+
+              <button onClick="{{ saveSono }}" style="width:100%;height:54px;border-radius:var(--radius-pill);border:none;background:var(--color-orange);color:#fff;font-family:var(--font-interface);font-weight:600;font-size:16px;cursor:pointer;box-shadow:0 4px 16px rgba(254,95,51,0.24);opacity:{{ sonoSaveOpacity }};">salvar registro</button>
+            </sc-if>
+          </div>
+        </sc-if>
+
+      </div>
+
+      <!-- ══════════ CHAT (overlay) ══════════ -->
+      <sc-if value="{{ isChat }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;z-index:55;background:var(--gradient-canvas);display:flex;flex-direction:column;">
+          <div style="height:50px;flex-shrink:0;"></div>
+          <div style="flex-shrink:0;display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--color-border);background:var(--glass-bg-strong);backdrop-filter:var(--glass-blur);">
+            <button onClick="{{ goHome }}" style="width:36px;height:36px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface-elevated);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <div style="width:40px;height:40px;border-radius:50%;background:{{ apMesh }};display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-display);font-weight:700;font-size:16px;flex-shrink:0;">{{ apInitial }}</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:600;font-size:15px;color:var(--color-text);">{{ apName }}</div>
+              <div style="display:flex;align-items:center;gap:5px;"><span style="width:6px;height:6px;border-radius:50%;background:#2f9e6b;"></span><span style="font-size:12px;color:var(--color-text-muted);text-transform:capitalize;">{{ apRole }} · online</span></div>
+            </div>
+          </div>
+
+          <div class="ntrk-scroll" style="flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px;">
+            <sc-for list="{{ chatMsgs }}" as="m" hint-placeholder-count="4">
+              <div style="display:flex;flex-direction:column;align-items:{{ m.rowJustify }};">
+                <div style="max-width:80%;padding:11px 14px;border-radius:{{ m.bubbleRadius }};background:{{ m.bubbleBg }};border:{{ m.bubbleBorder }};">
+                  <div style="font-size:14px;line-height:1.45;color:var(--color-text);">{{ m.text }}</div>
+                </div>
+                <span style="font-family:var(--font-data);font-size:10px;color:var(--color-text-muted);margin-top:4px;padding:0 4px;">{{ m.time }}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="flex-shrink:0;display:flex;align-items:center;gap:10px;padding:12px 16px 20px;border-top:1px solid var(--color-border);background:var(--glass-bg-strong);backdrop-filter:var(--glass-blur);">
+            <input value="{{ chatDraft }}" onInput="{{ setChatDraft }}" placeholder="escreva pra {{ apShort }}..." style="flex:1;height:46px;padding:0 18px;border-radius:var(--radius-pill);border:1px solid var(--color-border-strong);background:var(--color-surface-elevated);font-family:var(--font-interface);font-size:14px;color:var(--color-text);outline:none;" />
+            <button onClick="{{ sendChat }}" style="width:46px;height:46px;border-radius:50%;border:none;background:var(--color-orange);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 2px 8px rgba(254,95,51,0.24);"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg></button>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ══════════ RESPIRAÇÃO (overlay imersivo) ══════════ -->
+      <sc-if value="{{ isBreathing }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;z-index:60;background:var(--mesh-fresh);display:flex;flex-direction:column;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;right:0;height:60px;display:flex;align-items:center;justify-content:space-between;padding:44px 22px 0;z-index:3;">
+            <button onClick="{{ stopBreath }}" style="width:40px;height:40px;border-radius:50%;border:var(--glass-border-soft);background:var(--glass-bg-tint);backdrop-filter:var(--glass-blur);display:flex;align-items:center;justify-content:center;cursor:pointer;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            <div style="font-family:var(--font-data);font-weight:700;font-size:15px;color:#fff;background:var(--glass-bg-tint);backdrop-filter:var(--glass-blur);border:var(--glass-border-soft);border-radius:var(--radius-pill);padding:8px 16px;">{{ breathTime }}</div>
+          </div>
+
+          <sc-if value="{{ breathActive }}" hint-placeholder-val="{{ true }}">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;position:relative;">
+              <div style="position:relative;width:280px;height:280px;display:flex;align-items:center;justify-content:center;">
+                <div style="position:absolute;width:280px;height:280px;border-radius:50%;border:1px solid rgba(255,255,255,0.35);"></div>
+                <div style="width:200px;height:200px;border-radius:50%;background:var(--glass-bg-strong);backdrop-filter:var(--glass-blur-strong);box-shadow:var(--glass-shadow-lift);display:flex;align-items:center;justify-content:center;transform:scale({{ breathScale }});transition:transform {{ breathTrans }} var(--ease-out);">
+                  <span style="font-family:var(--font-display);font-weight:700;font-size:24px;letter-spacing:-0.02em;color:var(--color-text);">{{ breathPhase }}</span>
+                </div>
+              </div>
+              <div style="margin-top:44px;font-size:15px;color:#fff;font-weight:500;text-shadow:0 1px 4px rgba(27,28,29,0.15);">{{ breathHint }}</div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ breathDone }}" hint-placeholder-val="{{ false }}">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:0 30px;">
+              <div style="width:110px;height:110px;border-radius:50%;background:var(--glass-bg-strong);backdrop-filter:var(--glass-blur-strong);box-shadow:var(--glass-shadow-lift);display:flex;align-items:center;justify-content:center;animation:ntrkPop .5s var(--ease-spring) both;">
+                <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#fe5f33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </div>
+              <div style="margin-top:28px;font-family:var(--font-display);font-weight:900;font-size:26px;letter-spacing:-0.03em;color:#fff;text-align:center;text-shadow:0 1px 6px rgba(27,28,29,0.18);">respiração concluída.</div>
+              <div style="margin-top:10px;font-size:15px;line-height:1.5;color:#fff;text-align:center;opacity:0.95;">você cuidou da sua mente hoje. isso conta pra sua ofensiva.</div>
+              <button onClick="{{ stopBreath }}" style="margin-top:32px;height:52px;padding:0 40px;border-radius:var(--radius-pill);border:none;background:#fff;color:var(--color-orange);font-family:var(--font-interface);font-weight:700;font-size:16px;cursor:pointer;box-shadow:var(--shadow-elevated);">voltar</button>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- ══════════ NAV INFERIOR ══════════ -->
+      <sc-if value="{{ showNav }}" hint-placeholder-val="{{ false }}">
+        <div style="flex-shrink:0;height:78px;background:var(--glass-bg-strong);backdrop-filter:var(--glass-blur);border-top:1px solid var(--color-border);display:flex;align-items:flex-start;justify-content:space-around;padding:12px 8px 0;position:relative;z-index:30;">
+          <div onClick="{{ goHome }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:{{ navHojeColor }};">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span style="font-size:11px;font-weight:600;">hoje</span>
+          </div>
+          <div onClick="{{ goMente }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:{{ navMenteColor }};">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.142 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.142 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/></svg>
+            <span style="font-size:11px;font-weight:600;">mente</span>
+          </div>
+          <div onClick="{{ goStreak }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:{{ navProgColor }};">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+            <span style="font-size:11px;font-weight:600;">progresso</span>
+          </div>
+          <div onClick="{{ goPerfil }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:{{ navPerfilColor }};">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+            <span style="font-size:11px;font-weight:600;">perfil</span>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;tela&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;entry&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Navegação (protótipo)&quot;,&quot;options&quot;:[&quot;entry&quot;,&quot;cadastro&quot;,&quot;anamnese&quot;,&quot;home&quot;,&quot;refeicoes&quot;,&quot;treino&quot;,&quot;treinos&quot;,&quot;agua&quot;,&quot;menteHub&quot;,&quot;humor&quot;,&quot;sono&quot;,&quot;diaFechado&quot;,&quot;streak&quot;,&quot;evolucao&quot;,&quot;avaliacao&quot;,&quot;perfil&quot;,&quot;profDetalhe&quot;,&quot;chat&quot;,&quot;consultas&quot;,&quot;agendamento&quot;,&quot;notificacoes&quot;]}}">
+class Component extends DCLogic {
+  state = {
+    screen: 'entry',
+    mode: 'solo',
+    empty: false,
+    water: 750,
+    meals: { m1: 'done', m2: 'done', m3: 'pending', m4: 'pending' },
+    treinoDone: { e1: true, e2: true, e3: false, e4: false, e5: false },
+    treinoConcluido: false,
+    mood: null,
+    moodTags: [],
+    moodSaved: false,
+    menteDone: false,
+    // respiração
+    breathScale: 0.72,
+    breathTrans: '0.4s',
+    breathPhase: 'pronto',
+    breathPhaseName: '',
+    breathPhaseRemaining: 0,
+    breathTotalRemaining: 0,
+    breathRunning: false,
+    breathDone: false,
+    phaseIdx: 0,
+    // ── camadas do app vinculado ──
+    activeProf: 'nutri',            // chat / detalhe do profissional
+    notifRead: [],                  // ids de notificações lidas
+    notifFilter: 'todas',
+    progPeriod: 'semana',
+    waterGoal: 2000,
+    waterCfgOpen: false,
+    refSelDay: 'qui',
+    activeMeal: null,
+    mealMode: {},
+    mealFollow: {},
+    mealNote: {},
+    activeEx: null,
+    exFrom: 'treino',
+    exSeries: {},
+    chatDraft: '',
+    splitIdx: 3,                    // dia selecionado em "todos os treinos"
+    // agendamento
+    agProf: 'nutri', agType: 'retorno', agDate: 2, agTime: null, agConfirmed: false,
+    // onboarding — cadastro + anamnese
+    cadNome: '', cadObjetivo: 'me sentir melhor', cadCodigo: '',
+    anBem: null, anEnergia: null, anSintomas: [], anSonoQ: null, anObs: '', anSent: false,
+    // check-in de bem-estar (avaliação readaptada)
+    avSensacao: null, avEnergia: null, avRoupa: null, avSaved: false,
+    // sono
+    sonoH: 7, sonoQ: null, sonoHumor: null, sonoSaved: false,
+  };
+
+  componentWillUnmount() { if (this.breathTimer) clearInterval(this.breathTimer); }
+
+  componentDidMount() { this.applyTela(); }
+  componentDidUpdate(prev) { if (prev.tela !== this.props.tela) this.applyTela(); }
+  applyTela() {
+    const t = this.props.tela;
+    if (!t || t === this.state.screen) return;
+    const linked = ['chat', 'profDetalhe', 'consultas', 'agendamento', 'notificacoes', 'perfil', 'home', 'refeicoes', 'treino', 'treinos'].includes(t);
+    const patch = { screen: t };
+    if (linked) { patch.mode = 'vinculado'; patch.empty = false; }
+    if (t === 'chat' || t === 'profDetalhe') patch.activeProf = 'nutri';
+    this.setState(patch);
+  }
+
+  go(screen) { if (this.breathTimer) { clearInterval(this.breathTimer); } this.setState({ screen }); }
+
+  // ── respiração ──
+  breathPhasesFor(kind) {
+    if (kind === 'box') return { total: 120, phases: [
+      { name: 'inspira', dur: 4, scale: 1 },
+      { name: 'segura', dur: 4, scale: 1 },
+      { name: 'expira', dur: 4, scale: 0.62 },
+      { name: 'segura', dur: 4, scale: 0.62 },
+    ] };
+    return { total: 60, phases: [
+      { name: 'inspira', dur: 4, scale: 1 },
+      { name: 'expira', dur: 6, scale: 0.62 },
+    ] };
+  }
+  startBreath(kind) {
+    if (this.breathTimer) clearInterval(this.breathTimer);
+    const cfg = this.breathPhasesFor(kind);
+    this._phases = cfg.phases;
+    const p0 = cfg.phases[0];
+    this.setState({
+      screen: 'breathing', breathRunning: true, breathDone: false,
+      breathTotalRemaining: cfg.total, phaseIdx: 0,
+      breathPhaseRemaining: p0.dur, breathScale: p0.scale,
+      breathTrans: p0.dur + 's', breathPhaseName: p0.name,
+    });
+    this.breathTimer = setInterval(() => this.tickBreath(), 1000);
+  }
+  tickBreath() {
+    this.setState((s) => {
+      const total = s.breathTotalRemaining - 1;
+      if (total <= 0) {
+        clearInterval(this.breathTimer);
+        return { breathTotalRemaining: 0, breathRunning: false, breathDone: true, menteDone: true, breathScale: 0.72, breathTrans: '0.6s' };
+      }
+      let pr = s.breathPhaseRemaining - 1;
+      if (pr <= 0) {
+        const idx = (s.phaseIdx + 1) % this._phases.length;
+        const ph = this._phases[idx];
+        return { breathTotalRemaining: total, phaseIdx: idx, breathPhaseRemaining: ph.dur, breathScale: ph.scale, breathTrans: ph.dur + 's', breathPhaseName: ph.name };
+      }
+      return { breathTotalRemaining: total, breathPhaseRemaining: pr };
+    });
+  }
+  stopBreath() { if (this.breathTimer) clearInterval(this.breathTimer); this.setState({ screen: 'menteHub', breathRunning: false, breathDone: false }); }
+
+  toggleMeal(id, status) { this.setState((s) => ({ meals: { ...s.meals, [id]: status } })); }
+  toggleEx(id) { this.setState((s) => ({ treinoDone: { ...s.treinoDone, [id]: !s.treinoDone[id] } })); }
+  concludeTreino() { this.setState({ treinoConcluido: true, treinoDone: { e1: true, e2: true, e3: true, e4: true, e5: true } }); this.go('home'); }
+  addWater(n) { this.setState((s) => ({ water: Math.min(s.water + n, 4000) })); }
+  setWaterGoal(g) { this.setState({ waterGoal: g }); }
+  openMeal(id) { this.setState({ activeMeal: id, screen: 'mealDetalhe' }); }
+  setMealMode(id, mode) { this.setState((s) => ({ mealMode: { ...s.mealMode, [id]: mode } })); }
+  setMealFollow(id, f) { this.setState((s) => ({ mealFollow: { ...s.mealFollow, [id]: f } })); }
+  setMealNote(id, t) { this.setState((s) => ({ mealNote: { ...s.mealNote, [id]: t } })); }
+  saveMeal(id) { const m = this.state.mealMode[id]; if (!m) return; this.setState((s) => ({ meals: { ...s.meals, [id]: m === 'pulei' ? 'skipped' : 'done' }, screen: 'refeicoes' })); }
+  openEx(id, from) { this.setState((s) => { const meta = (this._exMeta || {})[id]; const n = meta ? meta.sets : 4; const arr = s.exSeries[id] || Array.from({ length: n }, () => ({ done: false, load: '', noLoad: false })); return { activeEx: id, screen: 'exDetalhe', exFrom: from || 'treino', exSeries: { ...s.exSeries, [id]: arr } }; }); }
+  setSeries(id, i, patch) { this.setState((s) => { const arr = (s.exSeries[id] || []).map((x, j) => j === i ? { ...x, ...patch } : x); return { exSeries: { ...s.exSeries, [id]: arr } }; }); }
+  concludeEx(id) { this.setState((s) => ({ treinoDone: { ...s.treinoDone, [id]: true }, screen: 'treino' })); }
+  pickMood(k) { this.setState({ mood: k, moodSaved: false }); }
+  toggleMoodTag(t) { this.setState((s) => ({ moodTags: s.moodTags.includes(t) ? s.moodTags.filter((x) => x !== t) : [...s.moodTags, t] })); }
+  saveMood() { if (this.state.mood) this.setState({ moodSaved: true, menteDone: true }); }
+
+  // ── camadas do app vinculado ──
+  openChat(prof) { this.setState({ screen: 'chat', activeProf: prof, chatDraft: '' }); }
+  openProf(prof) { this.setState({ screen: 'profDetalhe', activeProf: prof }); }
+  markAllRead() { this.setState({ notifRead: this.notifDefs().map(n => n.id) }); }
+  markRead(id) { this.setState((s) => ({ notifRead: s.notifRead.includes(id) ? s.notifRead : [...s.notifRead, id] })); }
+  toggleAnSintoma(t) { this.setState((s) => ({ anSintomas: s.anSintomas.includes(t) ? s.anSintomas.filter(x => x !== t) : [...s.anSintomas, t] })); }
+
+  profDefs() {
+    return {
+      nutri: {
+        key: 'nutri', name: 'Dra. Camila Reis', short: 'Camila', initial: 'C', role: 'nutricionista',
+        reg: 'CRN-3 · 45.892', clinic: 'Espaço Vitalità — Pinheiros, SP',
+        phone: '(11) 99823-4410', email: 'camila@vitalita.com.br',
+        bio: 'trabalha nutrição de forma leve, sem terror. foca em constância, comida de verdade e no que faz sentido pra sua rotina.',
+        tags: ['aderência', 'comportamento alimentar', 'esportiva'], code: 'NUTRK-CR28',
+        accent: '#5a63c4', bg: 'rgba(173,183,247,0.22)', soft: 'rgba(173,183,247,0.14)',
+        border: '1px solid rgba(173,183,247,0.5)', mesh: 'var(--mesh-cool)',
+      },
+      personal: {
+        key: 'personal', name: 'Rafa Nunes', short: 'Rafa', initial: 'R', role: 'personal',
+        reg: 'CREF · 082451-G/SP', clinic: 'RC Performance — Vila Madalena, SP',
+        phone: '(11) 97654-3321', email: 'rafa@rcperformance.com.br',
+        bio: 'personal que trata movimento como prazer. progressão no seu tempo, sem lesão e sem sofrimento — o corpo agradece.',
+        tags: ['força', 'movimento', 'online'], code: 'NUTRK-RN91',
+        accent: '#c67518', bg: 'rgba(254,175,76,0.20)', soft: 'rgba(254,175,76,0.12)',
+        border: '1px solid rgba(254,175,76,0.45)', mesh: 'var(--mesh-warm)',
+      },
+    };
+  }
+
+  chatDefs(prof) {
+    if (prof === 'personal') return [
+      { me: false, text: 'boa, Marina! ontem a perna rendeu bem. semana que vem a gente sobe um pouquinho.', time: 'ontem, 20:30' },
+      { me: true, text: 'valeu, Rafa! ainda tô sentindo a perna hoje haha', time: 'hoje, 08:15' },
+      { me: false, text: 'é o processo. hoje é mais leve, foco em soltar. dormiu bem?', time: 'hoje, 08:45' },
+    ];
+    return [
+      { me: false, text: 'oi, Marina! vi seus registros dessa semana. tá com uma constância linda no almoço.', time: 'ontem, 14:22' },
+      { me: true, text: 'oi, Dra. Camila! obrigada. só na quarta que apertou, saí com pressa e pulei o lanche.', time: 'ontem, 18:45' },
+      { me: false, text: 'acontece. nesses dias corridos, deixa uma fruta e um punhado de castanha na bolsa. resolve.', time: 'ontem, 19:10' },
+      { me: true, text: 'boa ideia. posso trocar o salmão do jantar por sardinha hoje?', time: 'hoje, 09:12' },
+    ];
+  }
+
+  apptDefs() {
+    return [
+      { id: 1, d: '18', mo: 'jul', wd: 'qui', time: '09:00', type: 'retorno', prof: 'nutri' },
+      { id: 2, d: '25', mo: 'jul', wd: 'qui', time: '10:30', type: 'avaliação', prof: 'nutri' },
+      { id: 3, d: '02', mo: 'ago', wd: 'sex', time: '08:00', type: 'retorno', prof: 'personal' },
+      { id: 4, d: '16', mo: 'ago', wd: 'sáb', time: '14:00', type: 'check-in', prof: 'personal' },
+    ];
+  }
+
+  notifDefs() {
+    return [
+      { id: 1, prof: 'nutri', type: 'protocolo', date: 'hoje', time: '08:14', title: 'protocolo ajustado', body: 'Dra. Camila deu uma repaginada no seu almoço. dá uma olhada quando puder.' },
+      { id: 2, prof: 'personal', type: 'resultado', date: 'hoje', time: '07:30', title: 'evolução registrada', body: 'Rafa registrou seu check-in de julho. seu progresso tá lá.' },
+      { id: 3, prof: 'nutri', type: 'mensagem', date: 'hoje', time: '06:55', title: 'nova mensagem', body: 'Dra. Camila: "oi, Marina! semana com uma constância linda."' },
+      { id: 4, prof: 'personal', type: 'consulta', date: 'ontem', time: '18:00', title: 'consulta confirmada', body: 'seu retorno com o Rafa tá confirmado pra 02 ago às 08:00.' },
+      { id: 5, prof: 'nutri', type: 'mensagem', date: 'ontem', time: '14:22', title: 'nova mensagem', body: 'Dra. Camila: "nesses dias corridos, deixa uma fruta na bolsa."' },
+      { id: 6, prof: 'personal', type: 'protocolo', date: 'ontem', time: '11:05', title: 'treino atualizado', body: 'Rafa mexeu no treino de sábado. ficou mais leve, com foco em soltar o corpo.' },
+      { id: 7, prof: 'nutri', type: 'resultado', date: '28 jun', time: '16:30', title: 'resumo da semana', body: 'sua constância na semana foi ótima. Camila deixou um recado carinhoso.' },
+    ];
+  }
+
+  splitDefs() {
+    return [
+      { id: 'seg', day: 'seg', name: 'superiores · empurrar', tags: ['peito', 'tríceps'], rest: false, today: false,
+        ex: [{ n: 'supino reto', d: '4 · 10 reps' }, { n: 'supino inclinado', d: '3 · 12 reps' }, { n: 'desenvolvimento', d: '3 · 12 reps' }, { n: 'tríceps na polia', d: '4 · 12 reps' }] },
+      { id: 'ter', day: 'ter', name: 'inferiores · quadríceps', tags: ['perna'], rest: false, today: false,
+        ex: [{ n: 'agachamento livre', d: '4 · 10 reps' }, { n: 'leg press', d: '4 · 12 reps' }, { n: 'cadeira extensora', d: '3 · 15 reps' }, { n: 'avanço', d: '3 · 12 reps' }] },
+      { id: 'qua', day: 'qua', name: 'superiores · puxar', tags: ['costas', 'bíceps'], rest: false, today: false,
+        ex: [{ n: 'puxada na frente', d: '4 · 10 reps' }, { n: 'remada curvada', d: '4 · 12 reps' }, { n: 'remada unilateral', d: '3 · 12 reps' }, { n: 'rosca direta', d: '3 · 12 reps' }] },
+      { id: 'qui', day: 'qui', name: 'inferiores · força', tags: ['perna'], rest: false, today: true,
+        ex: [{ n: 'agachamento livre', d: '4 · 10 reps' }, { n: 'leg press', d: '4 · 12 reps' }, { n: 'cadeira extensora', d: '3 · 15 reps' }, { n: 'stiff', d: '3 · 12 reps' }, { n: 'panturrilha em pé', d: '4 · 20 reps' }] },
+      { id: 'sex', day: 'sex', name: 'ombros e core', tags: ['ombro', 'core'], rest: false, today: false,
+        ex: [{ n: 'elevação lateral', d: '4 · 15 reps' }, { n: 'elevação frontal', d: '3 · 12 reps' }, { n: 'prancha', d: '4 · 45s' }, { n: 'abdominal', d: '3 · 15 reps' }] },
+      { id: 'sab', day: 'sáb', name: 'cardio leve', tags: ['cardio'], rest: false, today: false,
+        ex: [{ n: 'caminhada inclinada', d: '30 min' }, { n: 'bike leve', d: '15 min' }] },
+      { id: 'dom', day: 'dom', name: 'descanso', tags: [], rest: true, today: false, ex: [] },
+    ];
+  }
+
+  // ── heatmap de consistência (ano corrente) ──
+  heatmapEl() {
+    const React = window.React;
+    const year = new Date().getFullYear();
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const cell = 11, gap = 3;
+    const inten = ['rgba(27,28,29,0.05)', 'rgba(254,175,76,0.38)', 'rgba(254,143,60,0.62)', 'rgba(254,95,51,0.92)'];
+    const days = [];
+    for (let m = 0; m < 12; m++) {
+      const dim = new Date(year, m + 1, 0).getDate();
+      for (let d = 1; d <= dim; d++) days.push(new Date(year, m, d));
+    }
+    const jan1 = new Date(year, 0, 1).getDay();
+    const cols = [];
+    let col = Array(jan1).fill(null);
+    for (const dt of days) { col.push(dt); if (col.length === 7) { cols.push(col); col = []; } }
+    if (col.length) { while (col.length < 7) col.push(null); cols.push(col); }
+    const MO = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+    const moPos = {}; let last = -1;
+    cols.forEach((wk, wi) => { const f = wk.find(x => x); if (f && f.getMonth() !== last) { moPos[wi] = MO[f.getMonth()]; last = f.getMonth(); } });
+    const monthRow = React.createElement('div', { style: { display: 'flex', gap, height: 14, marginBottom: 3 } },
+      cols.map((_, wi) => React.createElement('div', { key: wi, style: { width: cell, flexShrink: 0 } },
+        moPos[wi] ? React.createElement('span', { style: { fontFamily: 'var(--font-data)', fontSize: 9, color: 'var(--color-text-muted)' } }, moPos[wi]) : null)));
+    const grid = React.createElement('div', { style: { display: 'flex', gap } },
+      cols.map((wk, wi) => React.createElement('div', { key: wi, style: { display: 'flex', flexDirection: 'column', gap } },
+        wk.map((dt, di) => {
+          if (!dt) return React.createElement('div', { key: di, style: { width: cell, height: cell } });
+          const future = dt > today;
+          const isToday = dt.toDateString() === today.toDateString();
+          const seed = (dt.getDate() * 17 + dt.getMonth() * 31) % 11;
+          const v = future ? 0 : [3, 2, 3, 3, 1, 3, 2, 3, 0, 3, 2][seed];
+          return React.createElement('div', { key: di, title: dt.getDate() + '/' + (dt.getMonth() + 1), style: {
+            width: cell, height: cell, borderRadius: 3, flexShrink: 0,
+            background: future ? 'transparent' : inten[v],
+            border: isToday ? '1.5px solid var(--color-orange)' : 'none',
+          } });
+        }))));
+    return React.createElement('div', { style: { overflowX: 'auto', paddingBottom: 4 }, className: 'ntrk-scroll' },
+      React.createElement('div', { style: { minWidth: 'max-content' } }, monthRow, grid));
+  }
+
+  // ── barras de aderência semanal ──
+  barsEl() {
+    const React = window.React;
+    const data = [
+      { l: 'sem 1', v: 68 }, { l: 'sem 2', v: 79 }, { l: 'sem 3', v: 84 }, { l: 'sem 4', v: 92 },
+    ];
+    const W = 320, H = 96, bw = 46;
+    return React.createElement('svg', { width: '100%', viewBox: '0 0 ' + W + ' ' + H, style: { overflow: 'visible' } },
+      React.createElement('defs', {}, React.createElement('linearGradient', { id: 'barG', x1: 0, y1: 0, x2: 0, y2: 1 },
+        React.createElement('stop', { offset: '0%', stopColor: '#fe8f3c' }),
+        React.createElement('stop', { offset: '100%', stopColor: '#feaf4c' }))),
+      data.map((d, i) => {
+        const bh = Math.round((d.v / 100) * (H - 26));
+        const x = 8 + i * (bw + 26);
+        return React.createElement('g', { key: i },
+          React.createElement('rect', { x, y: H - 18 - bh, width: bw, height: bh, rx: 6, fill: 'url(#barG)' }),
+          React.createElement('text', { x: x + bw / 2, y: H - 20 - bh, textAnchor: 'middle', fontSize: 11, fontFamily: 'var(--font-data)', fontWeight: 700, fill: 'var(--color-text)' }, d.v + '%'),
+          React.createElement('text', { x: x + bw / 2, y: H - 3, textAnchor: 'middle', fontSize: 10, fontFamily: 'var(--font-interface)', fill: 'var(--color-text-muted)' }, d.l));
+      }));
+  }
+
+  linkVals() {
+    const s = this.state;
+    const scr = s.screen;
+    const vinc = s.mode === 'vinculado';
+    const profs = this.profDefs();
+    const ap = profs[s.activeProf];
+
+    // chat
+    const chatMsgs = this.chatDefs(s.activeProf).map((m) => ({ ...m,
+      rowJustify: m.me ? 'flex-end' : 'flex-start',
+      bubbleBg: m.me ? ap.bg : 'var(--color-surface)',
+      bubbleBorder: m.me ? ap.border : '1px solid var(--color-border)',
+      bubbleRadius: m.me ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+    }));
+
+    // notificações
+    const NICON = {
+      protocolo: 'M8 6h10M8 12h10M8 18h7M4 6h.01M4 12h.01M4 18h.01',
+      mensagem: 'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z',
+      resultado: 'M3 3v18h18M7 15l3-3 3 3 4-5',
+      consulta: 'M8 2v4M16 2v4M3.5 9.5h17M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z',
+    };
+    const notifs = this.notifDefs().map((n) => {
+      const p = profs[n.prof];
+      const read = s.notifRead.includes(n.id);
+      return { ...n, accent: p.accent, bg: p.bg, soft: p.soft, border: p.border,
+        roleLabel: n.prof === 'nutri' ? 'nutri' : 'personal', iconPath: NICON[n.type] || NICON.mensagem,
+        onRead: () => this.markRead(n.id),
+        cardBg: read ? 'var(--color-surface-elevated)' : p.soft,
+        cardBorder: read ? '1px solid var(--color-border)' : p.border,
+        titleWeight: read ? '600' : '800', showDot: !read };
+    });
+    const filtered = s.notifFilter === 'todas' ? notifs : notifs.filter((n) => n.prof === s.notifFilter);
+    const unread = notifs.filter((n) => !s.notifRead.includes(n.id)).length;
+    const notifSegStyle = (f) => ({ height: '30px', padding: '0 14px', borderRadius: 'var(--radius-pill)', border: '1px solid ' + (s.notifFilter === f ? 'transparent' : 'var(--color-border-strong)'), background: s.notifFilter === f ? 'var(--color-orange)' : 'var(--color-surface-elevated)', color: s.notifFilter === f ? '#fff' : 'var(--color-text-secondary)', fontFamily: 'var(--font-interface)', fontSize: '13px', fontWeight: 600, cursor: 'pointer' });
+
+    // consultas / agendamento
+    const appts = this.apptDefs().map((a) => { const p = profs[a.prof]; return { ...a, accent: p.accent, bg: p.bg, soft: p.soft, border: p.border, roleLabel: a.prof === 'nutri' ? 'nutri' : 'personal', short: p.short }; });
+    const agP = profs[s.agProf];
+    const agDates = [
+      { d: '16', wd: 'ter', mo: 'jul' }, { d: '17', wd: 'qua', mo: 'jul' }, { d: '18', wd: 'qui', mo: 'jul' },
+      { d: '21', wd: 'seg', mo: 'jul' }, { d: '23', wd: 'qua', mo: 'jul' }, { d: '24', wd: 'qui', mo: 'jul' },
+    ];
+    const agTimes = ['08:00', '09:00', '10:00', '11:00', '14:30', '15:30', '17:00'];
+    const agSel = agDates[s.agDate] || agDates[0];
+
+    // treinos — split
+    const split = this.splitDefs();
+    const selDay = split[s.splitIdx] || split[3];
+
+    // check-in de bem-estar
+    const scale5 = (val, set, tint) => [1, 2, 3, 4, 5].map((n) => ({ n, active: val === n,
+      bg: val === n ? tint : 'var(--color-surface)', border: val === n ? '1.5px solid ' + tint.replace('0.2', '0.6') : '1px solid var(--color-border-strong)',
+      color: val === n ? 'var(--color-text)' : 'var(--color-text-muted)', onPick: () => set(n) }));
+
+    const anSintomasDefs = ['cansaço', 'dor muscular', 'ansiedade', 'sono ruim', 'sem apetite', 'inchaço', 'dor de cabeça', 'irritação'];
+
+    // progresso — métricas da semana (consistência, sem números proibidos)
+    // progresso — métricas (consistência, sem números proibidos) com filtro dia/semana/mês
+    const per = s.progPeriod;
+    const perPct = {
+      dia:    { nut: 100, tre: 100, agu: 55, men: 100 },
+      semana: { nut: 86, tre: 71, agu: 79, men: 64 },
+      mes:    { nut: 82, tre: 74, agu: 71, men: 66 },
+    };
+    const pv = perPct[per] || perPct.semana;
+    const weekMetrics = [
+      { key: 'nut', label: 'nutrição', accent: '#c67518', bg: 'rgba(254,175,76,0.16)', dots: [1, 1, 0, 1, 1, 1, 0] },
+      { key: 'tre', label: 'treino', accent: '#fe5f33', bg: 'var(--color-orange-subtle)', dots: [1, 0, 1, 1, 1, 0, 0] },
+      { key: 'agu', label: 'água', accent: '#2b93a8', bg: 'rgba(173,243,243,0.28)', dots: [1, 1, 1, 0, 1, 1, 0] },
+      { key: 'men', label: 'mente', accent: '#5a63c4', bg: 'rgba(173,183,247,0.24)', dots: [1, 0, 1, 1, 0, 1, 1] },
+    ].map((m) => ({ ...m, pct: pv[m.key], cells: m.dots.map((d, i) => ({ on: !!d, bg: d ? m.accent : 'var(--color-border)', letter: 'stqqssd'[i] })) }));
+    const progTab = (f) => ({ flex: '1', height: '34px', borderRadius: 'var(--radius-pill)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontFamily: 'var(--font-interface)', fontSize: '13px', fontWeight: 600, border: '1px solid ' + (per === f ? 'transparent' : 'var(--color-border-strong)'), background: per === f ? 'var(--color-orange)' : 'var(--color-surface-elevated)', color: per === f ? '#fff' : 'var(--color-text-secondary)' });
+    const weekDots = [1, 1, 0, 1, 1, 1, 0].map((d, i) => ({ on: !!d, letter: 'stqqssd'[i], isToday: i === 3,
+      bg: d ? 'rgba(254,175,76,0.2)' : 'var(--color-surface)', border: i === 3 ? '1.5px solid var(--color-orange)' : d ? '1px solid rgba(254,175,76,0.4)' : '1px solid var(--color-border)' }));
+
+    const evoGoals = [
+      { label: 'nutrição na constância', pct: 82, accent: '#c67518' },
+      { label: 'treinos feitos', pct: 74, accent: '#fe5f33' },
+      { label: 'meta de água', pct: 79, accent: '#2b93a8' },
+      { label: 'pausas de mente', pct: 66, accent: '#5a63c4' },
+    ];
+
+    const progScreens = ['streak', 'evolucao', 'avaliacao'];
+    const perfilScreens = ['perfil', 'profDetalhe', 'consultas', 'agendamento', 'notificacoes'];
+
+    return {
+      // flags de tela
+      isChat: scr === 'chat', isProfDetalhe: scr === 'profDetalhe', isConsultas: scr === 'consultas',
+      isAgendamento: scr === 'agendamento', isNotificacoes: scr === 'notificacoes', isPerfil: scr === 'perfil',
+      isEvolucao: scr === 'evolucao', isAvaliacao: scr === 'avaliacao', isTreinos: scr === 'treinos',
+      isSono: scr === 'sono', isCadastro: scr === 'cadastro', isAnamnese: scr === 'anamnese',
+      showAnamneseForm: scr === 'anamnese' && !s.anSent,
+      agFormVisible: !s.agConfirmed,
+      agConfirmOpacity: s.agTime ? '1' : '0.45',
+      showNav: !['entry', 'breathing', 'chat', 'cadastro', 'anamnese'].includes(scr),
+
+      // nav ativa
+      navHojeColor: scr === 'home' ? 'var(--color-orange)' : 'var(--color-text-muted)',
+      navMenteColor: ['menteHub', 'humor', 'sono'].includes(scr) ? 'var(--color-orange)' : 'var(--color-text-muted)',
+      navProgColor: progScreens.includes(scr) ? 'var(--color-orange)' : 'var(--color-text-muted)',
+      navPerfilColor: perfilScreens.includes(scr) ? 'var(--color-orange)' : 'var(--color-text-muted)',
+
+      // navegação
+      goPerfil: () => this.go('perfil'),
+      goConsultas: () => this.go('consultas'),
+      goAgendamento: () => this.setState({ screen: 'agendamento', agConfirmed: false, agTime: null }),
+      goNotificacoes: () => this.go('notificacoes'),
+      goEvolucao: () => this.go('evolucao'),
+      goAvaliacao: () => this.setState({ screen: 'avaliacao', avSaved: false }),
+      goTreinos: () => this.go('treinos'),
+      goSono: () => this.setState({ screen: 'sono', sonoSaved: false }),
+      goCadastro: () => this.go('cadastro'),
+      goAnamnese: () => this.setState({ screen: 'anamnese', anSent: false }),
+      goStreakScreen: () => this.go('streak'),
+
+      // profissional ativo (chat / detalhe)
+      ap, apName: ap.name, apShort: ap.short, apInitial: ap.initial, apRole: ap.role,
+      apAccent: ap.accent, apBg: ap.bg, apSoft: ap.soft, apBorder: ap.border, apMesh: ap.mesh,
+      apReg: ap.reg, apClinic: ap.clinic, apPhone: ap.phone, apEmail: ap.email, apBio: ap.bio, apCode: ap.code,
+      apTags: ap.tags.map((t) => ({ label: t })),
+      openChatNutri: () => this.openChat('nutri'), openChatPersonal: () => this.openChat('personal'),
+      openChatActive: () => this.openChat(this.state.activeProf),
+      avFormVisible: !s.avSaved, sonoFormVisible: !s.sonoSaved,
+      openProfNutri: () => this.openProf('nutri'), openProfPersonal: () => this.openProf('personal'),
+      openChatNutriEv: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.openChat('nutri'); },
+      openChatPersonalEv: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.openChat('personal'); },
+
+      // chat
+      chatMsgs, chatDraft: s.chatDraft,
+      setChatDraft: (e) => this.setState({ chatDraft: e.target.value }),
+      sendChat: () => this.setState({ chatDraft: '' }),
+      backFromChat: () => this.go(vinc ? 'home' : 'home'),
+
+      // notificações
+      notifs: filtered, notifUnread: unread, hasUnread: unread > 0,
+      markAllRead: () => this.markAllRead(),
+      notifTodasStyle: notifSegStyle('todas'), notifNutriStyle: notifSegStyle('nutri'), notifPersonalStyle: notifSegStyle('personal'),
+      setNotifTodas: () => this.setState({ notifFilter: 'todas' }),
+      setNotifNutri: () => this.setState({ notifFilter: 'nutri' }),
+      setNotifPersonal: () => this.setState({ notifFilter: 'personal' }),
+
+      // consultas
+      appts, temAnamnese: true,
+
+      // agendamento
+      agProf: s.agProf, agType: s.agType, agConfirmed: s.agConfirmed,
+      agProfAccent: agP.accent, agProfName: agP.name, agProfShort: agP.short,
+      agNutriStyle: this.pillSel(s.agProf === 'nutri', profs.nutri.accent, profs.nutri.bg),
+      agPersonalStyle: this.pillSel(s.agProf === 'personal', profs.personal.accent, profs.personal.bg),
+      setAgNutri: () => this.setState({ agProf: 'nutri' }), setAgPersonal: () => this.setState({ agProf: 'personal' }),
+      agTypes: ['retorno', 'avaliação', '1ª consulta'].map((t) => ({ label: t, active: s.agType === t,
+        style: this.pillSel(s.agType === t, agP.accent, agP.bg), onPick: () => this.setState({ agType: t }) })),
+      agDatesList: agDates.map((d, i) => ({ ...d, active: s.agDate === i,
+        onPick: () => this.setState({ agDate: i, agTime: null }),
+        cardBg: s.agDate === i ? agP.bg : 'var(--color-surface)', cardBorder: s.agDate === i ? '1.5px solid ' + agP.accent : '1px solid var(--color-border-strong)',
+        col: s.agDate === i ? agP.accent : 'var(--color-text)' })),
+      agTimesList: agTimes.map((t) => ({ label: t, active: s.agTime === t,
+        onPick: () => this.setState({ agTime: t }),
+        cardBg: s.agTime === t ? agP.bg : 'var(--color-surface)', cardBorder: s.agTime === t ? '1.5px solid ' + agP.accent : '1px solid var(--color-border-strong)',
+        col: s.agTime === t ? agP.accent : 'var(--color-text-secondary)' })),
+      agCanConfirm: !!s.agTime, agTimeLabel: s.agTime || '',
+      agSelLabel: agSel.d + ' ' + agSel.mo,
+      confirmAg: () => { if (s.agTime) this.setState({ agConfirmed: true }); },
+      resetAg: () => this.setState({ agConfirmed: false, agTime: null }),
+
+      // treinos — split
+      splitTabs: split.map((w, i) => ({ ...w, idx: i, active: s.splitIdx === i,
+        onPick: () => this.setState({ splitIdx: i }),
+        col: s.splitIdx === i ? 'var(--color-orange)' : w.rest ? 'var(--color-text-disabled)' : w.today ? 'var(--color-orange)' : 'var(--color-text-secondary)',
+        cardBg: s.splitIdx === i ? 'var(--color-orange-subtle)' : 'var(--color-surface)',
+        cardBorder: s.splitIdx === i ? '1.5px solid var(--color-orange-dim)' : w.today ? '1px solid var(--color-orange-dim)' : '1px solid var(--color-border)' })),
+      selDay, selDayRest: selDay.rest, selDayNotRest: !selDay.rest,
+      selDayName: selDay.name, selDayIsToday: selDay.today,
+      selDayTags: selDay.tags.map((t) => ({ label: t })),
+      selDayEx: selDay.ex.map((e, i) => { const id = 'w' + s.splitIdx + '-' + i; const sm = /^(\d+)/.exec(e.d); const sets = sm ? parseInt(sm[1]) : 4; if (this._exMeta) this._exMeta[id] = { id, name: e.n, target: selDay.name, sets, reps: e.d, suggested: (e.d.split('·').pop() || '').trim() }; return { name: e.n, detail: e.d, onOpen: () => this.openEx(id, 'treinos') }; }),
+      selDayExCount: selDay.ex.length,
+
+      // check-in de bem-estar
+      avSensacao: scale5(s.avSensacao, (n) => this.setState({ avSensacao: n }), 'rgba(254,175,76,0.2)'),
+      avEnergia: scale5(s.avEnergia, (n) => this.setState({ avEnergia: n }), 'rgba(254,95,51,0.2)'),
+      avRoupaOpts: [
+        { key: 'folgada', label: 'mais folgada' }, { key: 'igual', label: 'na mesma' }, { key: 'justa', label: 'mais justa' },
+      ].map((o) => ({ ...o, active: s.avRoupa === o.key, onPick: () => this.setState({ avRoupa: o.key }),
+        bg: s.avRoupa === o.key ? 'var(--color-orange-subtle)' : 'var(--color-surface)',
+        border: s.avRoupa === o.key ? '1.5px solid var(--color-orange-dim)' : '1px solid var(--color-border-strong)',
+        color: s.avRoupa === o.key ? 'var(--color-orange)' : 'var(--color-text-secondary)' })),
+      avCanSave: s.avSensacao && s.avEnergia,
+      avSaveOpacity: (s.avSensacao && s.avEnergia) ? '1' : '0.45',
+      saveAval: () => { if (s.avSensacao && s.avEnergia) this.setState({ avSaved: true }); },
+      avSaved: s.avSaved,
+
+      // onboarding — cadastro
+      cadNome: s.cadNome, cadCodigo: s.cadCodigo, cadObjetivo: s.cadObjetivo,
+      setCadNome: (e) => this.setState({ cadNome: e.target.value }),
+      setCadCodigo: (e) => this.setState({ cadCodigo: e.target.value.toUpperCase() }),
+      cadObjetivos: ['me sentir melhor', 'mais energia', 'movimento e força', 'rotina mais leve'].map((o) => ({ label: o, active: s.cadObjetivo === o,
+        onPick: () => this.setState({ cadObjetivo: o }),
+        bg: s.cadObjetivo === o ? 'var(--color-orange-subtle)' : 'var(--color-surface)',
+        border: s.cadObjetivo === o ? '1.5px solid var(--color-orange-dim)' : '1px solid var(--color-border-strong)',
+        color: s.cadObjetivo === o ? 'var(--color-orange)' : 'var(--color-text-secondary)' })),
+      cadCanNext: s.cadNome.trim().length >= 2,
+      cadNextOpacity: s.cadNome.trim().length >= 2 ? '1' : '0.45',
+      cadNext: () => { if (s.cadNome.trim().length >= 2) this.go('anamnese'); },
+      cadHasCode: s.cadCodigo.trim().length >= 4,
+
+      // anamnese
+      anBemScale: scale5(s.anBem, (n) => this.setState({ anBem: n }), 'rgba(254,175,76,0.2)'),
+      anBemFaces: [
+        { n: 1, mouth: 'M8 16.5 Q12 13.5 16 16.5', color: '#ef4444', bg: 'rgba(239,68,68,0.12)' },
+        { n: 2, mouth: 'M8.5 16 Q12 14 15.5 16', color: '#5a63c4', bg: 'rgba(173,183,247,0.18)' },
+        { n: 3, mouth: 'M9 15.5 L15 15.5', color: '#6b6f78', bg: 'var(--color-surface)' },
+        { n: 4, mouth: 'M8.5 14.5 Q12 17 15.5 14.5', color: '#2f9e6b', bg: 'rgba(47,158,107,0.14)' },
+        { n: 5, mouth: 'M8 14.5 Q12 18.5 16 14.5', color: '#c67518', bg: 'rgba(254,175,76,0.18)' },
+      ].map((f) => { const sel = s.anBem === f.n; return { ...f,
+        bg: sel ? f.bg : 'var(--color-surface)', border: sel ? '2px solid ' + f.color : '2px solid var(--color-border-strong)',
+        stroke: sel ? f.color : 'var(--color-text-muted)', scale: sel ? 'scale(1.1)' : 'scale(1)',
+        onPick: () => this.setState({ anBem: f.n }) }; }),
+      anEnergiaBar: [1, 2, 3, 4, 5].map((i) => ({ i, filled: (s.anEnergia || 0) >= i,
+        bg: (s.anEnergia || 0) >= i ? 'linear-gradient(90deg,#fe5f33,#feaf4c)' : 'var(--color-surface)',
+        onPick: () => this.setState({ anEnergia: i }) })),
+      anEnergiaScale: scale5(s.anEnergia, (n) => this.setState({ anEnergia: n }), 'rgba(254,95,51,0.2)'),
+      anSonoScale: scale5(s.anSonoQ, (n) => this.setState({ anSonoQ: n }), 'rgba(173,183,247,0.24)'),
+      anSintomas: anSintomasDefs.map((t) => ({ label: t, active: s.anSintomas.includes(t), onToggle: () => this.toggleAnSintoma(t),
+        bg: s.anSintomas.includes(t) ? 'var(--color-orange-subtle)' : 'var(--color-surface)',
+        border: s.anSintomas.includes(t) ? '1px solid var(--color-orange-dim)' : '1px solid var(--color-border-strong)',
+        color: s.anSintomas.includes(t) ? 'var(--color-orange)' : 'var(--color-text-secondary)' })),
+      anObs: s.anObs, setAnObs: (e) => this.setState({ anObs: e.target.value }),
+      anCanSend: s.anBem && s.anEnergia, anSendOpacity: (s.anBem && s.anEnergia) ? '1' : '0.45',
+      sendAnamnese: () => { if (s.anBem && s.anEnergia) this.setState({ anSent: true, mode: 'vinculado' }); },
+      anSent: s.anSent,
+      finishOnboarding: () => this.setState({ screen: 'home', mode: 'vinculado', empty: false }),
+
+      // sono
+      sonoH: s.sonoH, sonoHLabel: s.sonoH + 'h',
+      incSonoH: () => this.setState((st) => ({ sonoH: Math.min(12, st.sonoH + 1) })),
+      decSonoH: () => this.setState((st) => ({ sonoH: Math.max(0, st.sonoH - 1) })),
+      sonoQScale: scale5(s.sonoQ, (n) => this.setState({ sonoQ: n }), 'rgba(173,183,247,0.24)'),
+      sonoHumorScale: scale5(s.sonoHumor, (n) => this.setState({ sonoHumor: n }), 'rgba(254,175,76,0.2)'),
+      sonoCanSave: s.sonoQ && s.sonoHumor, sonoSaveOpacity: (s.sonoQ && s.sonoHumor) ? '1' : '0.45',
+      saveSono: () => { if (s.sonoQ && s.sonoHumor) this.setState({ sonoSaved: true }); },
+      sonoSaved: s.sonoSaved, sonoQLabel: (s.sonoQ || '–') + '/5', sonoHumorLabel: (s.sonoHumor || '–') + '/5',
+
+      // progresso / evolução
+      weekMetrics, weekDots, evoGoals,
+      progDiaStyle: progTab('dia'), progSemanaStyle: progTab('semana'), progMesStyle: progTab('mes'),
+      setProgDia: () => this.setState({ progPeriod: 'dia' }),
+      setProgSemana: () => this.setState({ progPeriod: 'semana' }),
+      setProgMes: () => this.setState({ progPeriod: 'mes' }),
+      progRangeLabel: per === 'dia' ? 'hoje' : per === 'mes' ? 'este mês' : 'sua semana',
+      progRangeSub: per === 'dia' ? 'como você tá indo agora' : per === 'mes' ? '22 de 30 dias' : '5 de 7 dias',
+      heatEl: this.heatmapEl(), barsEl: this.barsEl(),
+    };
+  }
+
+  pillSel(active, accent, bg) {
+    return { flex: '1', padding: '11px 8px', borderRadius: 'var(--radius-md)', cursor: 'pointer',
+      background: active ? bg : 'var(--color-surface)', border: active ? '1.5px solid ' + accent : '1px solid var(--color-border-strong)',
+      color: active ? accent : 'var(--color-text-secondary)', fontFamily: 'var(--font-interface)', fontSize: '13px', fontWeight: 600,
+      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all .15s var(--ease-out)' };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const vinc = s.mode === 'vinculado';
+    const empty = s.empty;
+    const scr = s.screen;
+
+    const seg = (active) => ({
+      height: '26px', padding: '0 16px', border: 'none', borderRadius: 'var(--radius-pill)',
+      fontFamily: 'var(--font-interface)', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
+      background: active ? 'var(--color-orange)' : 'transparent',
+      color: active ? '#fff' : 'var(--color-text-secondary)',
+      transition: 'all .2s var(--ease-out)',
+    });
+
+    // refeições
+    const mealDefs = [
+      { id: 'm1', time: '07:30', name: 'café da manhã', items: 'ovos mexidos, pão integral, mamão e um café.' },
+      { id: 'm2', time: '12:30', name: 'almoço', items: 'arroz, feijão, frango grelhado e uma salada colorida.' },
+      { id: 'm3', time: '16:00', name: 'lanche', items: 'iogurte natural com banana e aveia.' },
+      { id: 'm4', time: '20:00', name: 'jantar', items: 'omelete de legumes com salada verde.' },
+    ];
+    const todayKey = 'qui';
+    const refPastKeys = ['seg', 'ter', 'qua'];
+    const refFutureKeys = ['sex', 'sáb', 'dom'];
+    const refSel = s.refSelDay || todayKey;
+    const refIsFuture = refFutureKeys.includes(refSel);
+    const refIsPast = refPastKeys.includes(refSel);
+    const refDayNums = { seg: '30', ter: '1', qua: '2', qui: '3', sex: '4', 'sáb': '5', dom: '6' };
+    const refDays = ['seg', 'ter', 'qua', 'qui', 'sex', 'sáb', 'dom'].map((k) => {
+      const sel = k === refSel, isToday = k === todayKey, isFut = refFutureKeys.includes(k), isPast = refPastKeys.includes(k);
+      return { k, label: k, date: refDayNums[k], onPick: () => this.setState({ refSelDay: k }),
+        labelColor: sel ? 'var(--color-orange)' : 'var(--color-text-muted)',
+        numBg: sel ? 'var(--color-orange)' : (isToday ? 'var(--color-orange-subtle)' : 'var(--color-surface)'),
+        numColor: sel ? '#fff' : (isFut ? 'var(--color-text-disabled)' : 'var(--color-text)'),
+        numBorder: sel ? 'none' : (isToday ? '1px solid var(--color-orange-dim)' : '1px solid var(--color-border)'),
+        dot: isFut ? 'transparent' : (isPast ? '#2f9e6b' : (sel ? '#fe5f33' : 'var(--color-border-strong)')) };
+    });
+    const refDayLabel = refIsFuture ? 'esse dia ainda não chegou' : refIsPast ? 'histórico do dia' : 'refeições de hoje';
+    const meals = mealDefs.map((m) => {
+      const st = refIsPast ? 'done' : s.meals[m.id];
+      const done = st === 'done', skipped = st === 'skipped';
+      return { ...m,
+        opacity: (done || skipped) ? '0.72' : '1',
+        badgeVariant: done ? 'success' : skipped ? 'neutral' : 'warm',
+        statusLabel: done ? 'feito' : skipped ? 'pulei' : 'pendente',
+        cta: (done || skipped) ? 'ver registro' : 'registrar',
+        onOpen: () => this.openMeal(m.id) };
+    });
+    const mealsDone = mealDefs.filter((m) => s.meals[m.id] === 'done').length;
+
+    const amId = s.activeMeal, amDef = mealDefs.find((m) => m.id === amId) || mealDefs[0];
+    const amMode = s.mealMode[amId], amFollow = s.mealFollow[amId];
+    const segBtn = (active, color) => ({ flex: '1', height: '44px', borderRadius: 'var(--radius-pill)', cursor: 'pointer', fontFamily: 'var(--font-interface)', fontWeight: 600, fontSize: '14px', border: active ? 'none' : '1px solid var(--color-border-strong)', background: active ? color : 'var(--color-surface-elevated)', color: active ? '#fff' : 'var(--color-text-secondary)' });
+    const mealD = {
+      name: amDef.name, time: amDef.time, items: amDef.items, photoId: 'meal-' + amId,
+      isFeito: amMode === 'feito', isPulei: amMode === 'pulei', isAdaptei: amFollow === 'adaptei',
+      note: s.mealNote[amId] || '',
+      feitoStyle: segBtn(amMode === 'feito', 'var(--color-orange)'),
+      puleiStyle: segBtn(amMode === 'pulei', '#6b6f78'),
+      seguiStyle: segBtn(amFollow === 'segui', '#2f9e6b'),
+      adapteiStyle: segBtn(amFollow === 'adaptei', '#c67518'),
+      onFeito: () => this.setMealMode(amId, 'feito'), onPulei: () => this.setMealMode(amId, 'pulei'),
+      onSegui: () => this.setMealFollow(amId, 'segui'), onAdaptei: () => this.setMealFollow(amId, 'adaptei'),
+      onNote: (e) => this.setMealNote(amId, e.target.value), onSave: () => this.saveMeal(amId),
+      saveOpacity: amMode ? '1' : '0.45',
+    };
+
+    // treino
+    const exDefs = [
+      { id: 'e1', name: 'agachamento livre', sets: 4, reps: '10 reps', suggested: '30 kg', target: 'quadríceps e glúteos' },
+      { id: 'e2', name: 'leg press', sets: 4, reps: '12 reps', suggested: '80 kg', target: 'pernas' },
+      { id: 'e3', name: 'cadeira extensora', sets: 3, reps: '15 reps', suggested: '25 kg', target: 'quadríceps' },
+      { id: 'e4', name: 'stiff', sets: 3, reps: '12 reps', suggested: '20 kg', target: 'posterior de coxa' },
+      { id: 'e5', name: 'panturrilha em pé', sets: 4, reps: '20 reps', suggested: '40 kg', target: 'panturrilha' },
+    ].map((e) => ({ ...e, detail: e.sets + ' séries · ' + e.reps + ' · ' + e.suggested }));
+    this._exMeta = Object.fromEntries(exDefs.map((e) => [e.id, e]));
+    const exDoneCount = exDefs.filter((e) => s.treinoDone[e.id]).length;
+    const exercises = exDefs.map((e) => {
+      const dn = s.treinoDone[e.id];
+      return { ...e, done: dn,
+        checkBg: dn ? 'var(--color-orange)' : 'transparent',
+        checkBorder: dn ? 'none' : '2px solid var(--color-border-strong)',
+        onToggle: () => this.toggleEx(e.id), onOpen: () => this.openEx(e.id) };
+    });
+    const aeId = s.activeEx, aeDef = (this._exMeta || {})[aeId] || exDefs[0];
+    const aeSeries = s.exSeries[aeId] || [];
+    const exD = {
+      name: aeDef.name, target: aeDef.target, suggested: aeDef.reps + ' · ' + aeDef.suggested,
+      onConclude: () => this.concludeEx(aeId), onBack: () => this.go(s.exFrom || 'treino'),
+      series: aeSeries.map((se, i) => ({
+        label: 'série ' + (i + 1), done: se.done, noLoad: se.noLoad, showInput: !se.noLoad, load: se.load,
+        checkBg: se.done ? 'var(--color-orange)' : 'transparent',
+        checkBorder: se.done ? 'none' : '2px solid var(--color-border-strong)',
+        onDone: () => this.setSeries(aeId, i, { done: !se.done }),
+        onLoad: (e) => this.setSeries(aeId, i, { load: e.target.value }),
+        onToggleNoLoad: () => this.setSeries(aeId, i, { noLoad: !se.noLoad, load: '' }),
+        noLoadLabel: se.noLoad ? 'usar carga' : 'sem carga',
+        noLoadBtnStyle: { flexShrink: 0, height: '38px', padding: '0 12px', borderRadius: 'var(--radius-pill)', cursor: 'pointer', fontFamily: 'var(--font-interface)', fontSize: '12px', fontWeight: 600, border: '1px solid var(--color-border-strong)', background: se.noLoad ? 'var(--color-orange-subtle)' : 'var(--color-surface)', color: se.noLoad ? 'var(--color-orange)' : 'var(--color-text-secondary)' },
+      })),
+    };
+
+    // água
+    const water = s.water, goal = s.waterGoal || 2000;
+    const C = 2 * Math.PI * 86;
+    const pct = Math.min(water / goal, 1);
+    const waterMeta = water >= goal;
+    const waterL = (n) => (n / 1000).toFixed(n % 1000 === 0 ? 0 : (n % 100 === 0 ? 1 : 2)).replace('.', ',');
+    const CUP = 'M6 8h12l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 8zM6 8V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2';
+    const BOTTLE = 'M10 2h4M9 6h6l1 4v10a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V10z';
+    const waterOptions = [
+      { label: 'copo 200 ml', ml: 200, iconPath: CUP },
+      { label: 'copo 300 ml', ml: 300, iconPath: CUP },
+      { label: 'copo 400 ml', ml: 400, iconPath: CUP },
+      { label: 'garrafa 500 ml', ml: 500, iconPath: BOTTLE },
+      { label: 'garrafa 1 l', ml: 1000, iconPath: BOTTLE },
+    ].map((o) => ({ ...o, onAdd: () => this.addWater(o.ml) }));
+    const waterGoals = [1500, 2000, 2500, 3000].map((g) => ({ ml: g, label: waterL(g) + ' l',
+      onPick: () => this.setWaterGoal(g),
+      style: { flex: '1', height: '42px', borderRadius: 'var(--radius-pill)', cursor: 'pointer', fontFamily: 'var(--font-data)', fontWeight: 700, fontSize: '14px', border: goal === g ? 'none' : '1px solid var(--color-border-strong)', background: goal === g ? 'var(--color-orange)' : 'var(--color-surface)', color: goal === g ? '#fff' : 'var(--color-text-secondary)' } }));
+
+    // mente / humor
+    const moodDefs = [
+      { key: 'otimo', label: 'ótimo', mouth: 'M8 14.5 Q12 18.5 16 14.5', color: '#c67518', bg: 'rgba(254,175,76,0.18)' },
+      { key: 'bem', label: 'bem', mouth: 'M8.5 14.5 Q12 17 15.5 14.5', color: '#2f9e6b', bg: 'rgba(47,158,107,0.14)' },
+      { key: 'neutro', label: 'neutro', mouth: 'M9 15.5 L15 15.5', color: '#6b6f78', bg: 'var(--color-surface)' },
+      { key: 'baixo', label: 'baixo', mouth: 'M8.5 16 Q12 14 15.5 16', color: '#5a63c4', bg: 'rgba(173,183,247,0.18)' },
+      { key: 'dificil', label: 'difícil', mouth: 'M8 16.5 Q12 13.5 16 16.5', color: '#ef4444', bg: 'rgba(239,68,68,0.12)' },
+    ];
+    const moods = moodDefs.map((m) => {
+      const sel = s.mood === m.key;
+      return { ...m,
+        bg: sel ? m.bg : 'var(--color-surface)',
+        border: sel ? '2px solid ' + m.color : '2px solid transparent',
+        stroke: sel ? m.color : 'var(--color-text-muted)',
+        scale: sel ? 'scale(1.12)' : 'scale(1)',
+        labelColor: sel ? m.color : 'var(--color-text-muted)',
+        onPick: () => this.pickMood(m.key) };
+    });
+    const tagDefs = ['sono', 'trabalho', 'treino', 'ansiedade', 'gratidão', 'família'];
+    const moodTags = tagDefs.map((t) => {
+      const on = s.moodTags.includes(t);
+      return { label: t, onToggle: () => this.toggleMoodTag(t),
+        bg: on ? 'var(--color-orange-subtle)' : 'var(--color-surface)',
+        color: on ? 'var(--color-orange)' : 'var(--color-text-secondary)',
+        border: on ? '1px solid var(--color-orange-dim)' : '1px solid var(--color-border-strong)' };
+    });
+
+    const presets = [
+      { key: 'box', name: 'box breathing', duration: '2 min', goal: 'foco e calma', bg: 'var(--mesh-cool)', onStart: () => this.startBreath('box') },
+      { key: 'pausa', name: 'pausa de 1 min', duration: '1 min', goal: 'respiro rápido', bg: 'var(--mesh-fresh)', onStart: () => this.startBreath('pausa') },
+    ];
+
+    // dia fechado
+    const aguaMeta = water >= goal;
+    const dayItems = [
+      { key: 'ref', label: 'refeições', icon: 'M3 2v7c0 1.1.9 2 2 2a2 2 0 0 0 2-2V2', complete: mealsDone >= 3, status: mealsDone + ' de 4 registradas', iconBg: 'rgba(254,175,76,0.16)', iconStroke: '#c67518', dummy: '' },
+      { key: 'tre', label: 'treino', icon: 'm6.5 6.5 11 11', complete: s.treinoConcluido, status: s.treinoConcluido ? 'concluído' : 'em aberto', iconBg: 'var(--color-orange-subtle)', iconStroke: '#fe5f33', dummy: '' },
+      { key: 'agu', label: 'água', icon: 'M12 2.7s6 6.1 6 10.3a6 6 0 0 1-12 0', complete: aguaMeta, status: waterL(water) + ' de ' + waterL(goal) + ' l', iconBg: 'rgba(173,243,243,0.28)', iconStroke: '#2b93a8', dummy: '' },
+      { key: 'men', label: 'mente', icon: 'M12 5a3 3 0 1 0-5.997.142', complete: s.menteDone, status: s.menteDone ? 'registrado' : 'em aberto', iconBg: 'rgba(173,183,247,0.24)', iconStroke: '#5a63c4', dummy: '' },
+    ].map((d) => ({ ...d, incomplete: !d.complete }));
+    const completeCount = dayItems.filter((d) => d.complete).length;
+    const allDone = completeCount === 4;
+
+    // home
+    const dayScore = mealsDone + (s.treinoConcluido ? 1 : 0) + (aguaMeta ? 1 : 0) + (s.menteDone ? 1 : 0);
+    const dayMax = 7;
+    const dayPct = Math.round((dayScore / dayMax) * 100);
+
+    const achievements = [
+      { key: 'a1', title: '7 dias seguidos', icon: 'M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z', unlocked: true },
+      { key: 'a2', title: 'primeira respiração', icon: 'M12 5a3 3 0 1 0-5.997.142 4 4 0 0 0-2.526 5.77', unlocked: true },
+      { key: 'a3', title: 'hidratação em dia', icon: 'M12 2.7s6 6.1 6 10.3a6 6 0 0 1-12 0', unlocked: true },
+      { key: 'a4', title: '30 dias', icon: 'M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z', unlocked: false },
+      { key: 'a5', title: 'treino completo', icon: 'm6.5 6.5 11 11', unlocked: false },
+      { key: 'a6', title: 'mês da mente', icon: 'M20 6 9 17l-5-5', unlocked: false },
+    ].map((a) => ({ ...a,
+      opacity: a.unlocked ? '1' : '0.42',
+      bg: a.unlocked ? 'rgba(254,175,76,0.18)' : 'var(--color-surface)',
+      stroke: a.unlocked ? '#c67518' : 'var(--color-text-disabled)' }));
+
+    const homeWaiting = vinc && empty;
+    const homeReady = !homeWaiting;
+
+    return {
+      // screen flags
+      isEntry: scr === 'entry', isHome: scr === 'home', isRefeicoes: scr === 'refeicoes',
+      isTreino: scr === 'treino', isAgua: scr === 'agua', isMenteHub: scr === 'menteHub',
+      isBreathing: scr === 'breathing', isHumor: scr === 'humor', isDiaFechado: scr === 'diaFechado',
+      isStreak: scr === 'streak',
+      isMealDetalhe: scr === 'mealDetalhe', isExDetalhe: scr === 'exDetalhe',
+      showNav: scr !== 'entry' && scr !== 'breathing',
+
+      // prototype chrome
+      soloBtnStyle: seg(!vinc), vincBtnStyle: seg(vinc),
+      cheioBtnStyle: seg(!empty), vazioBtnStyle: seg(empty),
+      setSolo: () => this.setState({ mode: 'solo' }),
+      setVinc: () => this.setState({ mode: 'vinculado' }),
+      setCheio: () => this.setState({ empty: false }),
+      setVazio: () => this.setState({ empty: true }),
+      reset: () => this.go('entry'),
+      enterSolo: () => this.setState({ mode: 'solo', empty: false, screen: 'home' }),
+      enterVinc: () => this.setState({ mode: 'vinculado', screen: 'cadastro' }),
+
+      // nav
+      goHome: () => this.go('home'), goRefeicoes: () => this.go('refeicoes'),
+      goTreino: () => this.go('treino'), goAgua: () => this.go('agua'),
+      goMente: () => this.go('menteHub'), goHumor: () => this.go('humor'),
+      goDiaFechado: () => this.go('diaFechado'), goStreak: () => this.go('streak'),
+      goPerfil: () => this.go('home'),
+      navHojeColor: (scr === 'home') ? 'var(--color-orange)' : 'var(--color-text-muted)',
+      navMenteColor: (scr === 'menteHub' || scr === 'humor') ? 'var(--color-orange)' : 'var(--color-text-muted)',
+      navProgColor: (scr === 'streak') ? 'var(--color-orange)' : 'var(--color-text-muted)',
+      navPerfilColor: 'var(--color-text-muted)',
+
+      // home
+      today: 'quinta, 3 de julho',
+      streakDays: 7,
+      showPro: vinc && !empty,
+      homeWaiting, homeReady,
+      dayLabel: dayPct + '%',
+      dayWidth: dayPct + '%',
+      daySub: allDone ? 'dia completo. que ritmo.' : 'você tá indo bem. falta pouco.',
+      refeicoesSub: empty ? 'a montar' : mealsDone + '/4 hoje',
+      treinoSub: empty ? 'a montar' : (s.treinoConcluido ? 'concluído' : 'inferiores'),
+      aguaSub: waterL(water) + '/' + waterL(goal) + ' l',
+      menteSub: s.menteDone ? 'feito hoje' : 'respirar · humor',
+
+      // refeições
+      empty, notEmpty: !empty, meals,
+      refDays, refDayLabel, refFuture: refIsFuture, refShowList: !refIsFuture,
+      mealD, exD,
+      refeicoesEmptyMsg: vinc ? 'a Dra. Camila ainda está montando seu cardápio.' : 'seu plano solo está sendo gerado. já já aparece.',
+
+      // treino
+      exercises, treinoProgress: exDoneCount + '/5',
+      treinoBtnLabel: s.treinoConcluido ? 'treino concluído' : 'concluir treino',
+      concludeTreino: () => this.concludeTreino(),
+      treinoEmptyMsg: vinc ? 'o Rafa ainda não publicou seu treino.' : 'seu treino base solo está sendo gerado.',
+
+      // água
+      waterC: C, waterOffset: C * (1 - pct),
+      waterLiters: waterL(water) + ' l', waterGoalLiters: waterL(goal) + ' l',
+      waterOptions, waterGoals,
+      waterCfgOpen: s.waterCfgOpen,
+      toggleWaterCfg: () => this.setState((st) => ({ waterCfgOpen: !st.waterCfgOpen })),
+      waterCfgBtnBg: s.waterCfgOpen ? 'var(--color-orange-subtle)' : 'var(--color-surface-elevated)',
+      waterCfgBtnColor: s.waterCfgOpen ? 'var(--color-orange)' : 'var(--color-text-secondary)',
+      waterMsg: waterMeta ? 'meta batida. mandou bem.' : 'siga hidratando ao longo do dia.',
+      waterMsgColor: waterMeta ? '#2f9e6b' : 'var(--color-text-muted)',
+
+      // mente
+      humorSub: s.mood ? 'hoje: ' + (moodDefs.find((m) => m.key === s.mood) || {}).label : 'como você tá agora?',
+      presets, moods, moodTags,
+      saveMood: () => this.saveMood(), moodSaved: s.moodSaved,
+      saveMoodOpacity: s.mood ? '1' : '0.45',
+
+      // respiração
+      breathScale: s.breathScale, breathTrans: s.breathTrans,
+      breathPhase: s.breathPhaseName || 'pronto',
+      breathHint: s.breathPhaseName === 'segura' ? 'segure com leveza' : s.breathPhaseName === 'expira' ? 'solte devagar' : 'acompanhe o círculo',
+      breathTime: this.fmt(s.breathTotalRemaining),
+      breathActive: s.breathRunning, breathDone: s.breathDone,
+
+      // dia fechado
+      dayItems, diaFechadoTitle: allDone ? 'dia redondo.' : completeCount + ' de 4 fechados.',
+      diaFechadoMsg: allDone ? 'consistência é isso: aparecer todo dia. amanhã tem mais.' : 'não precisa ser perfeito. o que você fez já conta.',
+      confirmDia: () => this.go('streak'),
+
+      // streak
+      streakBest: 12, weeksCount: 3,
+      streakMsg: 'sete dias seguidos cuidando de você. o resultado vem no embalo.',
+      achievements,
+      ...this.linkVals(),
+    };
+  }
+
+  fmt(sec) {
+    const m = Math.floor(sec / 60), r = sec % 60;
+    return m + ':' + (r < 10 ? '0' + r : r);
+  }
+}
+</script>
+</body>
+</html>

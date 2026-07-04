@@ -1,33 +1,176 @@
-/* ── Fonts ──────────────────────────────────────────────── */
-@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700,900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
 @import "tailwindcss";
 
-/* ── Design Tokens (espelhados da landing — extrair pra packages/ quando compartilhar) ── */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Nūtrk — Design System v2.0 (tokens do handoff Claude Design)
+   Light-only. O contraste vem das auras mesh, nunca do preto.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Regular.otf') format('opentype');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Medium.otf') format('opentype');
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Bold.otf') format('opentype');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Black.otf') format('opentype');
+  font-weight: 900; font-style: normal; font-display: swap;
+}
+
 :root {
-  --page-bg: #FAF9F7;
-  --panel:   #EEF0F7;
-  --ink:     #18191D;
-  --ink-2:   rgba(24,25,29,0.60);
-  --ink-3:   rgba(24,25,29,0.40);
-  --card:    #FFFFFF;
-  --border:  rgba(24,25,29,0.08);
+  /* ── Canvas / superfícies ── */
+  --canvas-1: #ffffff;
+  --canvas-2: #e7ecf7;
+  --color-base: #ffffff;
+  --color-surface: #EDF0F8;
+  --color-surface-elevated: #ffffff;
+  --color-surface-overlay: rgba(27, 28, 29, 0.28);
 
-  --color-orange:   #FE5F33;
-  --color-amber:    #FEAF4C;
-  --color-lavender: #ADB7F7;
-  --color-teal:     #ADF3F3;
-  --color-success:  #52D48A;
+  /* ── Laranja — o calor ── */
+  --color-orange: #fe5f33;
+  --color-orange-bright: #fe7031;
+  --color-orange-deep: #e94f22;
+  --color-orange-dim: rgba(254, 95, 51, 0.16);
+  --color-orange-subtle: rgba(254, 95, 51, 0.08);
 
-  --font-display: 'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* ── Temperaturas ── */
+  --warm-amber: #feaf4c;
+  --cool-lav: #adb7f7;
+  --cool-mint: #adf3f3;
 
-  --grad: linear-gradient(115deg, #FE5F33 0%, #FEAF4C 45%, #ADF3F3 100%);
+  /* ── Texto ── */
+  --color-text: #1b1c1d;
+  --color-text-secondary: #333333;
+  --color-text-muted: #6b6f78;
+  --color-text-disabled: #a6abb5;
+  --color-text-on-mesh: #ffffff;
+
+  /* ── Status ── */
+  --color-success: #2f9e6b;
+  --color-error: #ef4444;
+
+  /* ── Bordas ── */
+  --color-border: rgba(27, 28, 29, 0.10);
+  --color-border-strong: rgba(27, 28, 29, 0.18);
+
+  /* ── Gradientes ── */
+  --gradient-canvas: linear-gradient(180deg, var(--canvas-1) 0%, var(--canvas-2) 100%);
+  --gradient-accent: linear-gradient(90deg, #fe7031, #b6b8f6);
+
+  /* ── Mesh gradients (auras) ── */
+  --mesh-warm:
+    radial-gradient(80.4% 73.7% at 95.38% 26%, rgba(245,166,35,0.8) 0%, rgba(245,166,35,0) 99%),
+    radial-gradient(76.9% 76.9% at -46% -46%, rgba(192,132,252,0.8) 0%, rgba(192,132,252,0) 60%),
+    radial-gradient(112% 112% at -19% 100%, rgb(239,68,68) 0%, rgba(239,68,68,0) 100%),
+    linear-gradient(#adb4fc, #adb4fc);
+  --mesh-cool:
+    radial-gradient(90.5% 105.8% at 97.13% 54.37%, rgba(127,225,252,0.8) 0%, rgba(129,225,252,0) 100%),
+    radial-gradient(207% 59.5% at 91.5% 8.38%, rgba(181,187,251,0.9) 0%, rgba(174,181,252,0.09) 100%),
+    radial-gradient(120% 92.5% at 79.75% 100%, rgb(254,99,36) 0%, rgba(255,106,48,0) 100%),
+    linear-gradient(#feda97, #feda97);
+  --mesh-mist:
+    radial-gradient(58.5% 50.7% at 100% 5.87%, rgba(127,225,252,0.8) 0%, rgba(129,225,252,0) 100%),
+    radial-gradient(51.4% 39.7% at 5.5% 0%, rgba(252,99,47,0.9) 0%, rgba(183,167,240,0.45) 100%),
+    radial-gradient(107.7% 144.7% at 100% 41.25%, rgb(253,173,36) 0%, rgba(253,171,34,0.5) 100%),
+    linear-gradient(#a9b2fd, #a9b2fd);
+  --mesh-fresh:
+    radial-gradient(98.3% 102.3% at -16.5% -6.75%, rgba(253,171,40,0.8) 0%, rgba(253,170,39,0) 100%),
+    radial-gradient(58.9% 59.2% at 108.13% 13.13%, rgba(181,187,251,0.9) 0%, rgba(174,181,252,0.09) 100%),
+    radial-gradient(96.3% 66% at 52.63% 8%, rgb(184,168,240) 0%, rgba(186,170,241,0.3) 100%),
+    linear-gradient(#83d8e8, #83d8e8);
+
+  /* ── Liquid glass ── */
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-bg-strong: rgba(255, 255, 255, 0.72);
+  --glass-bg-tint: rgba(255, 255, 255, 0.22);
+  --glass-blur: blur(16px) saturate(1.6);
+  --glass-blur-strong: blur(28px) saturate(1.8);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.60);
+  --glass-border-soft: 1px solid rgba(255, 255, 255, 0.35);
+  --glass-shadow:
+    0 8px 32px rgba(27, 28, 29, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.70),
+    inset 0 -1px 1px rgba(27, 28, 29, 0.04);
+  --glass-shadow-lift:
+    0 16px 48px rgba(27, 28, 29, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.80),
+    inset 0 -1px 1px rgba(27, 28, 29, 0.05);
+
+  /* ── Sombras ── */
+  --shadow-sm: 0 2px 8px rgba(27, 28, 29, 0.05);
+  --shadow-card: 0 4px 24px rgba(27, 28, 29, 0.06);
+  --shadow-elevated: 0 12px 40px rgba(27, 28, 29, 0.10);
+  --halo-orange: 0 6px 24px rgba(254, 95, 51, 0.28);
+  --halo-warm: 0 6px 24px rgba(254, 175, 76, 0.30);
+
+  /* ── Radius ── */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 40px;
+  --radius-full: 9999px;
+
+  /* ── Tipografia ── */
+  --font-display: 'Satoshi', 'Inter', sans-serif;
+  --font-interface: var(--font-inter, 'Inter'), sans-serif;
+  --font-data: 'Satoshi', sans-serif;
+
+  /* ── Motion ── */
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100dvh;
 }
 
 body {
-  background: var(--page-bg);
-  color: var(--ink);
-  font-family: var(--font-body);
+  background: var(--canvas-2);
+  color: var(--color-text);
+  font-family: var(--font-interface);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
 }
+
+/* gradient de texto — só em palavra isolada, máx 1–2 por tela */
+.ntrk-grad-text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* scroll sem barra */
+.ntrk-scroll::-webkit-scrollbar { width: 0; height: 0; }
+.ntrk-scroll { scrollbar-width: none; }
+
+@keyframes ntrkPop {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.06); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes ntrkFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+button { font-family: var(--font-interface); }
+button:active { transform: scale(0.97); }
+input, textarea { font-family: var(--font-interface); }
