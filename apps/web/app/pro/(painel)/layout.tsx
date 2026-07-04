@@ -9,7 +9,7 @@ export default async function ProPainelLayout({
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect("/pro/cadastro");
+  if (!user) redirect("/pro/entrada");
 
   const { data: pro } = await supabase
     .from("professionals")

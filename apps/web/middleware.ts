@@ -10,6 +10,7 @@ const PUBLIC_PATHS = [
   "/confirmar",
   "/auth",
   "/pro/cadastro",
+  "/pro/entrada",
 ];
 
 export async function middleware(request: NextRequest) {
@@ -45,13 +46,18 @@ export async function middleware(request: NextRequest) {
 
   if (!user && !isPublic) {
     const url = request.nextUrl.clone();
-    url.pathname = "/entrada";
+    // deslogado em rota do painel → entrada do profissional
+    url.pathname = pathname.startsWith("/pro") ? "/pro/entrada" : "/entrada";
     return NextResponse.redirect(url);
   }
 
-  if (user && (pathname === "/entrada" || pathname === "/login")) {
+  if (
+    user &&
+    (pathname === "/entrada" || pathname === "/login" || pathname === "/pro/entrada")
+  ) {
     const url = request.nextUrl.clone();
-    url.pathname = "/";
+    // o layout do (app) redireciona profissionais pro /pro
+    url.pathname = pathname === "/pro/entrada" ? "/pro" : "/";
     return NextResponse.redirect(url);
   }
 
