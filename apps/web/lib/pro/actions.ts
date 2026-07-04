@@ -161,6 +161,206 @@ export async function respondAppointment(input: {
   revalidatePath("/pro/agenda");
 }
 
+// ── publicação de planos ────────────────────────────────────
+
+export interface PublishMeal {
+  name: string;
+  time: string;
+  foods: { foodId: string; qty: number }[];
+}
+
+export async function publishMealPlan(input: {
+  patientId: string;
+  planByDay: Record<number, PublishMeal[]>;
+}): Promise<{ ok: boolean; error?: string }> {
+  const { supabase, pro } = await requirePro();
+  if (pro.type !== "nutri") return { ok: false, error: "só o nutri publica plano alimentar." };
+
+  const { data: foods } = await supabase.from("foods").select("*");
+  const foodById = new Map((foods ?? []).map((f) => [f.id, f]));
+
+  // encerra protocolos alimentares ativos (solo ou anteriores)
+  await supabase
+    .from("meal_protocols")
+    .update({ status: "ended", ends_on: new Date().toISOString().slice(0, 10) })
+    .eq("patient_id", input.patientId)
+    .eq("status", "active");
+
+  const { data: protocol, error } = await supabase
+    .from("meal_protocols")
+    .insert({
+      patient_id: input.patientId,
+      created_by: pro.id,
+      name: `plano da ${pro.short_name ?? "nutri"}`,
+      plan_type: "pro",
+    })
+    .select("id")
+    .single();
+  if (error || !protocol) return { ok: false, error: "não conseguimos publicar agora." };
+
+  for (const [dowStr, meals] of Object.entries(input.planByDay)) {
+    const dow = Number(dowStr);
+    for (let i = 0; i < meals.length; i++) {
+      const meal = meals[i];
+      const rows = meal.foods
+        .map((f) => {
+          const food = foodById.get(f.foodId);
+          if (!food) return null;
+          const k = f.qty / Number(food.base_qty || 1);
+          return {
+            food,
+            qty: f.qty,
+            p: Number(food.protein_g ?? 0) * k,
+            c: Number(food.carbs_g ?? 0) * k,
+            g: Number(food.fat_g ?? 0) * k,
+            kcal: Number(food.kcal ?? 0) * k,
+          };
+        })
+        .filter(Boolean) as {
+        food: { id: string; name: string; unit: string };
+        qty: number;
+        p: number;
+        c: number;
+        g: number;
+        kcal: number;
+      }[];
+
+      const description = rows
+        .map((r) => `${r.food.name} (${r.qty}${r.food.unit === "un" || r.food.unit === "fatia" || r.food.unit === "dose" ? ` ${r.food.unit}` : r.food.unit})`)
+        .join(", ");
+      const sum = rows.reduce(
+        (a, r) => ({ p: a.p + r.p, c: a.c + r.c, g: a.g + r.g, kcal: a.kcal + r.kcal }),
+        { p: 0, c: 0, g: 0, kcal: 0 },
+      );
+
+      const { data: pm } = await supabase
+        .from("protocol_meals")
+        .insert({
+          protocol_id: protocol.id,
+          day_of_week: dow,
+          name: meal.name,
+          time: meal.time || null,
+          description: description || meal.name,
+          sort_order: i,
+          kcal: Math.round(sum.kcal),
+          protein_g: Math.round(sum.p),
+          carbs_g: Math.round(sum.c),
+          fat_g: Math.round(sum.g),
+        })
+        .select("id")
+        .single();
+
+      if (pm && rows.length > 0) {
+        await supabase.from("protocol_meal_items").insert(
+          rows.map((r) => ({
+            protocol_meal_id: pm.id,
+            food_id: r.food.id,
+            name: r.food.name,
+            qty: r.qty,
+            unit: r.food.unit,
+            protein_g: Math.round(r.p * 10) / 10,
+            carbs_g: Math.round(r.c * 10) / 10,
+            fat_g: Math.round(r.g * 10) / 10,
+            kcal: Math.round(r.kcal),
+          })),
+        );
+      }
+    }
+  }
+
+  await notifyPatient({
+    patientId: input.patientId,
+    type: "protocolo",
+    title: "plano alimentar novo no ar",
+    body: `${pro.name} deu uma repaginada no seu plano. dá uma olhada quando puder.`,
+  });
+  revalidatePath(`/pro/pacientes/${input.patientId}`);
+  return { ok: true };
+}
+
+export interface PublishExercise {
+  name: string;
+  reps: string;
+  videoUrl: string;
+  series: string[]; // carga sugerida por série (ex.: "30 kg", "corpo livre")
+}
+
+export async function publishTrainingPlan(input: {
+  patientId: string;
+  week: Record<number, { name: string; rest: boolean; exercises: PublishExercise[] }>;
+}): Promise<{ ok: boolean; error?: string }> {
+  const { supabase, pro } = await requirePro();
+  if (pro.type !== "personal") return { ok: false, error: "só o personal publica treino." };
+
+  await supabase
+    .from("training_protocols")
+    .update({ status: "ended", ends_on: new Date().toISOString().slice(0, 10) })
+    .eq("patient_id", input.patientId)
+    .eq("status", "active");
+
+  const { data: protocol, error } = await supabase
+    .from("training_protocols")
+    .insert({
+      patient_id: input.patientId,
+      created_by: pro.id,
+      name: `treino do ${pro.short_name ?? "personal"}`,
+      split_type: "pro",
+    })
+    .select("id")
+    .single();
+  if (error || !protocol) return { ok: false, error: "não conseguimos publicar agora." };
+
+  for (const [dowStr, day] of Object.entries(input.week)) {
+    const dow = Number(dowStr);
+    const isRest = day.rest || day.exercises.length === 0;
+    const { data: wd } = await supabase
+      .from("workout_days")
+      .insert({
+        protocol_id: protocol.id,
+        day_of_week: dow,
+        name: isRest ? "descanso" : day.name || "treino",
+        is_rest: isRest,
+        est_minutes: isRest ? null : Math.max(30, day.exercises.length * 9),
+      })
+      .select("id")
+      .single();
+
+    if (wd && !isRest) {
+      await supabase.from("workout_exercises").insert(
+        day.exercises.map((e, i) => ({
+          workout_day_id: wd.id,
+          name: e.name,
+          sets: Math.max(1, e.series.length),
+          reps_label: e.reps || "10 reps",
+          suggested_load: e.series.find((s) => s.trim()) ?? null,
+          set_targets: e.series,
+          video_url: e.videoUrl || null,
+          sort_order: i,
+        })),
+      );
+    }
+  }
+
+  await notifyPatient({
+    patientId: input.patientId,
+    type: "protocolo",
+    title: "treino novo no ar",
+    body: `${pro.name} montou sua nova semana de treino. bora?`,
+  });
+  revalidatePath(`/pro/pacientes/${input.patientId}`);
+  return { ok: true };
+}
+
+export async function addExerciseVideo(input: { name: string; url: string }) {
+  const { supabase, pro } = await requirePro();
+  await supabase.from("exercise_videos").insert({
+    professional_id: pro.id,
+    name: input.name,
+    url: input.url,
+  });
+  revalidatePath("/pro", "layout");
+}
+
 export async function notifyPatient(input: {
   patientId: string;
   type: "protocolo" | "mensagem" | "resultado" | "consulta";
