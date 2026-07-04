@@ -11,6 +11,14 @@ export default async function AppLayout({
   } = await supabase.auth.getUser();
   if (!user) redirect("/entrada");
 
+  // profissional logado vai pro painel dele
+  const { data: pro } = await supabase
+    .from("professionals")
+    .select("id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (pro) redirect("/pro");
+
   const { data: profile } = await supabase
     .from("profiles")
     .select("id, onboarding_completed_at")

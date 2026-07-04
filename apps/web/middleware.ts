@@ -9,6 +9,7 @@ const PUBLIC_PATHS = [
   "/redefinir",
   "/confirmar",
   "/auth",
+  "/pro/cadastro",
 ];
 
 export async function middleware(request: NextRequest) {
