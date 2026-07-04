@@ -31,6 +31,7 @@ Dias da semana → tipo do treino (ou descanso) → exercícios: thumbnail de v�
 ## Decisões de arquitetura
 
 - **Mesmo app** (`apps/web`), route group `(pro)` em `/pro/*` — compartilha tokens, UI, lib, supabase. Roteamento pós-login: tem linha em `professionals`? → `/pro`. Senão → app do paciente.
+- **Um painel pro só; `professional.type` liga/desliga blocos** (decisão do Dup, 2026-07-04): telas 100% compartilhadas; aba "plano" alterna MontadorAlimentar/MontadorTreino por tipo; copy em dicionário (paciente/aluno); evolução com tópico default por tipo. **Permissões por bloco valem no RLS**: escrita de meal_protocols só pro nutri vinculado, training_protocols só pro personal vinculado; leitura pros dois (colaboração).
 - Desktop-first com sidebar em `lg:`, bottom nav no mobile (o design entrega os dois).
 - Chat pro↔paciente reusa `messages` + realtime ✓. Notas com o par = `internal_notes` (thread por paciente) ✓ — a conversa fixada "par" na tela de mensagens abre esse thread.
 - "Publicar pro paciente/aluno" = protocolo `draft` → `active` + notificação pro paciente.
