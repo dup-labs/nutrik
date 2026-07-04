@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import { BackHeader, PrimaryButton } from "@/components/ui";
+import { BackHeader, MacroRow, PrimaryButton } from "@/components/ui";
 import { IconSwap } from "@/components/ui/icons";
 import { logMeal } from "@/lib/actions";
 import { createClient } from "@/lib/supabase/client";
@@ -90,9 +90,14 @@ export function MealDetailClient({
     <div style={{ padding: "24px 20px 40px" }}>
       <BackHeader href="/refeicoes" title={meal.name} subtitle={meal.time ?? undefined} />
 
-      <div style={{ fontSize: 14, lineHeight: 1.55, color: "var(--color-text-secondary)", marginBottom: 18 }}>
+      <div style={{ fontSize: 14, lineHeight: 1.55, color: "var(--color-text-secondary)", marginBottom: 12 }}>
         {meal.description}
       </div>
+      {meal.kcal != null && (
+        <div style={{ marginBottom: 18 }}>
+          <MacroRow kcal={meal.kcal} p={meal.protein_g} c={meal.carbs_g} g={meal.fat_g} boxed />
+        </div>
+      )}
 
       {label("uma foto, se quiser")}
       <input

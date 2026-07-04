@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Badge, Card } from "@/components/ui";
+import { Badge, Card, MacroRow } from "@/components/ui";
 import { IconChevronRight } from "@/components/ui/icons";
 import { dayNumber, dayOfWeek, weekdayShort } from "@/lib/dates";
 import type { MealLog, ProtocolMeal } from "@/lib/types";
@@ -191,6 +191,16 @@ export function RefeicoesClient({
                   >
                     {meal.description}
                   </div>
+                  {meal.kcal != null && (
+                    <div style={{ marginTop: 10 }}>
+                      <MacroRow
+                        kcal={meal.kcal}
+                        p={meal.protein_g}
+                        c={meal.carbs_g}
+                        g={meal.fat_g}
+                      />
+                    </div>
+                  )}
                   <div
                     style={{
                       marginTop: 12,

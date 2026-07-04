@@ -319,6 +319,69 @@ export function StreakRing({
   );
 }
 
+/** linha de macros: kcal + P/C/G com quadradinhos coloridos (design v2) */
+export function MacroRow({
+  kcal,
+  p,
+  c,
+  g,
+  boxed,
+}: {
+  kcal: number | null;
+  p: number | null;
+  c: number | null;
+  g: number | null;
+  boxed?: boolean;
+}) {
+  if (kcal == null) return null;
+  const macro = (label: string, value: number | null, color: string) =>
+    value == null ? null : (
+      <span
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 4,
+          fontSize: boxed ? 12 : 11,
+          color: "var(--color-text-muted)",
+        }}
+      >
+        <span style={{ width: 7, height: 7, borderRadius: 2, background: color }} />
+        {label} {Math.round(value)}g
+      </span>
+    );
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: boxed ? 12 : 10,
+        ...(boxed
+          ? {
+              padding: "12px 14px",
+              borderRadius: 10,
+              background: "var(--color-surface)",
+              border: "1px solid var(--color-border)",
+            }
+          : {}),
+      }}
+    >
+      <span
+        style={{
+          fontFamily: "var(--font-data)",
+          fontWeight: 700,
+          fontSize: boxed ? 14 : 13,
+          color: "var(--color-orange)",
+        }}
+      >
+        {Math.round(kcal)} kcal
+      </span>
+      {macro("P", p, "var(--color-orange)")}
+      {macro("C", c, "var(--warm-amber)")}
+      {macro("G", g, "var(--cool-lav)")}
+    </div>
+  );
+}
+
 /** avatar círculo com inicial sobre mesh */
 export function InitialAvatar({
   initial,

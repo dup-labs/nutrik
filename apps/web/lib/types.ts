@@ -50,6 +50,10 @@ export interface ProtocolMeal {
   time: string | null;
   description: string;
   sort_order: number;
+  kcal: number | null;
+  protein_g: number | null;
+  carbs_g: number | null;
+  fat_g: number | null;
 }
 
 export interface MealLog {
@@ -174,7 +178,12 @@ export interface PlanTemplate {
   name: string;
   description: string | null;
   payload: {
-    meals?: { name: string; time: string; description: string }[];
+    meals?: {
+      name: string;
+      time: string;
+      description: string;
+      mac?: { kcal: number; p: number; c: number; g: number };
+    }[];
     tags?: string[];
     est_minutes?: number;
     exercises?: {

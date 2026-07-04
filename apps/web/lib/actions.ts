@@ -116,6 +116,10 @@ export async function instantiateSoloPlans(): Promise<{ ok: boolean }> {
           time: m.time,
           description: m.description,
           sort_order: i,
+          kcal: m.mac?.kcal ?? null,
+          protein_g: m.mac?.p ?? null,
+          carbs_g: m.mac?.c ?? null,
+          fat_g: m.mac?.g ?? null,
         })),
       );
     }
@@ -537,15 +541,24 @@ export async function changeMealPlan(planKey: "secar" | "crescer" | "manter") {
     .single();
   if (mp) {
     await supabase.from("protocol_meals").insert(
-      (tpl.payload.meals as { name: string; time: string; description: string }[]).map(
-        (m, i) => ({
-          protocol_id: mp.id,
-          name: m.name,
-          time: m.time,
-          description: m.description,
-          sort_order: i,
-        }),
-      ),
+      (
+        tpl.payload.meals as {
+          name: string;
+          time: string;
+          description: string;
+          mac?: { kcal: number; p: number; c: number; g: number };
+        }[]
+      ).map((m, i) => ({
+        protocol_id: mp.id,
+        name: m.name,
+        time: m.time,
+        description: m.description,
+        sort_order: i,
+        kcal: m.mac?.kcal ?? null,
+        protein_g: m.mac?.p ?? null,
+        carbs_g: m.mac?.c ?? null,
+        fat_g: m.mac?.g ?? null,
+      })),
     );
   }
   revalidatePath("/", "layout");
