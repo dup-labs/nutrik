@@ -1,15 +1,13 @@
 import { redirect } from "next/navigation";
 import { ProShell } from "@/components/pro/ProShell";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthUser } from "@/lib/supabase/server";
 import { ensureProfessionalFromMetadata } from "@/lib/roles";
 
 export default async function ProPainelLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) redirect("/pro/entrada");
 
   let { data: pro } = await supabase

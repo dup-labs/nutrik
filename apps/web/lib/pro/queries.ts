@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { cache } from "react";
+import { createClient, getAuthUser } from "@/lib/supabase/server";
 import { addDays, localDateISO } from "@/lib/dates";
 import { currentStreak } from "@/lib/streak";
 import type { Professional, Profile } from "@/lib/types";
@@ -8,11 +9,9 @@ import { meshFor, type PatientStatus, type ProPatient } from "@/lib/pro/shared";
 export { meshFor, STATUS_BADGE, type PatientStatus, type ProPatient } from "@/lib/pro/shared";
 
 /** contexto de toda tela do painel: usuário precisa ter perfil profissional */
-export async function getProContext() {
+export const getProContext = cache(async () => {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) redirect("/pro/cadastro");
 
   const { data: pro } = await supabase
@@ -23,7 +22,7 @@ export async function getProContext() {
   if (!pro) redirect("/pro/cadastro");
 
   return { supabase, user, pro: pro as Professional };
-}
+});
 
 function lastLabel(daysAgo: number | null): string {
   if (daysAgo === null) return "sem registro";

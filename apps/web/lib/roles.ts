@@ -4,10 +4,31 @@
 //   patient → name, objective, invite_code?
 //   pro     → name, pro_type ('nutri'|'personal'), reg_code?
 
+import { cache } from "react";
 import type { User } from "@supabase/supabase-js";
-import type { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 
 type Supabase = Awaited<ReturnType<typeof createClient>>;
+
+const getProRow = cache(async (userId: string) => {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("professionals")
+    .select("id")
+    .eq("user_id", userId)
+    .maybeSingle();
+  return data;
+});
+
+const getProfileRow = cache(async (userId: string) => {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("profiles")
+    .select("id, onboarding_completed_at")
+    .eq("id", userId)
+    .maybeSingle();
+  return data;
+});
 
 export function generateInviteCode(name: string): string {
   const initials = name
@@ -106,11 +127,7 @@ export async function resolveDestination(
   user: User,
   flowHint?: string | null,
 ): Promise<string> {
-  const { data: pro } = await supabase
-    .from("professionals")
-    .select("id")
-    .eq("user_id", user.id)
-    .maybeSingle();
+  const pro = await getProRow(user.id);
   if (pro) return "/pro";
 
   const meta = (user.user_metadata ?? {}) as { role?: string };
@@ -120,11 +137,7 @@ export async function resolveDestination(
   }
   if (flowHint === "pro") return "/pro/cadastro"; // ex.: Google no fluxo pro
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("id, onboarding_completed_at")
-    .eq("id", user.id)
-    .maybeSingle();
+  const profile = await getProfileRow(user.id);
   if (profile) return profile.onboarding_completed_at ? "/" : "/anamnese";
 
   const created = await ensurePatientFromMetadata(supabase, user);

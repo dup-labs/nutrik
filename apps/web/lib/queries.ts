@@ -1,4 +1,5 @@
-import { createClient } from "@/lib/supabase/server";
+import { cache } from "react";
+import { createClient, getAuthUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import type {
   Appointment,
@@ -17,17 +18,15 @@ import type {
   WorkoutSession,
 } from "@/lib/types";
 
-export async function getSession() {
+export const getSession = cache(async () => {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) redirect("/entrada");
   return { supabase, user };
-}
+});
 
-/** perfil + vínculos — o "contexto" de todas as telas logadas */
-export async function getPatientContext() {
+/** perfil + vínculos — o "contexto" de todas as telas logadas (1x por request) */
+export const getPatientContext = cache(async () => {
   const { supabase, user } = await getSession();
   const [{ data: profile }, { data: links }] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", user.id).maybeSingle(),
@@ -43,7 +42,7 @@ export async function getPatientContext() {
     profile: profile as Profile | null,
     links: (links ?? []) as (ProfessionalLink & { professional: Professional })[],
   };
-}
+});
 
 export async function getActiveMealProtocol(supabase: Awaited<ReturnType<typeof createClient>>, patientId: string) {
   const { data: protocol } = await supabase
