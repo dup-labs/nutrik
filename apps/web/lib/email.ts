@@ -1,7 +1,7 @@
 // Emails transacionais do produto via Resend (direto, sem Supabase no meio).
 // Sem RESEND_API_KEY configurada, vira no-op silencioso (dev sem chave).
 
-const FROM = "Nūtrk <oi@nutrk.io>";
+const FROM = "Nūtrk <app@nutrk.io>";
 
 export async function sendEmail(input: {
   to: string;

@@ -6,8 +6,8 @@ interface WaitlistPayload {
   role:  string;
 }
 
-const TO_EMAIL   = "dup@dup.agency";
-const FROM_EMAIL = "Nūtrk <dup@dup.agency>";
+const TO_EMAIL   = "app@nutrk.io";
+const FROM_EMAIL = "Nūtrk <app@nutrk.io>";
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
