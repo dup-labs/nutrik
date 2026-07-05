@@ -25,6 +25,7 @@ export default function EntradaPage() {
           flexDirection: "column",
         }}
       >
+        <div className="auth-hero">
         <div
           style={{
             fontFamily: "var(--font-display)",
@@ -60,6 +61,8 @@ export default function EntradaPage() {
           }}
         >
           nutrição, treino e mente no seu ritmo. o que importa é a consistência.
+        </div>
+
         </div>
 
         <div

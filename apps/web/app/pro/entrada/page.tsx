@@ -1,11 +1,12 @@
 import Link from "next/link";
+import { AuthSplit } from "@/components/AuthSplit";
 import { MeshAura } from "@/components/ui";
 import { IconChevronRight, IconGrid, IconUser } from "@/components/ui/icons";
 
 export default function ProEntradaPage() {
   return (
-    <div className="auth-outer">
-      <div className="auth-inner auth-screen" style={{ minHeight: "100dvh" }}>
+    <AuthSplit variant="pro">
+      <div className="auth-screen" style={{ minHeight: "100dvh", position: "relative", display: "flex", flexDirection: "column", flex: 1 }}>
       <MeshAura mesh="cool" size={280} blur={30} opacity={0.55} style={{ top: -40, right: -60 }} />
       <MeshAura mesh="mist" size={220} blur={34} opacity={0.4} style={{ top: 200, left: -80 }} />
 
@@ -18,6 +19,7 @@ export default function ProEntradaPage() {
           flexDirection: "column",
         }}
       >
+        <div className="auth-hero">
         <div
           style={{
             fontFamily: "var(--font-display)",
@@ -54,6 +56,8 @@ export default function ProEntradaPage() {
         >
           nutri e personal acompanhando o mesmo paciente, lado a lado. planos,
           evolução e conversa num lugar só.
+        </div>
+
         </div>
 
         <div
@@ -170,6 +174,6 @@ export default function ProEntradaPage() {
         </div>
       </div>
       </div>
-    </div>
+    </AuthSplit>
   );
 }

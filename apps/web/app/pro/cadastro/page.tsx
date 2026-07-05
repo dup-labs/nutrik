@@ -13,6 +13,7 @@ import {
 } from "@/components/auth/fields";
 import { createClient } from "@/lib/supabase/client";
 import { createProfessionalProfile } from "@/lib/pro/actions";
+import { AuthSplit } from "@/components/AuthSplit";
 
 export default function ProCadastroPage() {
   const router = useRouter();
@@ -94,11 +95,12 @@ export default function ProCadastroPage() {
 
   if (inviteCode) {
     return (
-      <div className="auth-outer">
+      <AuthSplit variant="pro">
       <div
-        className="auth-inner auth-screen"
+        className="auth-screen"
         style={{
           minHeight: "100dvh",
+          flex: 1,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -169,13 +171,12 @@ export default function ProCadastroPage() {
           entrar no painel
         </button>
       </div>
-      </div>
+      </AuthSplit>
     );
   }
 
   return (
-    <div className="auth-outer">
-      <div className="auth-inner">
+    <AuthSplit variant="pro">
       <div style={{ position: "relative", padding: "56px 24px 32px" }}>
         <MeshAura mesh="cool" size={220} blur={30} opacity={0.45} style={{ top: -30, right: -50 }} />
         <div style={{ position: "relative" }}>
@@ -276,7 +277,6 @@ export default function ProCadastroPage() {
           )}
         </div>
       </div>
-      </div>
-    </div>
+    </AuthSplit>
   );
 }
