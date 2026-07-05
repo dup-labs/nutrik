@@ -5,6 +5,7 @@ import { IconBolt, IconChevronRight, IconLink } from "@/components/ui/icons";
 export default function EntradaPage() {
   return (
     <div
+      className="auth-screen"
       style={{
         position: "relative",
         minHeight: "100dvh",

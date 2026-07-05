@@ -4,18 +4,8 @@ import { IconChevronRight, IconGrid, IconUser } from "@/components/ui/icons";
 
 export default function ProEntradaPage() {
   return (
-    <div
-      style={{
-        minHeight: "100dvh",
-        background: "var(--gradient-canvas)",
-        maxWidth: 560,
-        margin: "0 auto",
-        position: "relative",
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <div className="auth-outer">
+      <div className="auth-inner auth-screen" style={{ minHeight: "100dvh" }}>
       <MeshAura mesh="cool" size={280} blur={30} opacity={0.55} style={{ top: -40, right: -60 }} />
       <MeshAura mesh="mist" size={220} blur={34} opacity={0.4} style={{ top: 200, left: -80 }} />
 
@@ -178,6 +168,7 @@ export default function ProEntradaPage() {
             </Link>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

@@ -91,7 +91,7 @@ function CadastroForm() {
   }
 
   return (
-    <div style={{ position: "relative", padding: "56px 24px 32px", minHeight: "100dvh" }}>
+    <div className="auth-screen" style={{ position: "relative", padding: "56px 24px 32px", minHeight: "100dvh" }}>
       <MeshAura mesh="warm" size={220} blur={30} opacity={0.5} style={{ top: -30, right: -50 }} />
       <div style={{ position: "relative" }}>
         <BackHeader

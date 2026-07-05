@@ -12,15 +12,16 @@ export default async function ConfirmarPage({
 
   return (
     <div
+      className="auth-screen"
       style={{
         position: "relative",
         minHeight: "100dvh",
+        padding: "48px 30px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
-        padding: "0 30px",
       }}
     >
       <MeshAura mesh="cool" size={260} blur={34} opacity={0.45} style={{ top: 60, right: -70 }} />

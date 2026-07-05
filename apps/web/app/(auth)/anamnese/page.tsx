@@ -52,7 +52,7 @@ export default function AnamnesePage() {
           alignItems: "center",
           justifyContent: "center",
           textAlign: "center",
-          minHeight: "100dvh",
+          minHeight: "70vh",
           padding: "0 30px",
         }}
       >

@@ -28,7 +28,7 @@ export default function RedefinirPage() {
   }
 
   return (
-    <div style={{ position: "relative", padding: "56px 24px 32px", minHeight: "100dvh" }}>
+    <div className="auth-screen" style={{ position: "relative", padding: "56px 24px 32px", minHeight: "100dvh" }}>
       <MeshAura mesh="cool" size={220} blur={30} opacity={0.45} style={{ top: -30, right: -50 }} />
       <div style={{ position: "relative" }}>
         <BackHeader href="/login" title="senha nova." subtitle="escolhe uma que você não esqueça." />
