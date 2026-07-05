@@ -27,6 +27,7 @@ export async function completeCadastro(input: {
     id: user.id,
     name: input.name.trim(),
     objective: input.objective,
+    email: user.email ?? null,
   });
   if (error) return { ok: false, error: "não conseguimos salvar seu perfil." };
 

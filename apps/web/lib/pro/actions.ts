@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { generateInviteCode } from "@/lib/roles";
+import { sendEmail } from "@/lib/email";
 
 async function requireUser() {
   const supabase = await createClient();
@@ -138,11 +139,34 @@ export async function respondAppointment(input: {
   status: "confirmed" | "declined";
 }) {
   const { supabase, pro } = await requirePro();
-  await supabase
+  const { data: appt } = await supabase
     .from("appointments")
     .update({ status: input.status })
     .eq("id", input.appointmentId)
-    .eq("professional_id", pro.id);
+    .eq("professional_id", pro.id)
+    .select("scheduled_at, patient:profiles(name, email)")
+    .maybeSingle();
+  if (input.status === "confirmed" && appt) {
+    const patient = appt.patient as { name?: string; email?: string } | null;
+    if (patient?.email) {
+      const dt = new Date(appt.scheduled_at).toLocaleString("pt-BR", {
+        timeZone: "America/Sao_Paulo",
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      await sendEmail({
+        to: patient.email,
+        subject: "consulta confirmada",
+        heading: `confirmado, ${(patient.name ?? "").split(" ")[0]}.`,
+        body: `${pro.name} confirmou sua consulta: ${dt}. te esperamos lá.`,
+        ctaLabel: "ver minhas consultas",
+        ctaUrl: "https://app.nutrk.io/consultas",
+      });
+    }
+  }
   revalidatePath("/pro/agenda");
 }
 
@@ -259,6 +283,21 @@ export async function publishMealPlan(input: {
     title: "plano alimentar novo no ar",
     body: `${pro.name} deu uma repaginada no seu plano. dá uma olhada quando puder.`,
   });
+  const { data: patient } = await supabase
+    .from("profiles")
+    .select("name, email")
+    .eq("id", input.patientId)
+    .maybeSingle();
+  if (patient?.email) {
+    await sendEmail({
+      to: patient.email,
+      subject: "seu plano alimentar novo tá no ar",
+      heading: `oi, ${patient.name.split(" ")[0]}.`,
+      body: `${pro.name} acabou de publicar seu novo plano alimentar. o convite é comer bem, no seu tempo.`,
+      ctaLabel: "ver meu plano",
+      ctaUrl: "https://app.nutrk.io/refeicoes",
+    });
+  }
   revalidatePath(`/pro/pacientes/${input.patientId}`);
   return { ok: true };
 }
@@ -332,6 +371,21 @@ export async function publishTrainingPlan(input: {
     title: "treino novo no ar",
     body: `${pro.name} montou sua nova semana de treino. bora?`,
   });
+  const { data: patient } = await supabase
+    .from("profiles")
+    .select("name, email")
+    .eq("id", input.patientId)
+    .maybeSingle();
+  if (patient?.email) {
+    await sendEmail({
+      to: patient.email,
+      subject: "sua nova semana de treino chegou",
+      heading: `oi, ${patient.name.split(" ")[0]}.`,
+      body: `${pro.name} montou sua nova semana de treino. movimento como prazer, não obrigação.`,
+      ctaLabel: "ver meu treino",
+      ctaUrl: "https://app.nutrk.io/treino",
+    });
+  }
   revalidatePath(`/pro/pacientes/${input.patientId}`);
   return { ok: true };
 }

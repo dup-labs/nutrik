@@ -75,6 +75,7 @@ export async function ensurePatientFromMetadata(
     id: user.id,
     name: meta.name.trim(),
     objective: meta.objective ?? null,
+    email: user.email ?? null,
   });
   if (error) return false;
 
