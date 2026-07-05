@@ -30,7 +30,7 @@ export function HumorClient({
   }
 
   return (
-    <div style={{ padding: "24px 20px 28px" }}>
+    <div style={{ padding: "24px 20px 28px", maxWidth: 640, margin: "0 auto" }}>
       <BackHeader href="/mente" title="como você tá hoje?" />
 
       <div style={{ display: "flex", justifyContent: "space-between", gap: 8, marginBottom: 26 }}>

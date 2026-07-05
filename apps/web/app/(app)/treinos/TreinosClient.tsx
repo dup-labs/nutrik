@@ -154,7 +154,7 @@ export function TreinosClient({
             </div>
           </Card>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 10 }}>
             {selExercises.map((ex) => (
               <Link key={ex.id} href={`/exercicio/${ex.id}`} style={{ textDecoration: "none" }}>
                 <div

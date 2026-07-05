@@ -127,7 +127,7 @@ export default async function HomePage() {
   ];
 
   return (
-    <div style={{ padding: "24px 20px 28px" }}>
+    <div style={{ padding: "24px 20px 28px", maxWidth: 1024, margin: "0 auto" }}>
       {/* saudação */}
       <div
         style={{
@@ -311,7 +311,7 @@ export default async function HomePage() {
       )}
 
       {/* os 4 mundos */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(165px, 1fr))", gap: 12 }}>
         {worlds.map((w) => (
           <Link key={w.href} href={w.href} style={{ textDecoration: "none" }}>
             <div

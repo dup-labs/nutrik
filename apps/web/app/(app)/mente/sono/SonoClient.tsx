@@ -125,7 +125,7 @@ export function SonoClient({
   );
 
   return (
-    <div style={{ padding: "24px 20px 28px" }}>
+    <div style={{ padding: "24px 20px 28px", maxWidth: 640, margin: "0 auto" }}>
       <BackHeader href="/mente" title="seu sono" subtitle="descanso é onde a evolução acontece." />
 
       <div

@@ -87,7 +87,7 @@ export function MealDetailClient({
   );
 
   return (
-    <div style={{ padding: "24px 20px 40px" }}>
+    <div style={{ padding: "24px 20px 40px", maxWidth: 640, margin: "0 auto" }}>
       <BackHeader href="/refeicoes" title={meal.name} subtitle={meal.time ?? undefined} />
 
       <div style={{ fontSize: 14, lineHeight: 1.55, color: "var(--color-text-secondary)", marginBottom: 12 }}>

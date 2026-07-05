@@ -65,7 +65,7 @@ export function ExercicioClient({
   }
 
   return (
-    <div style={{ padding: "24px 20px 40px" }}>
+    <div style={{ padding: "24px 20px 40px", maxWidth: 680, margin: "0 auto" }}>
       <BackHeader
         href="/treino"
         title={exercise.name}

@@ -88,7 +88,7 @@ export default function VincularPage() {
   }
 
   return (
-    <div style={{ position: "relative", padding: "24px 20px 28px" }}>
+    <div style={{ position: "relative", padding: "24px 20px 28px", maxWidth: 640, margin: "0 auto" }}>
       <MeshAura mesh="cool" size={200} blur={30} opacity={0.4} style={{ top: -40, right: -50 }} />
       <div style={{ position: "relative" }}>
         <BackHeader

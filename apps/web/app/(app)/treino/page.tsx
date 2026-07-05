@@ -36,7 +36,7 @@ export default async function TreinoPage() {
   );
 
   return (
-    <div style={{ padding: "24px 20px 28px" }}>
+    <div style={{ padding: "24px 20px 28px", maxWidth: 960, margin: "0 auto" }}>
       <BackHeader
         href="/"
         title="treino de hoje"

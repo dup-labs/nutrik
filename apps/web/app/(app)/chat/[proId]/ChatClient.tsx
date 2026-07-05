@@ -80,7 +80,7 @@ export function ChatClient({
         background: "var(--gradient-canvas)",
         display: "flex",
         flexDirection: "column",
-        maxWidth: 560,
+        maxWidth: 760,
         margin: "0 auto",
       }}
     >

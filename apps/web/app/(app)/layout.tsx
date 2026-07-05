@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { BottomNav } from "@/components/BottomNav";
+import { PatientShell } from "@/components/PatientShell";
 import { createClient } from "@/lib/supabase/server";
 import { resolveDestination } from "@/lib/roles";
 
@@ -16,18 +16,5 @@ export default async function AppLayout({
   const dest = await resolveDestination(supabase, user);
   if (dest !== "/") redirect(dest);
 
-  return (
-    <div
-      style={{
-        minHeight: "100dvh",
-        background: "var(--gradient-canvas)",
-        maxWidth: 560,
-        margin: "0 auto",
-        position: "relative",
-      }}
-    >
-      <div style={{ paddingBottom: 96 }}>{children}</div>
-      <BottomNav />
-    </div>
-  );
+  return <PatientShell>{children}</PatientShell>;
 }

@@ -19,7 +19,7 @@ export default async function ConsultasPage() {
   const appts = await getAppointments(supabase, user.id);
 
   return (
-    <div style={{ padding: "24px 20px 28px" }}>
+    <div style={{ padding: "24px 20px 28px", maxWidth: 760, margin: "0 auto" }}>
       <BackHeader href="/perfil" title="suas consultas" subtitle="o que vem pela frente." />
 
       {links.length === 0 ? (

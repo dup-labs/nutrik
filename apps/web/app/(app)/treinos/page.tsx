@@ -13,7 +13,7 @@ export default async function TreinosPage() {
     ?.professional.short_name;
 
   return (
-    <div style={{ padding: "24px 20px 28px" }}>
+    <div style={{ padding: "24px 20px 28px", maxWidth: 960, margin: "0 auto" }}>
       <BackHeader
         href="/treino"
         title="sua semana de treino"

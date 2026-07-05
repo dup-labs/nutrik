@@ -92,7 +92,7 @@ export default async function DiaPage() {
   const allDone = completeCount === 4;
 
   return (
-    <div style={{ padding: "24px 20px 28px" }}>
+    <div style={{ padding: "24px 20px 28px", maxWidth: 680, margin: "0 auto" }}>
       <BackHeader href="/" title="seu dia" />
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>

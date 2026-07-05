@@ -16,7 +16,7 @@ export default async function NotificacoesPage() {
     .limit(80);
 
   return (
-    <div style={{ padding: "24px 20px 28px" }}>
+    <div style={{ padding: "24px 20px 28px", maxWidth: 760, margin: "0 auto" }}>
       <BackHeader href="/" title="novidades" />
       {(notifs ?? []).length === 0 ? (
         <Card style={{ padding: "32px 22px", textAlign: "center" }}>

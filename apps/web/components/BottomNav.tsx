@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { IconBrain, IconChart, IconHome, IconUser } from "@/components/ui/icons";
 
-const ITEMS = [
+export const NAV_ITEMS = [
   { href: "/", label: "hoje", icon: IconHome, match: ["/", "/refeicoes", "/treino", "/treinos", "/agua", "/exercicio", "/dia"] },
   { href: "/mente", label: "mente", icon: IconBrain, match: ["/mente"] },
   { href: "/progresso", label: "progresso", icon: IconChart, match: ["/progresso"] },
@@ -14,11 +14,12 @@ const ITEMS = [
 export function BottomNav() {
   const pathname = usePathname();
 
-  const isActive = (item: (typeof ITEMS)[number]) =>
+  const isActive = (item: (typeof NAV_ITEMS)[number]) =>
     item.match.some((m) => (m === "/" ? pathname === "/" : pathname.startsWith(m)));
 
   return (
     <nav
+      className="pac-bottomnav"
       style={{
         position: "fixed",
         bottom: 0,
@@ -35,11 +36,9 @@ export function BottomNav() {
         justifyContent: "space-around",
         paddingTop: 10,
         zIndex: 50,
-        maxWidth: 560,
-        margin: "0 auto",
       }}
     >
-      {ITEMS.map((item) => {
+      {NAV_ITEMS.map((item) => {
         const active = isActive(item);
         const Icon = item.icon;
         return (

@@ -109,7 +109,7 @@ export default async function ProDetailPage({
         </div>
       </div>
 
-      <div style={{ padding: "44px 20px 0" }}>
+      <div style={{ padding: "44px 20px 0", maxWidth: 640, margin: "0 auto" }}>
         <div style={{ fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 22, letterSpacing: "-0.03em" }}>
           {pro.name}
         </div>

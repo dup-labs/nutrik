@@ -143,7 +143,7 @@ export default async function ProgressoPage() {
   };
 
   return (
-    <div style={{ padding: "24px 20px 28px" }}>
+    <div style={{ padding: "24px 20px 28px", maxWidth: 1024, margin: "0 auto" }}>
       <BackHeader href="/" title="sua consistência" />
 
       <div
@@ -243,7 +243,7 @@ export default async function ProgressoPage() {
       <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text-secondary)", marginBottom: 12 }}>
         conquistas
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 10 }}>
         {(allAchievements ?? []).map((a) => {
           const on = unlocked.has(a.key);
           return (

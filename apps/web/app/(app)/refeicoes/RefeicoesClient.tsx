@@ -131,7 +131,7 @@ export function RefeicoesClient({
           </div>
         </Card>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 12 }}>
           {dayMeals.map((meal) => {
             const log = logFor(meal.id, selected);
             const done = log?.status === "done";

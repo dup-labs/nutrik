@@ -18,10 +18,10 @@ export default async function MentePage() {
   const moodDef = mood ? MOOD_DEFS.find((m) => m.key === mood.mood) : null;
 
   return (
-    <div style={{ padding: "24px 20px 28px" }}>
+    <div style={{ padding: "24px 20px 28px", maxWidth: 960, margin: "0 auto" }}>
       <BackHeader href="/" title="mente" subtitle="uma pausa também é treino." />
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 22 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 12, marginBottom: 22 }}>
         <Link href="/mente/humor" style={{ textDecoration: "none" }}>
           <Card
             style={{
@@ -124,7 +124,7 @@ export default async function MentePage() {
       <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text-secondary)", marginBottom: 12 }}>
         respirar
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 12 }}>
         {PRESETS.map((p) => (
           <Link key={p.key} href={`/mente/respirar?tipo=${p.key}`} style={{ textDecoration: "none" }}>
             <div

@@ -174,3 +174,10 @@ body {
 button { font-family: var(--font-interface); }
 button:active { transform: scale(0.97); }
 input, textarea { font-family: var(--font-interface); }
+
+/* ── shell do paciente: trilho no desktop, bottom nav no mobile ── */
+.pac-sidebar { display: none; }
+@media (min-width: 1024px) {
+  .pac-sidebar { display: flex; }
+  .pac-bottomnav { display: none !important; }
+}
