@@ -1,14 +1,19 @@
 import { BackHeader, Card } from "@/components/ui";
 import { IconDumbbell } from "@/components/ui/icons";
-import { dayOfWeek, localDateISO } from "@/lib/dates";
-import { getActiveTrainingProtocol, getPatientContext } from "@/lib/queries";
+import { addDays, dayOfWeek, localDateISO, weekDays } from "@/lib/dates";
+import { getActiveTrainingProtocol, getPatientContext, getWorkoutSessions } from "@/lib/queries";
 import { TreinosClient } from "./TreinosClient";
 
 export const dynamic = "force-dynamic";
 
 export default async function TreinosPage() {
   const { supabase, user, links } = await getPatientContext();
-  const training = await getActiveTrainingProtocol(supabase, user.id);
+  const today = localDateISO();
+  const week = weekDays(today);
+  const [training, sessions] = await Promise.all([
+    getActiveTrainingProtocol(supabase, user.id),
+    getWorkoutSessions(supabase, user.id, addDays(week[0], -28), addDays(week[6], 14)),
+  ]);
   const personalName = links.find((l) => l.professional_type === "personal")
     ?.professional.short_name;
 
@@ -43,7 +48,9 @@ export default async function TreinosPage() {
         <TreinosClient
           days={training.days}
           exercises={training.exercises}
-          todayDow={dayOfWeek(localDateISO())}
+          today={today}
+          week={week}
+          sessions={sessions.map((s) => ({ date: s.date, dayId: s.workout_day_id, done: !!s.completed_at }))}
         />
       )}
     </div>

@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Card, MeshAura, Tag } from "@/components/ui";
-import { IconPlayOutline } from "@/components/ui/icons";
+import { IconCheck, IconChevronLeft, IconPlayOutline } from "@/components/ui/icons";
+import { addDays, dayNumber, dayOfWeek, monthShort } from "@/lib/dates";
 import type { WorkoutDay, WorkoutExercise } from "@/lib/types";
 
 const DOW_LABEL = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
@@ -13,39 +14,93 @@ const ORDER = [1, 2, 3, 4, 5, 6, 0];
 export function TreinosClient({
   days,
   exercises,
-  todayDow,
+  today,
+  week: baseWeek,
+  sessions,
 }: {
   days: WorkoutDay[];
   exercises: WorkoutExercise[];
-  todayDow: number;
+  today: string;
+  week: string[];
+  sessions: { date: string; dayId: string; done: boolean }[];
 }) {
+  const [weekOffset, setWeekOffset] = useState(0);
+  const week = baseWeek.map((d) => addDays(d, weekOffset * 7));
+  const todayDow = dayOfWeek(today);
   const [selDow, setSelDow] = useState(todayDow);
+
   const selDay = days.find((d) => d.day_of_week === selDow);
   const selExercises = selDay
     ? exercises.filter((e) => e.workout_day_id === selDay.id)
     : [];
+  const dateFor = (dow: number) => week[ORDER.indexOf(dow)];
+  const selDate = dateFor(selDow);
+  const selDone = sessions.some(
+    (s) => s.date === selDate && s.dayId === selDay?.id && s.done,
+  );
+
+  function shiftWeek(delta: number) {
+    setWeekOffset((o) => Math.max(-4, Math.min(2, o + delta)));
+  }
+  const weekLabel = `${dayNumber(week[0])}–${dayNumber(week[6])} ${monthShort(week[6])}`;
 
   return (
     <>
+      {/* navegação entre semanas */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+        <button
+          onClick={() => shiftWeek(-1)}
+          disabled={weekOffset <= -4}
+          aria-label="semana anterior"
+          style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid var(--color-border)", background: "var(--color-surface-elevated)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "var(--color-text-secondary)", opacity: weekOffset <= -4 ? 0.35 : 1 }}
+        >
+          <IconChevronLeft size={16} />
+        </button>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontFamily: "var(--font-data)", fontWeight: 700, fontSize: 14 }}>
+            semana de {weekLabel}
+          </div>
+          {weekOffset !== 0 && (
+            <button
+              onClick={() => setWeekOffset(0)}
+              style={{ background: "none", border: "none", padding: 0, fontSize: 11.5, fontWeight: 600, color: "var(--color-orange)", cursor: "pointer" }}
+            >
+              voltar pra semana atual
+            </button>
+          )}
+        </div>
+        <button
+          onClick={() => shiftWeek(1)}
+          disabled={weekOffset >= 2}
+          aria-label="próxima semana"
+          style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid var(--color-border)", background: "var(--color-surface-elevated)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "var(--color-text-secondary)", opacity: weekOffset >= 2 ? 0.35 : 1, transform: "rotate(180deg)" }}
+        >
+          <IconChevronLeft size={16} />
+        </button>
+      </div>
+
       <div
         className="ntrk-scroll"
         style={{ display: "flex", gap: 8, overflowX: "auto", marginBottom: 16, paddingBottom: 2 }}
       >
         {ORDER.map((dow) => {
           const day = days.find((d) => d.day_of_week === dow);
+          const date = dateFor(dow);
           const sel = selDow === dow;
-          const isToday = todayDow === dow;
+          const isToday = date === today;
+          const done = sessions.some((s) => s.date === date && s.dayId === day?.id && s.done);
           return (
             <button
               key={dow}
               onClick={() => setSelDow(dow)}
               style={{
                 flexShrink: 0,
-                minWidth: 48,
-                padding: "10px 6px",
+                minWidth: 52,
+                padding: "8px 6px",
                 borderRadius: "var(--radius-md)",
                 cursor: "pointer",
                 textAlign: "center",
+                position: "relative",
                 background: sel ? "var(--color-orange-subtle)" : "var(--color-surface)",
                 border: sel
                   ? "1.5px solid var(--color-orange-dim)"
@@ -54,10 +109,10 @@ export function TreinosClient({
                     : "1px solid var(--color-border)",
               }}
             >
-              <span
+              <div
                 style={{
                   fontFamily: "var(--font-data)",
-                  fontSize: 13,
+                  fontSize: 12,
                   textTransform: "uppercase",
                   color: sel
                     ? "var(--color-orange)"
@@ -69,7 +124,36 @@ export function TreinosClient({
                 }}
               >
                 {DOW_LABEL[dow]}
-              </span>
+              </div>
+              <div
+                style={{
+                  fontFamily: "var(--font-data)",
+                  fontWeight: 700,
+                  fontSize: 14,
+                  marginTop: 2,
+                  color: sel ? "var(--color-orange)" : "var(--color-text)",
+                }}
+              >
+                {dayNumber(date)}
+              </div>
+              {done && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: 4,
+                    right: 4,
+                    width: 14,
+                    height: 14,
+                    borderRadius: "50%",
+                    background: "#2f9e6b",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <IconCheck size={9} color="#fff" />
+                </span>
+              )}
             </button>
           );
         })}
@@ -130,9 +214,10 @@ export function TreinosClient({
                       {t}
                     </Tag>
                   ))}
+                  {selDone && <Tag>concluído nesse dia ✓</Tag>}
                 </div>
               </div>
-              {selDow === todayDow && (
+              {selDate === today && (
                 <div
                   style={{
                     height: 28,

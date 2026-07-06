@@ -4,21 +4,34 @@ import Link from "next/link";
 import { useState } from "react";
 import { Badge, Card, MacroRow } from "@/components/ui";
 import { IconChevronRight } from "@/components/ui/icons";
-import { dayNumber, dayOfWeek, weekdayShort } from "@/lib/dates";
+import { addDays, dayNumber, dayOfWeek, monthShort, weekdayShort } from "@/lib/dates";
+import { IconChevronLeft } from "@/components/ui/icons";
 import type { MealLog, ProtocolMeal } from "@/lib/types";
 
 export function RefeicoesClient({
   meals,
   logs,
   today,
-  days,
+  days: baseDays,
 }: {
   meals: ProtocolMeal[];
   logs: MealLog[];
   today: string;
   days: string[];
 }) {
+  const [weekOffset, setWeekOffset] = useState(0);
+  const days = baseDays.map((d) => addDays(d, weekOffset * 7));
   const [selected, setSelected] = useState(today);
+
+  function shiftWeek(delta: number) {
+    const next = Math.max(-4, Math.min(2, weekOffset + delta));
+    if (next === weekOffset) return;
+    setWeekOffset(next);
+    setSelected(addDays(baseDays[0], next * 7));
+    if (next === 0) setSelected(today);
+  }
+
+  const weekLabel = `${dayNumber(days[0])}–${dayNumber(days[6])} ${monthShort(days[6])}`;
   const isFuture = selected > today;
   const isPast = selected < today;
 
@@ -31,6 +44,36 @@ export function RefeicoesClient({
 
   return (
     <>
+      {/* navegação entre semanas */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+        <button
+          onClick={() => shiftWeek(-1)}
+          disabled={weekOffset <= -4}
+          aria-label="semana anterior"
+          style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid var(--color-border)", background: "var(--color-surface-elevated)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "var(--color-text-secondary)", opacity: weekOffset <= -4 ? 0.35 : 1 }}
+        >
+          <IconChevronLeft size={16} />
+        </button>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontFamily: "var(--font-data)", fontWeight: 700, fontSize: 14 }}>
+            semana de {weekLabel}
+          </div>
+          {weekOffset !== 0 && (
+            <button onClick={() => shiftWeek(-weekOffset)} style={{ background: "none", border: "none", padding: 0, fontSize: 11.5, fontWeight: 600, color: "var(--color-orange)", cursor: "pointer" }}>
+              voltar pra semana atual
+            </button>
+          )}
+        </div>
+        <button
+          onClick={() => shiftWeek(1)}
+          disabled={weekOffset >= 2}
+          aria-label="próxima semana"
+          style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid var(--color-border)", background: "var(--color-surface-elevated)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "var(--color-text-secondary)", opacity: weekOffset >= 2 ? 0.35 : 1, transform: "rotate(180deg)" }}
+        >
+          <IconChevronLeft size={16} />
+        </button>
+      </div>
+
       {/* seletor da semana */}
       <div style={{ display: "flex", gap: 6, marginBottom: 16 }}>
         {days.map((d) => {

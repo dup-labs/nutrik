@@ -400,6 +400,32 @@ export async function addExerciseVideo(input: { name: string; url: string }) {
   revalidatePath("/pro", "layout");
 }
 
+export async function requestCheckin(input: { patientId: string }) {
+  const { supabase, pro } = await requirePro();
+  // evita pedido duplicado pendente
+  const { data: existing } = await supabase
+    .from("checkin_requests")
+    .select("id")
+    .eq("patient_id", input.patientId)
+    .eq("professional_id", pro.id)
+    .eq("status", "pending")
+    .maybeSingle();
+  if (existing) return { ok: true, already: true };
+
+  await supabase.from("checkin_requests").insert({
+    patient_id: input.patientId,
+    professional_id: pro.id,
+  });
+  await notifyPatient({
+    patientId: input.patientId,
+    type: "resultado",
+    title: "check-in solicitado",
+    body: `${pro.name} quer saber como o corpo tá respondendo. leva 1 minuto.`,
+  });
+  revalidatePath(`/pro/pacientes/${input.patientId}`);
+  return { ok: true };
+}
+
 export async function notifyPatient(input: {
   patientId: string;
   type: "protocolo" | "mensagem" | "resultado" | "consulta";

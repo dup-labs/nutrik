@@ -49,6 +49,7 @@ export default async function HomePage() {
     breathDone,
     activity,
     unread,
+    { data: pendingCheckin },
   ] = await Promise.all([
     getActiveMealProtocol(supabase, user.id),
     getMealLogs(supabase, user.id, today, today),
@@ -59,6 +60,14 @@ export default async function HomePage() {
     getBreathOn(supabase, user.id, today),
     getActivityDates(supabase, user.id),
     getUnreadNotificationCount(supabase, user.id),
+    supabase
+      .from("checkin_requests")
+      .select("id, professional:professionals(name, short_name, type)")
+      .eq("patient_id", user.id)
+      .eq("status", "pending")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
   ]);
 
   const streak = currentStreak(activity.map((a) => a.date), today);
@@ -216,6 +225,52 @@ export default async function HomePage() {
           </Link>
         </div>
       </div>
+
+      {/* check-in solicitado pelo profissional */}
+      {pendingCheckin && (
+        <Link href={`/progresso/checkin?req=${pendingCheckin.id}`} style={{ textDecoration: "none" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              background: "var(--mesh-warm)",
+              borderRadius: "var(--radius-lg)",
+              padding: "14px 16px",
+              boxShadow: "var(--shadow-card)",
+              marginBottom: 16,
+              cursor: "pointer",
+              color: "#fff",
+            }}
+          >
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 15 }}>
+                check-in solicitado
+              </div>
+              <div style={{ fontSize: 13, opacity: 0.95, marginTop: 2 }}>
+                {((pendingCheckin.professional as { name?: string } | null)?.name ?? "seu profissional")}{" "}
+                quer saber como o corpo tá respondendo. leva 1 minuto.
+              </div>
+            </div>
+            <span
+              style={{
+                flexShrink: 0,
+                height: 34,
+                padding: "0 16px",
+                borderRadius: "var(--radius-pill)",
+                background: "#fff",
+                color: "#c67518",
+                fontSize: 13,
+                fontWeight: 700,
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              responder
+            </span>
+          </div>
+        </Link>
+      )}
 
       {/* aguardando protocolo (vinculado + vazio) */}
       {waiting ? (
@@ -393,6 +448,32 @@ export default async function HomePage() {
           )}
           {nutri && personal && (
             <div style={{ height: 1, background: "var(--color-border)", margin: "14px 0" }} />
+          )}
+          {nutri && !personal && (
+            <>
+              <div style={{ height: 1, background: "var(--color-border)", margin: "14px 0" }} />
+              <Link href="/perfil/vincular" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ width: 40, height: 40, borderRadius: "50%", border: "1.5px dashed var(--color-border-strong)", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-text-muted)", fontSize: 20 }}>+</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text)" }}>adicionar seu personal</div>
+                  <div style={{ fontSize: 13, color: "var(--color-text-muted)", marginTop: 1 }}>tem um código? treino e nutrição juntos.</div>
+                </div>
+                <IconChevronRight size={18} color="var(--color-text-muted)" />
+              </Link>
+            </>
+          )}
+          {personal && !nutri && (
+            <>
+              {personal && <div style={{ height: 1, background: "var(--color-border)", margin: "14px 0" }} />}
+              <Link href="/perfil/vincular" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ width: 40, height: 40, borderRadius: "50%", border: "1.5px dashed var(--color-border-strong)", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-text-muted)", fontSize: 20 }}>+</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text)" }}>adicionar seu nutri</div>
+                  <div style={{ fontSize: 13, color: "var(--color-text-muted)", marginTop: 1 }}>tem um código? nutrição e treino juntos.</div>
+                </div>
+                <IconChevronRight size={18} color="var(--color-text-muted)" />
+              </Link>
+            </>
           )}
           {personal && (
             <Link

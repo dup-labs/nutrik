@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Badge, Card, InitialAvatar, StreakRing } from "@/components/ui";
 import { IconChevronLeft, IconFace, MOOD_DEFS } from "@/components/ui/icons";
 import { dayNumber, monthShort, relativeLabel, weekdayShort } from "@/lib/dates";
-import { addInternalNote, savePatientDetails } from "@/lib/pro/actions";
+import { addInternalNote, requestCheckin, savePatientDetails } from "@/lib/pro/actions";
 import { meshFor, STATUS_BADGE, type ProPatient } from "@/lib/pro/shared";
 import { PRO_ACCENT, type ProfessionalType } from "@/lib/types";
 import type { PRO_COPY } from "@/lib/pro/copy";
@@ -99,7 +99,10 @@ export function PacienteDetailClient({
             registro: {patient.lastLabel} · constância {patient.adherence}%
           </div>
         </div>
-        <StreakRing days={patient.streak} max={30} size={72} label="dias" />
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <CheckinRequestButton patientId={patient.id} />
+          <StreakRing days={patient.streak} max={30} size={72} label="dias" />
+        </div>
       </div>
 
       {/* tabs */}
@@ -162,6 +165,34 @@ export function PacienteDetailClient({
         <NotasTab patientId={patient.id} partner={partner} notes={notes} />
       )}
     </div>
+  );
+}
+
+function CheckinRequestButton({ patientId }: { patientId: string }) {
+  const [state, setState] = useState<"idle" | "busy" | "sent">("idle");
+  return (
+    <button
+      onClick={async () => {
+        if (state !== "idle") return;
+        setState("busy");
+        await requestCheckin({ patientId });
+        setState("sent");
+      }}
+      style={{
+        height: 38,
+        padding: "0 16px",
+        borderRadius: "var(--radius-pill)",
+        border: state === "sent" ? "1px solid rgba(47,158,107,0.4)" : "1px solid var(--color-border-strong)",
+        background: state === "sent" ? "rgba(47,158,107,0.10)" : "var(--color-surface-elevated)",
+        fontSize: 13,
+        fontWeight: 600,
+        color: state === "sent" ? "#2f9e6b" : "var(--color-text-secondary)",
+        cursor: "pointer",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {state === "sent" ? "check-in solicitado ✓" : state === "busy" ? "enviando..." : "solicitar check-in"}
+    </button>
   );
 }
 

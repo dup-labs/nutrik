@@ -4,7 +4,6 @@ import {
   IconBrain,
   IconCalendar,
   IconCheck,
-  IconClipboardCheck,
   IconDrop,
   IconDumbbell,
   IconFlame,
@@ -109,6 +108,39 @@ export default async function ProgressoPage() {
     };
   }
 
+  // detalhe de hoje (aba "dia")
+  const todayIsRest = restDows.has(dayOfWeek(today));
+  const todayDetail = {
+    mealsDone: mealDoneByDay.get(today) ?? 0,
+    mealsTotal: mealsPerDay,
+    workout: (todayIsRest ? "rest" : workoutDays.has(today) ? "done" : "pending") as
+      | "rest"
+      | "done"
+      | "pending",
+    waterMl: waterByDay.get(today) ?? 0,
+    waterGoal: goal,
+    mindDone: mindDays.has(today),
+  };
+
+  // calendário do mês corrente (aba "mês")
+  const entriesByDate = new Map(activity.map((a) => [a.date, a.entries]));
+  const [yy, mm] = today.split("-").map(Number);
+  const dim = new Date(yy, mm, 0).getDate();
+  const firstDow = new Date(yy, mm - 1, 1).getDay(); // 0=dom
+  const monthOffset = firstDow === 0 ? 6 : firstDow - 1; // grade seg→dom
+  const monthCells = Array.from({ length: dim }, (_, i) => {
+    const date = `${yy}-${String(mm).padStart(2, "0")}-${String(i + 1).padStart(2, "0")}`;
+    const e = entriesByDate.get(date) ?? 0;
+    return {
+      date,
+      day: i + 1,
+      level: date > today ? -1 : e === 0 ? 0 : e <= 2 ? 1 : e <= 4 ? 2 : 3,
+      isToday: date === today,
+    };
+  });
+  const MONTHS_LONG = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+  const monthLabel = MONTHS_LONG[mm - 1];
+
   const pastWeekDays = days.filter((d) => d <= today);
   const monthDates = Array.from({ length: 30 }, (_, i) => addDays(monthStart, i)).filter(
     (d) => d <= today,
@@ -197,10 +229,17 @@ export default async function ProgressoPage() {
         </Card>
       </div>
 
-      <ProgressoClient perPct={perPct} weekCells={weekCells} />
+      <ProgressoClient
+        perPct={perPct}
+        weekCells={weekCells}
+        todayDetail={todayDetail}
+        monthCells={monthCells}
+        monthOffset={monthOffset}
+        monthLabel={monthLabel}
+      />
 
       <div style={{ display: "flex", gap: 10, margin: "0 0 24px" }}>
-        <Link href="/progresso/evolucao" style={{ flex: 1, textDecoration: "none" }}>
+        <Link href="/progresso/evolucao" style={{ flex: 1, textDecoration: "none", maxWidth: 360 }}>
           <div
             style={{
               height: 48,
@@ -217,25 +256,6 @@ export default async function ProgressoPage() {
             }}
           >
             <IconGrid size={16} color="#c67518" /> evolução
-          </div>
-        </Link>
-        <Link href="/progresso/checkin" style={{ flex: 1, textDecoration: "none" }}>
-          <div
-            style={{
-              height: 48,
-              borderRadius: "var(--radius-pill)",
-              border: "1px solid var(--color-border-strong)",
-              background: "var(--color-surface-elevated)",
-              color: "var(--color-text)",
-              fontWeight: 600,
-              fontSize: 14,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 7,
-            }}
-          >
-            <IconClipboardCheck size={16} color="#fe5f33" /> check-in
           </div>
         </Link>
       </div>

@@ -393,15 +393,33 @@ export async function saveCheckin(input: {
   bodyFeeling: number;
   energy: number;
   clothesFit: string | null;
+  requestId?: string;
 }) {
   const { supabase, user } = await requireUser();
-  await supabase.from("wellbeing_checkins").insert({
-    patient_id: user.id,
-    body_feeling: input.bodyFeeling,
-    energy: input.energy,
-    clothes_fit: input.clothesFit,
-  });
+  const { data: checkin } = await supabase
+    .from("wellbeing_checkins")
+    .insert({
+      patient_id: user.id,
+      body_feeling: input.bodyFeeling,
+      energy: input.energy,
+      clothes_fit: input.clothesFit,
+    })
+    .select("id")
+    .single();
+
+  if (input.requestId && checkin) {
+    await supabase
+      .from("checkin_requests")
+      .update({
+        status: "completed",
+        checkin_id: checkin.id,
+        completed_at: new Date().toISOString(),
+      })
+      .eq("id", input.requestId)
+      .eq("patient_id", user.id);
+  }
   revalidatePath("/progresso");
+  revalidatePath("/");
 }
 
 // ── Conquistas ──────────────────────────────────────────────

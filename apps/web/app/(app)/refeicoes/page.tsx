@@ -12,7 +12,8 @@ export default async function RefeicoesPage() {
 
   const [{ meals }, logs] = await Promise.all([
     getActiveMealProtocol(supabase, user.id),
-    getMealLogs(supabase, user.id, addDays(days[0], -0), days[6]),
+    // 5 semanas pra trás + 2 pra frente: histórico e planejamento
+    getMealLogs(supabase, user.id, addDays(days[0], -35), addDays(days[6], 14)),
   ]);
 
   const linked = links.length > 0;
