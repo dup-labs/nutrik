@@ -318,11 +318,16 @@ nav.site-nav.scrolled {
 }
 
 /* ── App showcase ──────────────────────────────────────── */
+.phone-wrap {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
 .phone-row {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 18px;
+  gap: 20px;
   margin-top: 56px;
 }
 .phone-slot { flex-shrink: 0; }

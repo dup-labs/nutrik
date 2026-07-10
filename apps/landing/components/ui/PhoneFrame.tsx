@@ -4,8 +4,16 @@ interface PhoneFrameProps {
   style?: React.CSSProperties;
 }
 
+// canvas lógico em que as telas são desenhadas (área útil abaixo da status bar).
+// o conteúdo é escalado por transform pra preencher o frame em qualquer largura —
+// aumentar `width` amplia tudo junto (fonte, espaçamento) sem distorcer.
+const CANVAS_W = 232;
+const CANVAS_H = 480.5;
+
 export default function PhoneFrame({ children, width = 300, style = {} }: PhoneFrameProps) {
   const scale = width / 300;
+  const contentW = width - 20 * scale; // largura interna real (frame - padding)
+  const childScale = contentW / CANVAS_W;
   return (
     <div style={{
       width,
@@ -34,8 +42,11 @@ export default function PhoneFrame({ children, width = 300, style = {} }: PhoneF
         </div>
         {/* dynamic island */}
         <div style={{ position: "absolute", top: 9 * scale, left: "50%", transform: "translateX(-50%)", width: 92 * scale, height: 26 * scale, background: "#18191D", borderRadius: 9999, zIndex: 5 }} />
+        {/* área de conteúdo — canvas lógico fixo escalado pra preencher o frame */}
         <div style={{ height: `calc(100% - ${40 * scale}px)`, overflow: "hidden", position: "relative" }}>
-          {children}
+          <div style={{ width: CANVAS_W, height: CANVAS_H, transform: `scale(${childScale})`, transformOrigin: "top left" }}>
+            {children}
+          </div>
         </div>
       </div>
     </div>

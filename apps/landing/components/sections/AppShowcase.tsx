@@ -16,11 +16,14 @@ export default function AppShowcase() {
             Nutrição, treino e mente conversam entre si — e a sua turma te puxa pra frente. Telas de verdade do que já roda hoje.
           </p>
         </div>
+      </div>
+      {/* fileira de telefones num container próprio, mais largo que o padrão */}
+      <div className="phone-wrap">
         <div className="phone-row">
-          <div className="reveal reveal-d0 phone-slot"><PhoneFrame width={248}><HojeScreen /></PhoneFrame></div>
-          <div className="reveal reveal-d1 phone-slot"><PhoneFrame width={248}><TreinoScreen /></PhoneFrame></div>
-          <div className="reveal reveal-d2 phone-slot"><PhoneFrame width={248}><RefeicoesScreen /></PhoneFrame></div>
-          <div className="reveal reveal-d3 phone-slot"><PhoneFrame width={248}><RankingScreen /></PhoneFrame></div>
+          <div className="reveal reveal-d0 phone-slot"><PhoneFrame width={300}><HojeScreen /></PhoneFrame></div>
+          <div className="reveal reveal-d1 phone-slot"><PhoneFrame width={300}><TreinoScreen /></PhoneFrame></div>
+          <div className="reveal reveal-d2 phone-slot"><PhoneFrame width={300}><RefeicoesScreen /></PhoneFrame></div>
+          <div className="reveal reveal-d3 phone-slot"><PhoneFrame width={300}><RankingScreen /></PhoneFrame></div>
         </div>
       </div>
     </section>
