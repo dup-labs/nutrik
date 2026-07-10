@@ -2,8 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { localDateISO } from "@/lib/dates";
+import { syncDailyScore } from "@/lib/scoring";
 import { createClient } from "@/lib/supabase/server";
-import type { PlanTemplate } from "@/lib/types";
+import { FEATURE_KEYS, type FeatureKey, type PlanTemplate } from "@/lib/types";
+import { ensureUsername } from "@/lib/username";
 
 async function requireUser() {
   const supabase = await createClient();
@@ -30,6 +33,7 @@ export async function completeCadastro(input: {
     email: user.email ?? null,
   });
   if (error) return { ok: false, error: "não conseguimos salvar seu perfil." };
+  await ensureUsername(supabase, user.id, user.email);
 
   let linked = false;
   const code = input.inviteCode?.trim().toUpperCase();
@@ -229,6 +233,7 @@ export async function logMeal(input: {
     },
     { onConflict: "patient_id,protocol_meal_id,date" },
   );
+  await syncDailyScore(supabase, user.id, input.date);
   revalidatePath("/refeicoes");
   revalidatePath("/");
 }
@@ -288,6 +293,7 @@ export async function concludeWorkout(input: {
     { onConflict: "patient_id,workout_day_id,date" },
   );
   await unlockAchievement("first_workout");
+  await syncDailyScore(supabase, user.id, input.date);
   revalidatePath("/treino");
   revalidatePath("/");
 }
@@ -326,6 +332,7 @@ export async function addWater(input: { date: string; amountMl: number }) {
   const total = (logs ?? []).reduce((s, l) => s + l.amount_ml, 0);
   if (total >= (setting?.daily_goal_ml ?? 2000)) await unlockAchievement("hydration_day");
 
+  await syncDailyScore(supabase, user.id, input.date);
   revalidatePath("/agua");
   revalidatePath("/");
 }
@@ -335,6 +342,7 @@ export async function setWaterGoal(goalMl: number) {
   await supabase
     .from("water_settings")
     .upsert({ patient_id: user.id, daily_goal_ml: goalMl });
+  await syncDailyScore(supabase, user.id, localDateISO());
   revalidatePath("/agua");
 }
 
@@ -371,6 +379,7 @@ export async function saveSleep(input: {
     },
     { onConflict: "patient_id,date" },
   );
+  await syncDailyScore(supabase, user.id, input.date);
   revalidatePath("/mente");
   revalidatePath("/");
 }
@@ -383,6 +392,7 @@ export async function logBreath(input: { kind: "box" | "pausa"; durationS: numbe
     duration_s: input.durationS,
   });
   await unlockAchievement("first_breath");
+  await syncDailyScore(supabase, user.id, localDateISO());
   revalidatePath("/mente");
   revalidatePath("/");
 }
@@ -533,6 +543,39 @@ export async function updateProfileName(name: string) {
   const { supabase, user } = await requireUser();
   await supabase.from("profiles").update({ name: name.trim() }).eq("id", user.id);
   revalidatePath("/perfil");
+}
+
+export async function updateFeatures(features: Partial<Record<FeatureKey, boolean>>) {
+  const { supabase, user } = await requireUser();
+  const clean = Object.fromEntries(
+    FEATURE_KEYS.map((k) => [k, features[k] !== false]),
+  );
+  await supabase.from("profiles").update({ features: clean }).eq("id", user.id);
+  revalidatePath("/", "layout");
+}
+
+export async function setUsername(
+  usernameRaw: string,
+): Promise<{ ok: boolean; error?: string }> {
+  const { supabase, user } = await requireUser();
+  const username = usernameRaw.trim().toLowerCase();
+  if (username && !/^[a-z0-9_.]{3,20}$/.test(username))
+    return { ok: false, error: "3 a 20 caracteres: letras minúsculas, números, ponto ou _." };
+  const { error } = await supabase
+    .from("profiles")
+    .update({ username: username || null })
+    .eq("id", user.id);
+  if (error)
+    return {
+      ok: false,
+      error:
+        error.message.includes("duplicate") || error.message.includes("unique")
+          ? "esse username já tá em uso."
+          : "não conseguimos salvar agora.",
+    };
+  revalidatePath("/perfil");
+  revalidatePath("/amigos");
+  return { ok: true };
 }
 
 export async function changeMealPlan(planKey: "secar" | "crescer" | "manter") {

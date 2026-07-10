@@ -7,6 +7,7 @@
 import { cache } from "react";
 import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
+import { ensureUsername } from "@/lib/username";
 
 type Supabase = Awaited<ReturnType<typeof createClient>>;
 
@@ -99,6 +100,7 @@ export async function ensurePatientFromMetadata(
     email: user.email ?? null,
   });
   if (error) return false;
+  await ensureUsername(supabase, user.id, user.email);
 
   if (meta.invite_code) {
     const { data: pro } = await supabase

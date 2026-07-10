@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { localDateISO } from "@/lib/dates";
-import { getPatientContext, getSetLogs } from "@/lib/queries";
+import { getPatientContext, getSetLogs, requireFeature } from "@/lib/queries";
 import type { WorkoutExercise } from "@/lib/types";
 import { ExercicioClient } from "./ExercicioClient";
 
@@ -11,6 +11,7 @@ export default async function ExercicioPage({
 }: {
   params: Promise<{ exerciseId: string }>;
 }) {
+  await requireFeature("treino");
   const { exerciseId } = await params;
   const { supabase, user } = await getPatientContext();
   const today = localDateISO();

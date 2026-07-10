@@ -1,12 +1,13 @@
 import { BackHeader, Card } from "@/components/ui";
 import { IconDumbbell } from "@/components/ui/icons";
 import { addDays, dayOfWeek, localDateISO, weekDays } from "@/lib/dates";
-import { getActiveTrainingProtocol, getPatientContext, getWorkoutSessions } from "@/lib/queries";
+import { getActiveTrainingProtocol, getPatientContext, getWorkoutSessions, requireFeature } from "@/lib/queries";
 import { TreinosClient } from "./TreinosClient";
 
 export const dynamic = "force-dynamic";
 
 export default async function TreinosPage() {
+  await requireFeature("treino");
   const { supabase, user, links } = await getPatientContext();
   const today = localDateISO();
   const week = weekDays(today);

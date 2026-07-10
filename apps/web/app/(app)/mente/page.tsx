@@ -4,6 +4,7 @@ import { IconChevronRight, IconMoon, IconPlay } from "@/components/ui/icons";
 import { MOOD_DEFS, IconFace } from "@/components/ui/icons";
 import { localDateISO } from "@/lib/dates";
 import { getMoodOn, getPatientContext } from "@/lib/queries";
+import { featureOn } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -13,9 +14,11 @@ const PRESETS = [
 ];
 
 export default async function MentePage() {
-  const { supabase, user } = await getPatientContext();
+  const { supabase, user, profile } = await getPatientContext();
   const mood = await getMoodOn(supabase, user.id, localDateISO());
   const moodDef = mood ? MOOD_DEFS.find((m) => m.key === mood.mood) : null;
+  const sonoOn = featureOn(profile, "sono");
+  const meditacaoOn = featureOn(profile, "meditacao");
 
   return (
     <div style={{ padding: "24px 20px 28px", maxWidth: 960, margin: "0 auto" }}>
@@ -71,6 +74,7 @@ export default async function MentePage() {
           </Card>
         </Link>
 
+        {sonoOn && (
         <Link href="/mente/sono" style={{ textDecoration: "none" }}>
           <Card
             style={{
@@ -119,8 +123,11 @@ export default async function MentePage() {
             <IconChevronRight size={20} color="var(--color-text-muted)" />
           </Card>
         </Link>
+        )}
       </div>
 
+      {meditacaoOn && (
+      <>
       <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text-secondary)", marginBottom: 12 }}>
         respirar
       </div>
@@ -188,6 +195,8 @@ export default async function MentePage() {
           </Link>
         ))}
       </div>
+      </>
+      )}
     </div>
   );
 }

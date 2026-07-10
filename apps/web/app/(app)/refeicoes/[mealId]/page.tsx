@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { localDateISO } from "@/lib/dates";
-import { getPatientContext } from "@/lib/queries";
+import { getPatientContext, requireFeature } from "@/lib/queries";
 import type { MealLog, ProtocolMeal } from "@/lib/types";
 import { MealDetailClient } from "./MealDetailClient";
 
@@ -13,6 +13,7 @@ export default async function MealDetailPage({
   params: Promise<{ mealId: string }>;
   searchParams: Promise<{ d?: string }>;
 }) {
+  await requireFeature("dieta");
   const { mealId } = await params;
   const { d } = await searchParams;
   const date = d ?? localDateISO();

@@ -2,10 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Card, PrimaryButton } from "@/components/ui";
+import { Card, PrimaryButton, Switch } from "@/components/ui";
 import { TextInput } from "@/components/auth/fields";
-import { changeMealPlan, updateProfileName } from "@/lib/actions";
+import { changeMealPlan, setUsername, updateFeatures, updateProfileName } from "@/lib/actions";
 import { createClient } from "@/lib/supabase/client";
+import type { FeatureKey } from "@/lib/types";
 
 const PLANS: { key: "secar" | "crescer" | "manter"; label: string; desc: string }[] = [
   { key: "secar", label: "secar", desc: "refeições leves, sem passar fome" },
@@ -13,20 +14,35 @@ const PLANS: { key: "secar" | "crescer" | "manter"; label: string; desc: string 
   { key: "manter", label: "manter", desc: "equilíbrio no dia a dia" },
 ];
 
+const FEATURES: { key: FeatureKey; label: string; desc: string }[] = [
+  { key: "dieta", label: "dieta", desc: "refeições do seu plano alimentar" },
+  { key: "treino", label: "treino", desc: "seu treino da semana" },
+  { key: "agua", label: "água", desc: "meta diária de hidratação" },
+  { key: "meditacao", label: "meditação", desc: "pausas pra respirar" },
+  { key: "sono", label: "sono", desc: "registro das suas noites" },
+];
+
 export function ConfiguracoesClient({
   name,
   email,
   soloPlanKey,
   hasLinks,
+  features,
+  username,
 }: {
   name: string;
   email: string;
   soloPlanKey: string | null;
   hasLinks: boolean;
+  features: Record<FeatureKey, boolean>;
+  username: string;
 }) {
   const router = useRouter();
   const [nome, setNome] = useState(name);
+  const [user, setUser] = useState(username);
+  const [userError, setUserError] = useState("");
   const [plan, setPlan] = useState(soloPlanKey);
+  const [feats, setFeats] = useState(features);
   const [savedMsg, setSavedMsg] = useState("");
   const [busy, setBusy] = useState(false);
   const [pwSent, setPwSent] = useState(false);
@@ -34,8 +50,17 @@ export function ConfiguracoesClient({
   async function handleSave() {
     if (busy) return;
     setBusy(true);
+    setUserError("");
     if (nome.trim().length >= 2 && nome.trim() !== name) {
       await updateProfileName(nome);
+    }
+    if (user.trim().toLowerCase() !== username) {
+      const result = await setUsername(user);
+      if (!result.ok) {
+        setUserError(result.error ?? "não conseguimos salvar o username.");
+        setBusy(false);
+        return;
+      }
     }
     if (plan && plan !== soloPlanKey) {
       await changeMealPlan(plan as "secar" | "crescer" | "manter");
@@ -43,6 +68,12 @@ export function ConfiguracoesClient({
     setSavedMsg("salvo. tudo certo por aqui.");
     setBusy(false);
     router.refresh();
+  }
+
+  function toggleFeature(key: FeatureKey) {
+    const next = { ...feats, [key]: !feats[key] };
+    setFeats(next);
+    updateFeatures(next); // salva na hora, otimista
   }
 
   async function handlePasswordReset() {
@@ -66,6 +97,54 @@ export function ConfiguracoesClient({
 
       {label("seu email")}
       <TextInput value={email} disabled style={{ marginBottom: 20, opacity: 0.6 }} />
+
+      {label("seu username")}
+      <TextInput
+        value={user}
+        placeholder="ex: brunodup"
+        onChange={(e) => setUser(e.target.value.toLowerCase().replace(/[^a-z0-9_.]/g, ""))}
+        style={{ marginBottom: userError ? 8 : 6 }}
+      />
+      {userError && (
+        <div style={{ fontSize: 13, color: "var(--color-error)", marginBottom: 12 }}>
+          {userError}
+        </div>
+      )}
+      <div style={{ fontSize: 12, color: "var(--color-text-muted)", marginBottom: 20, lineHeight: 1.5 }}>
+        é como seus amigos te encontram nas turmas.
+      </div>
+
+      {label("o que você acompanha")}
+      <Card style={{ padding: "4px 16px", marginBottom: 8 }}>
+        {FEATURES.map((f, i) => (
+          <div
+            key={f.key}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              padding: "13px 0",
+              borderTop: i > 0 ? "1px solid var(--color-border)" : "none",
+            }}
+          >
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: 600, fontSize: 15 }}>{f.label}</div>
+              <div style={{ fontSize: 12, color: "var(--color-text-muted)", marginTop: 1 }}>
+                {f.desc}
+              </div>
+            </div>
+            <Switch
+              checked={feats[f.key] !== false}
+              onChange={() => toggleFeature(f.key)}
+              label={f.label}
+            />
+          </div>
+        ))}
+      </Card>
+      <div style={{ fontSize: 12, color: "var(--color-text-muted)", marginBottom: 20, lineHeight: 1.5 }}>
+        o que você desligar some do app e não pontua no ranking das turmas.
+        seus registros ficam guardados.
+      </div>
 
       {soloPlanKey && !hasLinks && (
         <>

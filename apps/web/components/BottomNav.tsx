@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { IconBrain, IconChart, IconHome, IconUser } from "@/components/ui/icons";
+import { IconBrain, IconChart, IconHome, IconUser, IconUsers } from "@/components/ui/icons";
 
 export const NAV_ITEMS = [
   { href: "/", label: "hoje", icon: IconHome, match: ["/", "/refeicoes", "/treino", "/treinos", "/agua", "/exercicio", "/dia"] },
   { href: "/mente", label: "mente", icon: IconBrain, match: ["/mente"] },
   { href: "/progresso", label: "progresso", icon: IconChart, match: ["/progresso"] },
+  { href: "/amigos", label: "amigos", icon: IconUsers, match: ["/amigos"] },
   { href: "/perfil", label: "perfil", icon: IconUser, match: ["/perfil", "/consultas", "/notificacoes", "/chat"] },
 ];
 

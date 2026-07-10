@@ -7,12 +7,14 @@ import {
   getPatientContext,
   getSetLogs,
   getWorkoutSessions,
+  requireFeature,
 } from "@/lib/queries";
 import { TreinoClient } from "./TreinoClient";
 
 export const dynamic = "force-dynamic";
 
 export default async function TreinoPage() {
+  await requireFeature("treino");
   const { supabase, user, links } = await getPatientContext();
   const today = localDateISO();
 

@@ -24,7 +24,7 @@ import {
   getWorkoutSessions,
 } from "@/lib/queries";
 import { currentStreak } from "@/lib/streak";
-import { PRO_ACCENT } from "@/lib/types";
+import { featureOn, PRO_ACCENT } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -73,6 +73,12 @@ export default async function HomePage() {
   const streak = currentStreak(activity.map((a) => a.date), today);
   const firstName = (profile?.name ?? "").split(" ")[0];
 
+  // toggles: pilares que o paciente acompanha
+  const dietaOn = featureOn(profile, "dieta");
+  const treinoOn = featureOn(profile, "treino");
+  const aguaOn = featureOn(profile, "agua");
+  const meditacaoOn = featureOn(profile, "meditacao");
+
   // estado do dia
   const todayMeals = meals.filter(
     (m) => m.day_of_week === null || m.day_of_week === dayOfWeek(today),
@@ -81,13 +87,17 @@ export default async function HomePage() {
   const todayWorkout = training.days.find((d) => d.day_of_week === dayOfWeek(today));
   const workoutDone = sessions.some((s) => s.completed_at);
   const waterMet = water.total >= water.goal;
-  const mindDone = !!mood || breathDone;
+  const mindDone = !!mood || (meditacaoOn && breathDone);
 
   const waiting = linked && todayMeals.length === 0 && training.days.length === 0;
 
-  const dayMax = (todayMeals.length || 4) + 3;
+  const dayMax =
+    (dietaOn ? todayMeals.length || 4 : 0) + (treinoOn ? 1 : 0) + (aguaOn ? 1 : 0) + 1;
   const dayScore =
-    mealsDone + (workoutDone ? 1 : 0) + (waterMet ? 1 : 0) + (mindDone ? 1 : 0);
+    (dietaOn ? mealsDone : 0) +
+    (treinoOn && workoutDone ? 1 : 0) +
+    (aguaOn && waterMet ? 1 : 0) +
+    (mindDone ? 1 : 0);
   const dayPct = Math.min(100, Math.round((dayScore / dayMax) * 100));
 
   const nutri = links.find((l) => l.professional_type === "nutri");
@@ -95,6 +105,7 @@ export default async function HomePage() {
 
   const worlds = [
     {
+      on: dietaOn,
       href: "/refeicoes",
       title: "nutrição",
       sub: todayMeals.length === 0 ? "a montar" : `${mealsDone}/${todayMeals.length} hoje`,
@@ -103,6 +114,7 @@ export default async function HomePage() {
       icon: <IconFork size={22} color="#c67518" />,
     },
     {
+      on: treinoOn,
       href: "/treino",
       title: "treino",
       sub:
@@ -118,6 +130,7 @@ export default async function HomePage() {
       icon: <IconDumbbell size={22} color="#fe5f33" />,
     },
     {
+      on: aguaOn,
       href: "/agua",
       title: "água",
       sub: `${waterL(water.total)}/${waterL(water.goal)} l`,
@@ -126,14 +139,15 @@ export default async function HomePage() {
       icon: <IconDrop size={22} color="#2b93a8" />,
     },
     {
+      on: true, // mente fica: humor não é toggle
       href: "/mente",
       title: "mente",
-      sub: mindDone ? "feito hoje" : "respirar · humor",
+      sub: mindDone ? "feito hoje" : meditacaoOn ? "respirar · humor" : "humor",
       mesh: "fresh" as const,
       iconBg: "rgba(173,183,247,0.24)",
       icon: <IconBrain size={22} color="#5a63c4" />,
     },
-  ];
+  ].filter((w) => w.on);
 
   return (
     <div style={{ padding: "24px 20px 28px", maxWidth: 1024, margin: "0 auto" }}>
@@ -164,7 +178,7 @@ export default async function HomePage() {
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {linked && (
+          {(
             <Link
               href="/notificacoes"
               style={{

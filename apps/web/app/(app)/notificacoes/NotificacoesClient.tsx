@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { markAllNotificationsRead, markNotificationRead } from "@/lib/actions";
 import { relativeLabel } from "@/lib/dates";
@@ -11,6 +12,16 @@ const NICON: Record<string, string> = {
   resultado: "M3 3v18h18M7 15l3-3 3 3 4-5",
   consulta:
     "M8 2v4M16 2v4M3.5 9.5h17M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z",
+  turma:
+    "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M12.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75",
+};
+
+// acento warm pras notificações de turma (não vêm de um profissional)
+const TURMA_ACCENT = {
+  accent: "#c67518",
+  bg: "rgba(254,175,76,0.20)",
+  soft: "rgba(254,175,76,0.12)",
+  border: "1px solid rgba(254,175,76,0.45)",
 };
 
 type Notif = AppNotification & {
@@ -18,13 +29,18 @@ type Notif = AppNotification & {
 };
 
 export function NotificacoesClient({ notifications }: { notifications: Notif[] }) {
-  const [filter, setFilter] = useState<"todas" | "nutri" | "personal">("todas");
+  const router = useRouter();
+  const [filter, setFilter] = useState<"todas" | "nutri" | "personal" | "turma">("todas");
   const [read, setRead] = useState<Set<string>>(
     () => new Set(notifications.filter((n) => n.read_at).map((n) => n.id)),
   );
 
-  const filtered = notifications.filter(
-    (n) => filter === "todas" || n.professional?.type === filter,
+  const filtered = notifications.filter((n) =>
+    filter === "todas"
+      ? true
+      : filter === "turma"
+        ? n.type === "turma"
+        : n.professional?.type === filter,
   );
   const unreadCount = notifications.filter((n) => !read.has(n.id)).length;
 
@@ -63,6 +79,7 @@ export function NotificacoesClient({ notifications }: { notifications: Notif[] }
           {seg("todas", "todas")}
           {seg("nutri", "nutri")}
           {seg("personal", "personal")}
+          {seg("turma", "turma")}
         </div>
         {unreadCount > 0 && (
           <button
@@ -86,7 +103,7 @@ export function NotificacoesClient({ notifications }: { notifications: Notif[] }
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {filtered.map((n) => {
           const proType = n.professional?.type ?? "nutri";
-          const acc = PRO_ACCENT[proType];
+          const acc = n.type === "turma" ? TURMA_ACCENT : PRO_ACCENT[proType];
           const isRead = read.has(n.id);
           return (
             <div
@@ -95,6 +112,13 @@ export function NotificacoesClient({ notifications }: { notifications: Notif[] }
                 if (!isRead) {
                   setRead((s) => new Set(s).add(n.id));
                   markNotificationRead(n.id);
+                }
+                if (n.type === "turma" && n.group_id) {
+                  router.push(
+                    n.title === "mensagens na turma"
+                      ? `/amigos/${n.group_id}/chat`
+                      : `/amigos/${n.group_id}`,
+                  );
                 }
               }}
               style={{

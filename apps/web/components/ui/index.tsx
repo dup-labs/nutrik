@@ -178,6 +178,57 @@ export function PrimaryButton({
   );
 }
 
+/** switch on/off no estilo do DS (pill laranja quando ligado) */
+export function Switch({
+  checked,
+  onChange,
+  disabled,
+  label,
+}: {
+  checked: boolean;
+  onChange: (next: boolean) => void;
+  disabled?: boolean;
+  label?: string;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label={label}
+      disabled={disabled}
+      onClick={() => onChange(!checked)}
+      style={{
+        width: 46,
+        height: 28,
+        borderRadius: 99,
+        border: checked ? "none" : "1px solid var(--color-border-strong)",
+        background: checked ? "var(--color-orange)" : "var(--color-surface)",
+        position: "relative",
+        cursor: disabled ? "default" : "pointer",
+        opacity: disabled ? 0.45 : 1,
+        flexShrink: 0,
+        padding: 0,
+        transition: "background .18s var(--ease-out)",
+      }}
+    >
+      <span
+        style={{
+          position: "absolute",
+          top: checked ? 3 : 2,
+          left: checked ? 21 : 3,
+          width: 22,
+          height: 22,
+          borderRadius: "50%",
+          background: "#fff",
+          boxShadow: "0 1px 4px rgba(0,0,0,0.18)",
+          transition: "left .18s var(--ease-out)",
+        }}
+      />
+    </button>
+  );
+}
+
 /** header de tela interna: seta de voltar + título + subtítulo */
 export function BackHeader({
   href,

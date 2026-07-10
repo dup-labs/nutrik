@@ -1,5 +1,6 @@
 import { BackHeader } from "@/components/ui";
 import { getActiveMealProtocol, getPatientContext } from "@/lib/queries";
+import { FEATURE_KEYS, featureOn, type FeatureKey } from "@/lib/types";
 import { ConfiguracoesClient } from "./ConfiguracoesClient";
 
 export const dynamic = "force-dynamic";
@@ -7,6 +8,10 @@ export const dynamic = "force-dynamic";
 export default async function ConfiguracoesPage() {
   const { supabase, user, profile, links } = await getPatientContext();
   const { protocol } = await getActiveMealProtocol(supabase, user.id);
+
+  const features = Object.fromEntries(
+    FEATURE_KEYS.map((k) => [k, featureOn(profile, k)]),
+  ) as Record<FeatureKey, boolean>;
 
   return (
     <div style={{ padding: "24px 20px 28px", maxWidth: 640, margin: "0 auto" }}>
@@ -18,6 +23,8 @@ export default async function ConfiguracoesPage() {
           protocol && !protocol.created_by ? (protocol.plan_type ?? null) : null
         }
         hasLinks={links.length > 0}
+        features={features}
+        username={profile?.username ?? ""}
       />
     </div>
   );

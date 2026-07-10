@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { createClient, getAuthUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { featureOn, type FeatureKey } from "@/lib/types";
 import type {
   Appointment,
   MealLog,
@@ -43,6 +44,12 @@ export const getPatientContext = cache(async () => {
     links: (links ?? []) as (ProfessionalLink & { professional: Professional })[],
   };
 });
+
+/** guard de rota: pilar desligado nos toggles → volta pra home */
+export async function requireFeature(key: FeatureKey) {
+  const { profile } = await getPatientContext();
+  if (!featureOn(profile, key)) redirect("/");
+}
 
 export async function getActiveMealProtocol(supabase: Awaited<ReturnType<typeof createClient>>, patientId: string) {
   const { data: protocol } = await supabase

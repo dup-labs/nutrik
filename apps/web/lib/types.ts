@@ -2,12 +2,24 @@
 
 export type ProfessionalType = "nutri" | "personal";
 
+/** pilares que o paciente escolhe acompanhar (configurações) */
+export type FeatureKey = "dieta" | "treino" | "agua" | "meditacao" | "sono";
+
+export const FEATURE_KEYS: FeatureKey[] = ["dieta", "treino", "agua", "meditacao", "sono"];
+
 export interface Profile {
   id: string;
   name: string;
+  username: string | null;
   avatar_url: string | null;
   objective: string | null;
   onboarding_completed_at: string | null;
+  features: Partial<Record<FeatureKey, boolean>> | null;
+}
+
+/** pilar ligado? (default true — perfis antigos/sem a coluna acompanham tudo) */
+export function featureOn(profile: Pick<Profile, "features"> | null, key: FeatureKey): boolean {
+  return profile?.features?.[key] !== false;
 }
 
 export interface Professional {
@@ -157,11 +169,75 @@ export interface Message {
 export interface AppNotification {
   id: string;
   professional_id: string | null;
-  type: "protocolo" | "mensagem" | "resultado" | "consulta";
+  group_id: string | null;
+  type: "protocolo" | "mensagem" | "resultado" | "consulta" | "turma";
   title: string;
   body: string | null;
   created_at: string;
   read_at: string | null;
+}
+
+// ── Social: turmas ──────────────────────────────────────────
+
+export interface FriendGroup {
+  id: string;
+  name: string;
+  code: string;
+  owner_id: string;
+  join_policy: "open" | "approval";
+  /** pilares que valem ponto no ranking desta turma (default: todos) */
+  scored_metrics: FeatureKey[] | null;
+  created_at: string;
+}
+
+/** métricas pontuáveis da turma, normalizadas (turma sem config = todos os pilares) */
+export function groupMetrics(group: Pick<FriendGroup, "scored_metrics">): FeatureKey[] {
+  const m = group.scored_metrics;
+  if (!m || m.length === 0) return FEATURE_KEYS;
+  return FEATURE_KEYS.filter((k) => m.includes(k));
+}
+
+export interface FriendGroupMember {
+  group_id: string;
+  patient_id: string;
+  joined_at: string;
+}
+
+/** perfil público de colega de turma (view nutrk.friend_profiles) */
+export interface FriendProfile {
+  id: string;
+  name: string;
+  username: string | null;
+  avatar_url: string | null;
+}
+
+export interface GroupInvite {
+  id: string;
+  group_id: string;
+  kind: "invite" | "request";
+  inviter_id: string | null;
+  invitee_id: string;
+  status: "pending" | "accepted" | "declined";
+  created_at: string;
+}
+
+export interface GroupMessage {
+  id: string;
+  group_id: string;
+  sender_id: string;
+  body: string;
+  created_at: string;
+}
+
+export interface DailyScore {
+  patient_id: string;
+  date: string;
+  dieta: boolean;
+  treino: boolean;
+  agua: boolean;
+  meditacao: boolean;
+  sono: boolean;
+  total: number;
 }
 
 export interface Achievement {

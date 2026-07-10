@@ -19,6 +19,7 @@ import {
   getWaterToday,
   getWorkoutSessions,
 } from "@/lib/queries";
+import { featureOn } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -29,7 +30,7 @@ function waterL(n: number) {
 }
 
 export default async function DiaPage() {
-  const { supabase, user } = await getPatientContext();
+  const { supabase, user, profile } = await getPatientContext();
   const today = localDateISO();
 
   const [{ meals }, mealLogs, training, sessions, water, mood, breathDone] =
@@ -51,11 +52,12 @@ export default async function DiaPage() {
   const isRest = todayWorkout?.is_rest ?? false;
   const workoutDone = sessions.some((s) => s.completed_at) || isRest;
   const waterMet = water.total >= water.goal;
-  const mindDone = !!mood || breathDone;
+  const mindDone = !!mood || (featureOn(profile, "meditacao") && breathDone);
 
   const items = [
     {
       key: "ref",
+      on: featureOn(profile, "dieta"),
       label: "refeições",
       icon: <IconFork size={18} color="#c67518" />,
       iconBg: "rgba(254,175,76,0.16)",
@@ -64,6 +66,7 @@ export default async function DiaPage() {
     },
     {
       key: "tre",
+      on: featureOn(profile, "treino"),
       label: "treino",
       icon: <IconDumbbell size={18} color="#fe5f33" />,
       iconBg: "var(--color-orange-subtle)",
@@ -72,6 +75,7 @@ export default async function DiaPage() {
     },
     {
       key: "agu",
+      on: featureOn(profile, "agua"),
       label: "água",
       icon: <IconDrop size={18} color="#2b93a8" />,
       iconBg: "rgba(173,243,243,0.28)",
@@ -80,16 +84,17 @@ export default async function DiaPage() {
     },
     {
       key: "men",
+      on: true, // humor não é toggle — mente sempre conta
       label: "mente",
       icon: <IconBrain size={18} color="#5a63c4" />,
       iconBg: "rgba(173,183,247,0.24)",
       complete: mindDone,
       status: mindDone ? "registrado" : "em aberto",
     },
-  ];
+  ].filter((i) => i.on);
 
   const completeCount = items.filter((i) => i.complete).length;
-  const allDone = completeCount === 4;
+  const allDone = completeCount === items.length;
 
   return (
     <div style={{ padding: "24px 20px 28px", maxWidth: 680, margin: "0 auto" }}>
@@ -150,7 +155,7 @@ export default async function DiaPage() {
         }}
       >
         <div style={{ fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 20, letterSpacing: "-0.02em" }}>
-          {allDone ? "dia redondo." : `${completeCount} de 4 fechados.`}
+          {allDone ? "dia redondo." : `${completeCount} de ${items.length} fechados.`}
         </div>
         <div style={{ fontSize: 14, lineHeight: 1.5, marginTop: 8, opacity: 0.95 }}>
           {allDone

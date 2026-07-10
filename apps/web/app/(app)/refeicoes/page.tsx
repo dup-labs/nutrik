@@ -1,11 +1,12 @@
 import { BackHeader, Card } from "@/components/ui";
 import { addDays, localDateISO, weekDays } from "@/lib/dates";
-import { getActiveMealProtocol, getMealLogs, getPatientContext } from "@/lib/queries";
+import { getActiveMealProtocol, getMealLogs, getPatientContext, requireFeature } from "@/lib/queries";
 import { RefeicoesClient } from "./RefeicoesClient";
 
 export const dynamic = "force-dynamic";
 
 export default async function RefeicoesPage() {
+  await requireFeature("dieta");
   const { supabase, user, links } = await getPatientContext();
   const today = localDateISO();
   const days = weekDays(today);
