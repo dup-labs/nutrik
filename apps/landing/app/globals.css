@@ -321,11 +321,16 @@ nav.site-nav.scrolled {
 .phone-row {
   display: flex;
   justify-content: center;
-  align-items: flex-end;
-  gap: 24px;
+  align-items: center;
+  gap: 18px;
   margin-top: 56px;
 }
-.phone-b { transform: translateY(-28px); }
+.phone-slot { flex-shrink: 0; }
+/* arco suave: telas das pontas descem, do meio sobem */
+.phone-row .phone-slot:nth-child(1) { transform: translateY(16px); }
+.phone-row .phone-slot:nth-child(2) { transform: translateY(-14px); }
+.phone-row .phone-slot:nth-child(3) { transform: translateY(-14px); }
+.phone-row .phone-slot:nth-child(4) { transform: translateY(16px); }
 
 /* ── FAQ ───────────────────────────────────────────────── */
 .faq-item {
@@ -419,9 +424,22 @@ nav.site-nav.scrolled {
 @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
 
 /* ── Responsive ────────────────────────────────────────── */
-@media (max-width: 1000px) {
-  .phone-a, .phone-c { display: none; }
-  .phone-b { transform: none; }
+@media (max-width: 1080px) {
+  /* vira carrossel com snap: todas as 4 telas continuam acessíveis */
+  .phone-row {
+    justify-content: flex-start;
+    align-items: center;
+    gap: 16px;
+    margin-left: -24px;
+    margin-right: -24px;
+    padding: 24px 24px 8px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .phone-row::-webkit-scrollbar { display: none; }
+  .phone-row .phone-slot { scroll-snap-align: center; transform: none !important; }
 }
 @media (max-width: 900px) {
   .container, .nav-inner { padding: 0 24px; }

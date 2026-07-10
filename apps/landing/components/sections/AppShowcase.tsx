@@ -1,8 +1,9 @@
 import GradText from "@/components/ui/GradText";
 import PhoneFrame from "@/components/ui/PhoneFrame";
-import PlanoScreen from "@/components/app-screens/PlanoScreen";
-import NutricaoScreen from "@/components/app-screens/NutricaoScreen";
-import RespiracaoScreen from "@/components/app-screens/RespiracaoScreen";
+import HojeScreen from "@/components/app-screens/HojeScreen";
+import TreinoScreen from "@/components/app-screens/TreinoScreen";
+import RefeicoesScreen from "@/components/app-screens/RefeicoesScreen";
+import RankingScreen from "@/components/app-screens/RankingScreen";
 
 export default function AppShowcase() {
   return (
@@ -11,20 +12,15 @@ export default function AppShowcase() {
         <div className="reveal" style={{ textAlign: "center", maxWidth: 660, margin: "0 auto 8px", display: "flex", flexDirection: "column", gap: 16, alignItems: "center" }}>
           <span className="pill-label">O app</span>
           <h2 className="h2">Seu dia inteiro <GradText>em um só lugar.</GradText></h2>
-          <p className="lead" style={{ maxWidth: 520 }}>
-            Nutrição, treino e mente conversam entre si. Um plano diário simples de seguir — e fácil de manter, no seu ritmo.
+          <p className="lead" style={{ maxWidth: 540 }}>
+            Nutrição, treino e mente conversam entre si — e a sua turma te puxa pra frente. Telas de verdade do que já roda hoje.
           </p>
         </div>
         <div className="phone-row">
-          <div className="reveal reveal-d1 phone-a">
-            <PhoneFrame width={280}><NutricaoScreen /></PhoneFrame>
-          </div>
-          <div className="reveal phone-b">
-            <PhoneFrame width={300}><PlanoScreen /></PhoneFrame>
-          </div>
-          <div className="reveal reveal-d1 phone-c">
-            <PhoneFrame width={280}><RespiracaoScreen /></PhoneFrame>
-          </div>
+          <div className="reveal reveal-d0 phone-slot"><PhoneFrame width={248}><HojeScreen /></PhoneFrame></div>
+          <div className="reveal reveal-d1 phone-slot"><PhoneFrame width={248}><TreinoScreen /></PhoneFrame></div>
+          <div className="reveal reveal-d2 phone-slot"><PhoneFrame width={248}><RefeicoesScreen /></PhoneFrame></div>
+          <div className="reveal reveal-d3 phone-slot"><PhoneFrame width={248}><RankingScreen /></PhoneFrame></div>
         </div>
       </div>
     </section>
