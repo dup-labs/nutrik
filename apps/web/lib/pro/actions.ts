@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { generateInviteCode } from "@/lib/roles";
+import { resolveEntitlement } from "@/lib/billing/entitlement";
 import { sendEmail } from "@/lib/email";
 
 async function requireUser() {
@@ -19,10 +20,24 @@ async function requirePro() {
   const { supabase, user } = await requireUser();
   const { data: pro } = await supabase
     .from("professionals")
-    .select("id, type, name, short_name")
+    .select("*")
     .eq("user_id", user.id)
     .maybeSingle();
   if (!pro) redirect("/pro/cadastro");
+
+  // sem acesso vigente (trial/assinatura/isenção) não escreve nada
+  const { data: sub } = await supabase
+    .from("professional_subscriptions")
+    .select("status, current_period_end")
+    .eq("professional_id", pro.id)
+    .maybeSingle();
+  const entitlement = resolveEntitlement({
+    billingExempt: pro.billing_exempt,
+    trialEndsAt: pro.trial_ends_at,
+    subscription: sub,
+  });
+  if (!entitlement.ok) redirect("/pro/assinatura");
+
   return { supabase, user, pro };
 }
 

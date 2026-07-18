@@ -34,6 +34,19 @@ export interface Professional {
   bio: string | null;
   tags: string[];
   invite_code: string;
+  billing_exempt: boolean | null;
+  trial_ends_at: string | null;
+}
+
+/** assinatura do profissional no Asaas (1:1 com professionals) */
+export interface ProfessionalSubscription {
+  professional_id: string;
+  asaas_customer_id: string | null;
+  asaas_subscription_id: string | null;
+  asaas_last_payment_id: string | null;
+  plan: "monthly" | "yearly";
+  status: "pending" | "active" | "past_due" | "canceled";
+  current_period_end: string | null;
 }
 
 export interface ProfessionalLink {

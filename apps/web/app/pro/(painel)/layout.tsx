@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { ProShell } from "@/components/pro/ProShell";
+import { BillingBanner } from "@/components/pro/BillingBanner";
 import { createClient, getAuthUser } from "@/lib/supabase/server";
+import { getProBillingState } from "@/lib/billing/queries";
 import { ensureProfessionalFromMetadata } from "@/lib/roles";
 
 export default async function ProPainelLayout({
@@ -30,8 +32,17 @@ export default async function ProPainelLayout({
     .eq("professional_id", pro.id)
     .eq("status", "active");
 
+  const billing = await getProBillingState();
+
   return (
     <ProShell proName={pro.name} proType={pro.type} patientCount={count ?? 0}>
+      {billing && (
+        <BillingBanner
+          state={billing.entitlement.state}
+          trialDaysLeft={billing.entitlement.trialDaysLeft}
+          periodEnd={billing.entitlement.periodEnd}
+        />
+      )}
       {children}
     </ProShell>
   );

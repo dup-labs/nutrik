@@ -1,27 +1,29 @@
 import { redirect } from "next/navigation";
 import { cache } from "react";
 import { createClient, getAuthUser } from "@/lib/supabase/server";
+import { getProBillingState } from "@/lib/billing/queries";
 import { addDays, localDateISO } from "@/lib/dates";
 import { currentStreak } from "@/lib/streak";
-import type { Professional, Profile } from "@/lib/types";
+import type { Profile } from "@/lib/types";
 
 import { meshFor, type PatientStatus, type ProPatient } from "@/lib/pro/shared";
 export { meshFor, STATUS_BADGE, type PatientStatus, type ProPatient } from "@/lib/pro/shared";
 
-/** contexto de toda tela do painel: usuário precisa ter perfil profissional */
+/**
+ * contexto de toda tela do painel: usuário precisa ter perfil profissional
+ * E acesso vigente (trial, assinatura em dia ou isenção) — senão cai na
+ * página de assinatura. A própria /pro/assinatura usa getProBillingState.
+ */
 export const getProContext = cache(async () => {
   const supabase = await createClient();
   const user = await getAuthUser();
   if (!user) redirect("/pro/cadastro");
 
-  const { data: pro } = await supabase
-    .from("professionals")
-    .select("*")
-    .eq("user_id", user.id)
-    .maybeSingle();
-  if (!pro) redirect("/pro/cadastro");
+  const billing = await getProBillingState();
+  if (!billing) redirect("/pro/cadastro");
+  if (!billing.entitlement.ok) redirect("/pro/assinatura");
 
-  return { supabase, user, pro: pro as Professional };
+  return { supabase, user, pro: billing.pro };
 });
 
 function lastLabel(daysAgo: number | null): string {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Card, InitialAvatar, PrimaryButton } from "@/components/ui";
 import { IconCopy, IconLogout } from "@/components/ui/icons";
 import { signOut } from "@/lib/actions";
@@ -111,6 +112,29 @@ export function ProPerfilClient({
           <IconCopy size={14} /> {copied ? "copiado!" : "copiar"}
         </button>
       </Card>
+
+      <Link
+        href="/pro/assinatura"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "14px 16px",
+          marginBottom: 20,
+          borderRadius: 14,
+          border: "1px solid var(--color-border)",
+          background: "var(--color-surface-elevated)",
+          textDecoration: "none",
+        }}
+      >
+        <div>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text)" }}>assinatura</div>
+          <div style={{ fontSize: 12, color: "var(--color-text-muted)", marginTop: 2 }}>
+            plano, pagamento e fatura
+          </div>
+        </div>
+        <span style={{ color: acc.accent, fontWeight: 700 }}>→</span>
+      </Link>
 
       {field("nome profissional", name, setName)}
       {field(regLabel, reg, setReg, regLabel === "CRN" ? "CRN-3 · 45.892" : "CREF · 082451-G/SP")}

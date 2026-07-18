@@ -67,6 +67,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|icons|fonts|icon.png|.*\\.(?:svg|png|jpg|jpeg|gif|webp|otf|woff2?)$).*)",
+    // /api fica fora: webhook do Asaas e cron autenticam por token próprio
+    "/((?!api|_next/static|_next/image|favicon.ico|manifest.webmanifest|icons|fonts|icon.png|.*\\.(?:svg|png|jpg|jpeg|gif|webp|otf|woff2?)$).*)",
   ],
 };
