@@ -9,9 +9,9 @@ Casca Capacitor 8 (iOS + Android) que carrega `https://app.nutrk.io` num webview
 
 ## Pré-requisitos
 
-- Node 22+ (o CLI do Capacitor 8 exige)
+- Node 22+ (o CLI do Capacitor 8 exige) — `nvm use` lê o `.nvmrc` desta pasta
 - iOS: Xcode (a versão que o Capacitor 8 pedir) — o projeto usa Swift Package Manager, **não precisa de CocoaPods**
-- Android: Android Studio + JDK 21 (o que vem com o Android Studio serve)
+- Android: Android Studio + **JDK 21**. O JDK embutido no Android Studio 2026.2 é o 25, que o Gradle 8.14 do projeto não aceita. Instale `brew install openjdk@21` e aponte: Android Studio → Settings → Build, Execution, Deployment → Build Tools → Gradle → Gradle JDK = `/opt/homebrew/opt/openjdk@21`. Na linha de comando: `JAVA_HOME=/opt/homebrew/opt/openjdk@21 ./gradlew ...`
 
 ## Rodar
 
