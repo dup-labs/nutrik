@@ -175,6 +175,44 @@ button { font-family: var(--font-interface); }
 button:active { transform: scale(0.97); }
 input, textarea { font-family: var(--font-interface); }
 
+/* ── app nativo (classes no <html>: is-native, is-ios, is-android) ──
+   Só vale dentro da casca Capacitor; o site web não muda. */
+html.is-native {
+  overscroll-behavior: none; /* sem "elástico" que revela o fundo */
+  -webkit-touch-callout: none; /* sem menu de pressionar em links/imagens */
+}
+html.is-native body {
+  overscroll-behavior-y: none;
+  -webkit-user-select: none;
+  user-select: none;
+  /* conteúdo abaixo da status bar / notch */
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+/* o padding acima já consome o inset: shells de tela cheia descontam dele */
+html.is-native .pac-shell,
+html.is-native .pro-shell,
+html.is-native .auth-split {
+  min-height: calc(100dvh - env(safe-area-inset-top));
+}
+/* campos continuam selecionáveis/editáveis */
+html.is-native input,
+html.is-native textarea,
+html.is-native [contenteditable],
+html.is-native .selectable {
+  -webkit-user-select: text;
+  user-select: text;
+}
+/* iOS dá zoom em input < 16px */
+html.is-native input,
+html.is-native textarea,
+html.is-native select {
+  font-size: 16px !important; /* !important: os inputs do app têm font-size inline */
+}
+/* faixa de assinatura / CTAs de compra: escondida no iOS antes mesmo de hidratar */
+html.is-ios .ios-hide { display: none !important; }
+
 /* ── shell do paciente: trilho no desktop, bottom nav no mobile ── */
 .pac-sidebar { display: none; }
 @media (min-width: 1024px) {
