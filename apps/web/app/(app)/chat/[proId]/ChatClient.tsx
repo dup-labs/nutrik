@@ -6,6 +6,7 @@ import { InitialAvatar } from "@/components/ui";
 import { IconChevronLeft, IconSend } from "@/components/ui/icons";
 import { sendMessage } from "@/lib/actions";
 import { relativeLabel } from "@/lib/dates";
+import { MessageActions } from "@/lib/moderation/ModerationMenu";
 import { createClient } from "@/lib/supabase/client";
 import { PRO_ACCENT, type Message, type Professional } from "@/lib/types";
 
@@ -13,14 +14,18 @@ export function ChatClient({
   pro,
   initialMessages,
   userId,
+  initiallyBlocked = false,
 }: {
   pro: Professional;
   initialMessages: Message[];
   userId: string;
+  initiallyBlocked?: boolean;
 }) {
   const acc = PRO_ACCENT[pro.type];
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [draft, setDraft] = useState("");
+  const [hiddenIds, setHiddenIds] = useState<Set<string>>(new Set());
+  const [blocked, setBlocked] = useState(initiallyBlocked);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -56,7 +61,7 @@ export function ChatClient({
 
   function handleSend() {
     const body = draft.trim();
-    if (!body) return;
+    if (!body || blocked) return;
     setDraft("");
     const optimistic: Message = {
       id: `tmp-${Date.now()}`,
@@ -134,7 +139,20 @@ export function ChatClient({
           gap: 12,
         }}
       >
-        {messages.length === 0 && (
+        {blocked && (
+          <div
+            style={{
+              textAlign: "center",
+              fontSize: 13,
+              color: "var(--color-text-muted)",
+              marginTop: 24,
+              lineHeight: 1.6,
+            }}
+          >
+            você bloqueou {pro.short_name ?? pro.name}. o chat fica fechado dos dois lados.
+          </div>
+        )}
+        {!blocked && messages.length === 0 && (
           <div
             style={{
               textAlign: "center",
@@ -146,7 +164,7 @@ export function ChatClient({
             comece a conversa. {pro.short_name ?? pro.name} responde por aqui.
           </div>
         )}
-        {messages.map((m) => {
+        {(blocked ? [] : messages.filter((m) => !hiddenIds.has(m.id))).map((m) => {
           const mine = m.sender === "patient";
           return (
             <div
@@ -157,6 +175,14 @@ export function ChatClient({
                 alignItems: mine ? "flex-end" : "flex-start",
               }}
             >
+              <MessageActions
+                disabled={mine || m.id.startsWith("tmp-")}
+                target={{ type: "direct_message", messageId: m.id }}
+                label={pro.short_name ?? pro.name}
+                isProfessional
+                onReported={() => setHiddenIds((s) => new Set(s).add(m.id))}
+                onBlocked={() => setBlocked(true)}
+              >
               <div
                 style={{
                   maxWidth: "80%",
@@ -168,6 +194,7 @@ export function ChatClient({
               >
                 <div style={{ fontSize: 14, lineHeight: 1.45 }}>{m.body}</div>
               </div>
+              </MessageActions>
               <span
                 style={{
                   fontFamily: "var(--font-data)",
@@ -201,7 +228,8 @@ export function ChatClient({
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          placeholder={`escreva pra ${pro.short_name ?? pro.name}...`}
+          disabled={blocked}
+          placeholder={blocked ? "chat fechado" : `escreva pra ${pro.short_name ?? pro.name}...`}
           style={{
             flex: 1,
             height: 46,

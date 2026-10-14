@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { BackHeader, Card, InitialAvatar } from "@/components/ui";
 import { IconChat, IconGear } from "@/components/ui/icons";
+import { MemberMenuButton } from "@/lib/moderation/ModerationMenu";
 import { getPatientContext } from "@/lib/queries";
 import {
   getGroupRanking,
@@ -194,6 +195,12 @@ export default async function TurmaPage({
                 pts
               </span>
             </div>
+            {!e.isMe && (
+              <MemberMenuButton
+                target={{ type: "member", userId: e.profile.id, groupId: group.id }}
+                label={e.profile.username ? `@${e.profile.username}` : e.profile.name.split(" ")[0]}
+              />
+            )}
           </div>
         ))}
       </div>

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { InitialAvatar } from "@/components/ui";
 import { IconChevronLeft, IconSend } from "@/components/ui/icons";
 import { relativeLabel } from "@/lib/dates";
+import { MessageActions } from "@/lib/moderation/ModerationMenu";
 import { proSendMessage } from "@/lib/pro/actions";
 import { meshFor } from "@/lib/pro/shared";
 import { createClient } from "@/lib/supabase/client";
@@ -15,15 +16,19 @@ export function ProChatClient({
   proId,
   proType,
   initialMessages,
+  initiallyBlocked = false,
 }: {
   patient: { id: string; name: string; initial: string };
   proId: string;
   proType: ProfessionalType;
   initialMessages: Message[];
+  initiallyBlocked?: boolean;
 }) {
   const acc = PRO_ACCENT[proType];
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [draft, setDraft] = useState("");
+  const [hiddenIds, setHiddenIds] = useState<Set<string>>(new Set());
+  const [blocked, setBlocked] = useState(initiallyBlocked);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -56,7 +61,7 @@ export function ProChatClient({
 
   function handleSend() {
     const body = draft.trim();
-    if (!body) return;
+    if (!body || blocked) return;
     setDraft("");
     setMessages((m) => [
       ...m,
@@ -92,15 +97,27 @@ export function ProChatClient({
       </div>
 
       <div className="ntrk-scroll" style={{ flex: 1, overflowY: "auto", padding: 18, display: "flex", flexDirection: "column", gap: 12 }}>
-        {messages.length === 0 && (
+        {blocked && (
+          <div style={{ textAlign: "center", fontSize: 13, color: "var(--color-text-muted)", marginTop: 24, lineHeight: 1.6 }}>
+            você bloqueou {patient.name.split(" ")[0]}. o chat fica fechado dos dois lados.
+          </div>
+        )}
+        {!blocked && messages.length === 0 && (
           <div style={{ textAlign: "center", fontSize: 13, color: "var(--color-text-muted)", marginTop: 24 }}>
             comece a conversa com {patient.name.split(" ")[0]}.
           </div>
         )}
-        {messages.map((m) => {
+        {(blocked ? [] : messages.filter((m) => !hiddenIds.has(m.id))).map((m) => {
           const mine = m.sender === "professional";
           return (
             <div key={m.id} style={{ display: "flex", flexDirection: "column", alignItems: mine ? "flex-end" : "flex-start" }}>
+              <MessageActions
+                disabled={mine || m.id.startsWith("tmp-")}
+                target={{ type: "direct_message", messageId: m.id }}
+                label={patient.name.split(" ")[0]}
+                onReported={() => setHiddenIds((s) => new Set(s).add(m.id))}
+                onBlocked={() => setBlocked(true)}
+              >
               <div
                 style={{
                   maxWidth: "80%",
@@ -112,6 +129,7 @@ export function ProChatClient({
               >
                 <div style={{ fontSize: 14, lineHeight: 1.45 }}>{m.body}</div>
               </div>
+              </MessageActions>
               <span style={{ fontFamily: "var(--font-data)", fontSize: 10, color: "var(--color-text-muted)", marginTop: 4, padding: "0 4px" }}>
                 {relativeLabel(m.created_at)}
               </span>
@@ -126,7 +144,8 @@ export function ProChatClient({
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          placeholder={`escreva pra ${patient.name.split(" ")[0]}...`}
+          disabled={blocked}
+          placeholder={blocked ? "chat fechado" : `escreva pra ${patient.name.split(" ")[0]}...`}
           style={{ flex: 1, height: 46, padding: "0 18px", borderRadius: "var(--radius-pill)", border: "1px solid var(--color-border-strong)", background: "var(--color-surface-elevated)", fontSize: 14, outline: "none" }}
         />
         <button
