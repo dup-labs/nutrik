@@ -42,3 +42,55 @@ export function nativePlugin<T>(name: string): T | undefined {
   if (!isNativeApp()) return undefined;
   return capacitor()?.Plugins?.[name] as T | undefined;
 }
+
+// ── extensões (ponte-web) ────────────────────────────────────────────────────
+
+// Converte um deep link (io.nutrk.app://auth/callback?code=x) ou universal link
+// (https://app.nutrk.io/auth/callback?code=x) em caminho interno ("/auth/callback?code=x").
+// Retorna null pra qualquer outra coisa — nunca devolve URL absoluta (sem open redirect).
+export function deepLinkToPath(raw: string, webHost = "app.nutrk.io"): string | null {
+  let rest: string;
+  if (raw.startsWith(`${NATIVE_SCHEME}://`)) {
+    rest = raw.slice(NATIVE_SCHEME.length + 3);
+  } else {
+    try {
+      const u = new URL(raw);
+      if (u.protocol !== "https:" || u.host !== webHost) return null;
+      rest = u.pathname + u.search + u.hash;
+    } catch {
+      return null;
+    }
+  }
+  rest = rest.replace(/^\/+/, "");
+  return `/${rest}`;
+}
+
+// Plugins usados pela ponte (tipos mínimos; o pacote @capacitor/* mora na casca).
+export type PluginHandle = { remove: () => Promise<void> | void };
+
+export interface AppPlugin {
+  addListener(
+    event: "appUrlOpen",
+    cb: (e: { url: string }) => void,
+  ): Promise<PluginHandle> | PluginHandle;
+  addListener(
+    event: "backButton",
+    cb: (e: { canGoBack: boolean }) => void,
+  ): Promise<PluginHandle> | PluginHandle;
+  minimizeApp(): Promise<void>;
+}
+
+export interface BrowserPlugin {
+  open(opts: { url: string }): Promise<void>;
+  close(): Promise<void>;
+}
+
+export interface StatusBarPlugin {
+  // LIGHT = texto escuro (pra fundo claro); DARK = texto claro.
+  setStyle(opts: { style: "LIGHT" | "DARK" | "DEFAULT" }): Promise<void>;
+  setBackgroundColor?(opts: { color: string }): Promise<void>;
+}
+
+export interface SplashScreenPlugin {
+  hide(opts?: { fadeOutDuration?: number }): Promise<void>;
+}

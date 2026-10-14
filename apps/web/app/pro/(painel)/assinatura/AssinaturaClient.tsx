@@ -8,6 +8,7 @@ import {
   refreshSubscriptionStatus,
   startSubscription,
 } from "@/lib/billing/actions";
+import { haptic } from "@/lib/haptics";
 import { formatBRL } from "@/lib/billing/config";
 import type { BillingPlan } from "@/lib/billing/config";
 import type { EntitlementState } from "@/lib/billing/entitlement";
@@ -82,6 +83,7 @@ export function AssinaturaClient({
       return;
     }
     if (res.status === "active") {
+      haptic("success");
       setNotice("pagamento confirmado! seu painel está liberado 🎉");
       router.refresh();
     } else if (res.openInvoiceUrl) {

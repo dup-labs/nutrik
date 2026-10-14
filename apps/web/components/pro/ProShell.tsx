@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { InitialAvatar } from "@/components/ui";
+import { haptic } from "@/lib/haptics";
 import {
   IconCalendar,
   IconChat,
@@ -38,6 +39,7 @@ export function ProShell({
 
   return (
     <div
+      className="pro-shell"
       style={{
         minHeight: "100dvh",
         background: "var(--gradient-canvas)",
@@ -162,7 +164,7 @@ export function ProShell({
       </aside>
 
       {/* conteúdo */}
-      <main style={{ flex: 1, minWidth: 0, paddingBottom: 90 }}>{children}</main>
+      <main style={{ flex: 1, minWidth: 0, paddingBottom: "calc(90px + env(safe-area-inset-bottom))" }}>{children}</main>
 
       {/* bottom nav mobile */}
       <nav
@@ -191,6 +193,9 @@ export function ProShell({
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => {
+                  if (!active) haptic("light");
+                }}
                 style={{
                   display: "flex",
                   flexDirection: "column",

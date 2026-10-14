@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
 import { getProBillingState } from "@/lib/billing/queries";
 import { BILLING, yearlySavingsPct } from "@/lib/billing/config";
+import { getRequestPlatform } from "@/lib/native-server";
 import { AssinaturaClient } from "./AssinaturaClient";
+import { AssinaturaNeutra } from "./AssinaturaNeutra";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +13,19 @@ export default async function AssinaturaPage() {
   if (!billing) redirect("/pro/cadastro");
 
   const { subscription, entitlement } = billing;
+
+  // Apple 3.1.1: no app iOS nada de preço/CTA de compra — só o status.
+  // Decidido no server, então preços nem chegam ao client.
+  if ((await getRequestPlatform()) === "ios") {
+    return (
+      <AssinaturaNeutra
+        state={entitlement.state}
+        trialDaysLeft={entitlement.trialDaysLeft}
+        periodEnd={entitlement.periodEnd}
+      />
+    );
+  }
+
   return (
     <AssinaturaClient
       state={entitlement.state}

@@ -14,7 +14,7 @@ export function PatientShell({
     item.match.some((m) => (m === "/" ? pathname === "/" : pathname.startsWith(m)));
 
   return (
-    <div style={{ minHeight: "100dvh", background: "var(--gradient-canvas)", display: "flex" }}>
+    <div className="pac-shell" style={{ minHeight: "100dvh", background: "var(--gradient-canvas)", display: "flex" }}>
       {/* trilho lateral — só desktop */}
       <aside
         className="pac-sidebar"
@@ -75,7 +75,7 @@ export function PatientShell({
         })}
       </aside>
 
-      <main style={{ flex: 1, minWidth: 0, paddingBottom: 96 }}>{children}</main>
+      <main style={{ flex: 1, minWidth: 0, paddingBottom: "calc(96px + env(safe-area-inset-bottom))" }}>{children}</main>
 
       <BottomNav />
     </div>
