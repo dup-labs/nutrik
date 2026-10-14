@@ -1,8 +1,12 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { isNativeIOS } from "@/lib/native";
 import type { EntitlementState } from "@/lib/billing/entitlement";
+
+const noop = () => () => {};
 
 /** faixa de status de assinatura no topo do painel (some na própria página) */
 export function BillingBanner({
@@ -15,6 +19,9 @@ export function BillingBanner({
   periodEnd: string | null;
 }) {
   const pathname = usePathname();
+  // iOS (Apple 3.1.1): sem CTA, sem link, sem chamada pra compra externa.
+  // Server snapshot = false; o CSS .ios-hide cobre o intervalo até hidratar.
+  const ios = useSyncExternalStore(noop, isNativeIOS, () => false);
   if (pathname.startsWith("/pro/assinatura")) return null;
 
   let text: string;
@@ -57,7 +64,10 @@ export function BillingBanner({
       }}
     >
       <span>{text}</span>
+      {ios && <span>a gestão da assinatura é feita pelo navegador.</span>}
+      {!ios && (
       <Link
+        className="ios-hide"
         href="/pro/assinatura"
         style={{
           fontWeight: 700,
@@ -68,6 +78,7 @@ export function BillingBanner({
       >
         {cta}
       </Link>
+      )}
     </div>
   );
 }
