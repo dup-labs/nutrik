@@ -7,7 +7,7 @@ import { MeshAura, PrimaryButton, BackHeader } from "@/components/ui";
 import {
   ErrorNote,
   FieldLabel,
-  GoogleButton,
+  SocialButtons,
   OrDivider,
   TextInput,
 } from "@/components/auth/fields";
@@ -83,7 +83,7 @@ export default function LoginPage() {
         </form>
 
         <OrDivider />
-        <GoogleButton label="entrar com Google" />
+        <SocialButtons googleLabel="entrar com Google" />
 
         <div style={{ textAlign: "center", fontSize: 14, color: "var(--color-text-secondary)", marginTop: 24 }}>
           ainda não tem conta?{" "}

@@ -2,17 +2,18 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { BackHeader, MeshAura, PrimaryButton } from "@/components/ui";
 import {
   ErrorNote,
   FieldLabel,
-  GoogleButton,
+  SocialButtons,
   OrDivider,
   TextInput,
 } from "@/components/auth/fields";
 import { createClient } from "@/lib/supabase/client";
 import { completeCadastro } from "@/lib/actions";
+import { providerDisplayName } from "@/lib/auth/display-name";
 
 const OBJETIVOS = [
   "me sentir melhor",
@@ -25,7 +26,7 @@ function CadastroForm() {
   const router = useRouter();
   const params = useSearchParams();
   const showCodeFirst = params.get("convite") === "1";
-  // fluxo Google: usuário já autenticado, falta perfil
+  // fluxo social (Google/Apple): usuário já autenticado, falta perfil
   const completing = params.get("completar") === "1";
 
   const [nome, setNome] = useState("");
@@ -35,6 +36,18 @@ function CadastroForm() {
   const [codigo, setCodigo] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+
+  // login social: pré-preenche com o nome do provider (o Google manda; a
+  // Apple, pelo fluxo OAuth, não manda — aí fica vazio e a pessoa digita)
+  useEffect(() => {
+    if (!completing) return;
+    createClient()
+      .auth.getUser()
+      .then(({ data }) => {
+        const n = providerDisplayName(data.user);
+        if (n) setNome((cur) => cur || n);
+      });
+  }, [completing]);
 
   const canSubmit = completing
     ? nome.trim().length >= 2
@@ -194,7 +207,7 @@ function CadastroForm() {
         {!completing && (
           <>
             <OrDivider />
-            <GoogleButton />
+            <SocialButtons />
             <div style={{ textAlign: "center", fontSize: 14, color: "var(--color-text-secondary)", marginTop: 24 }}>
               já tem conta?{" "}
               <Link href="/login" style={{ color: "var(--color-orange)", fontWeight: 600, textDecoration: "none" }}>
