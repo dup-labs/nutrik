@@ -6,6 +6,7 @@ import { Card, PrimaryButton, Switch } from "@/components/ui";
 import { TextInput } from "@/components/auth/fields";
 import { changeMealPlan, setUsername, updateFeatures, updateProfileName } from "@/lib/actions";
 import { createClient } from "@/lib/supabase/client";
+import { DeleteAccount } from "@/lib/account/DeleteAccount";
 import type { FeatureKey } from "@/lib/types";
 
 const PLANS: { key: "secar" | "crescer" | "manter"; label: string; desc: string }[] = [
@@ -232,6 +233,8 @@ export function ConfiguracoesClient({
           )}
         </div>
       </Card>
+
+      <DeleteAccount role="patient" />
     </>
   );
 }
