@@ -5,10 +5,11 @@
 --     a linha do profissional (nome, email, telefone, bio) órfã.
 --  2) meal_protocols.created_by / training_protocols.created_by apontam pra
 --     professionals SEM cascade: bloqueiam o delete do profissional.
---  3) daily_activity e patient_events não têm FK pra profiles: ficariam órfãs.
+--  3) daily_activity e patient_events são VIEWS (não aceitam delete); os logs
+--     de origem caem em cascade a partir de profiles.
 --  4) friend_groups.owner_id é cascade: apagar o dono derrubaria a turma de
 --     todo mundo. Aqui a turma passa pro membro mais antigo.
---  5) o projeto Supabase é compartilhado (polr, pblshr usam o mesmo auth.users):
+--  5) o projeto Supabase é compartilhado (outros apps usam o mesmo auth.users):
 --     a função avisa se o usuário existe em outro app, pra action NÃO apagar
 --     o login nesse caso.
 -- Não apaga auth.users nem arquivos do Storage (isso é feito pela action).
@@ -25,6 +26,7 @@ declare
   v_new_owner uuid;
   v_other boolean := false;
   v_exists boolean;
+  v_fk record;
 begin
   if p_user is null then
     raise exception 'p_user obrigatório';
@@ -56,9 +58,7 @@ begin
     end if;
   end loop;
 
-  -- tabelas sem FK
-  delete from nutrk.daily_activity where patient_id = p_user;
-  delete from nutrk.patient_events where patient_id = p_user;
+  -- (daily_activity e patient_events são views sobre os logs: somem junto)
   -- aparelhos de push (o cascade em auth.users não roda quando o login é mantido)
   delete from nutrk.device_tokens where user_id = p_user;
   -- moderação (o cascade em auth.users não roda quando o login é mantido)
@@ -68,15 +68,27 @@ begin
   -- paciente: tudo o mais cai em cascade a partir de profiles
   delete from nutrk.profiles where id = p_user;
 
-  -- o usuário usa outro app do mesmo projeto Supabase?
-  if to_regclass('polr.profiles') is not null then
-    execute 'select exists (select 1 from polr.profiles where id = $1)' into v_exists using p_user;
-    v_other := v_other or v_exists;
-  end if;
-  if to_regclass('pblshr.profiles') is not null then
-    execute 'select exists (select 1 from pblshr.profiles where id = $1)' into v_exists using p_user;
-    v_other := v_other or v_exists;
-  end if;
+  -- o usuário usa outro app do mesmo projeto Supabase? Genérico: qualquer
+  -- tabela fora de nutrk/auth/storage com FK pra auth.users que tenha linha
+  -- dele (hoje polr e pblshr; produto novo no projeto fica coberto sozinho)
+  for v_fk in
+    select n.nspname as sch, c.relname as tbl, a.attname as col
+    from pg_catalog.pg_constraint k
+    join pg_catalog.pg_class c on c.oid = k.conrelid
+    join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+    join pg_catalog.pg_class r on r.oid = k.confrelid
+    join pg_catalog.pg_namespace rn on rn.oid = r.relnamespace
+    join pg_catalog.pg_attribute a on a.attrelid = k.conrelid and a.attnum = k.conkey[1]
+    where k.contype = 'f' and rn.nspname = 'auth' and r.relname = 'users'
+      and n.nspname not in ('auth', 'nutrk', 'storage')
+  loop
+    execute format('select exists (select 1 from %I.%I where %I = $1)', v_fk.sch, v_fk.tbl, v_fk.col)
+      into v_exists using p_user;
+    if v_exists then
+      v_other := true;
+      exit;
+    end if;
+  end loop;
 
   return jsonb_build_object('other_apps', v_other);
 end;

@@ -154,7 +154,7 @@ export default function PrivacidadePage() {
         dados pessoais e as fotos são apagados ou anonimizados, exceto o que
         precisarmos manter por obrigação legal ou para defesa em processos (por
         exemplo, registros fiscais de cobrança de profissionais, por até
-        [PRAZO] anos). cópias de segurança são sobrescritas em até [PRAZO] dias.
+        5 anos). cópias de segurança são sobrescritas em até 30 dias.
         o profissional pode ter o dever de manter o prontuário do atendimento
         que ele mesmo realizou, conforme as normas do seu conselho.
       </P>
@@ -207,7 +207,7 @@ export default function PrivacidadePage() {
       <H2>11. encarregado (DPO)</H2>
       <P>
         encarregado pelo tratamento de dados: <B>[NOME DO ENCARREGADO]</B>,
-        contato app@nutrk.io.
+        contato privacidade@nutrk.io.
       </P>
 
       <H2>12. mudanças nesta política</H2>
