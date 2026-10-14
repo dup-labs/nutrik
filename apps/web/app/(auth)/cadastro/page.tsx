@@ -14,6 +14,8 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { completeCadastro } from "@/lib/actions";
 import { providerDisplayName } from "@/lib/auth/display-name";
+import { isAppleUser } from "@/lib/account/apple";
+import { LegalConsent } from "@/components/auth/LegalConsent";
 
 const OBJETIVOS = [
   "me sentir melhor",
@@ -36,6 +38,8 @@ function CadastroForm() {
   const [codigo, setCodigo] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  // veio pela Apple: nome opcional (a Apple rejeita pedir nome depois)
+  const [apple, setApple] = useState(false);
 
   // login social: pré-preenche com o nome do provider (o Google manda; a
   // Apple, pelo fluxo OAuth, não manda — aí fica vazio e a pessoa digita)
@@ -44,13 +48,14 @@ function CadastroForm() {
     createClient()
       .auth.getUser()
       .then(({ data }) => {
+        setApple(isAppleUser(data.user));
         const n = providerDisplayName(data.user);
         if (n) setNome((cur) => cur || n);
       });
   }, [completing]);
 
   const canSubmit = completing
-    ? nome.trim().length >= 2
+    ? apple || nome.trim().length >= 2
     : nome.trim().length >= 2 && email.includes("@") && password.length >= 6;
 
   async function handleSubmit() {
@@ -121,9 +126,9 @@ function CadastroForm() {
         >
           <ErrorNote>{error}</ErrorNote>
 
-          <FieldLabel>como a gente te chama?</FieldLabel>
+          <FieldLabel optional={completing && apple}>como a gente te chama?</FieldLabel>
           <TextInput
-            placeholder="seu nome"
+            placeholder={completing && apple ? "seu nome (pode pular)" : "seu nome"}
             value={nome}
             autoComplete="name"
             onChange={(e) => setNome(e.target.value)}
@@ -208,6 +213,7 @@ function CadastroForm() {
           <>
             <OrDivider />
             <SocialButtons />
+            <LegalConsent />
             <div style={{ textAlign: "center", fontSize: 14, color: "var(--color-text-secondary)", marginTop: 24 }}>
               já tem conta?{" "}
               <Link href="/login" style={{ color: "var(--color-orange)", fontWeight: 600, textDecoration: "none" }}>

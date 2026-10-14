@@ -6,6 +6,7 @@ import { Card, InitialAvatar, PrimaryButton } from "@/components/ui";
 import { IconCopy, IconLogout } from "@/components/ui/icons";
 import { signOut } from "@/lib/actions";
 import { forgetThisDevice } from "@/lib/push/device";
+import { LegalLinks } from "@/lib/account/LegalLinks";
 import { DeleteAccount } from "@/lib/account/DeleteAccount";
 import { updateProfessionalProfile } from "@/lib/pro/actions";
 import { PRO_ACCENT, type ProfessionalType } from "@/lib/types";
@@ -170,6 +171,8 @@ export function ProPerfilClient({
       >
         <IconLogout size={17} /> sair da conta
       </button>
+
+      <LegalLinks />
 
       <DeleteAccount role="pro" />
     </div>
