@@ -2,11 +2,15 @@
 
 import { IconLogout } from "@/components/ui/icons";
 import { signOut } from "@/lib/actions";
+import { forgetThisDevice } from "@/lib/push/device";
 
 export function SignOutButton() {
   return (
     <button
-      onClick={() => signOut()}
+      onClick={async () => {
+        await forgetThisDevice();
+        await signOut();
+      }}
       style={{
         width: "100%",
         height: 50,

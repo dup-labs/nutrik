@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getPlatform, nativePlugin } from "@/lib/native";
 import { registerDevice } from "@/lib/push/actions";
+import { rememberDeviceToken } from "@/lib/push/device";
 
 // Tipos mínimos do @capacitor/push-notifications (o pacote vive só na casca).
 type Permission = "prompt" | "prompt-with-rationale" | "granted" | "denied";
@@ -72,6 +73,7 @@ export function PushRegistrar() {
       handles.push(
         await p.addListener("registration", ((t: { value: string }) => {
           if (platform === "ios" || platform === "android") {
+            rememberDeviceToken(t.value);
             void registerDevice(t.value, platform);
           }
         }) as (d: never) => void),

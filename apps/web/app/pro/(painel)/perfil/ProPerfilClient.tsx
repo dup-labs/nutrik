@@ -1,18 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Card, InitialAvatar, PrimaryButton } from "@/components/ui";
 import { IconCopy, IconLogout } from "@/components/ui/icons";
 import { signOut } from "@/lib/actions";
+import { forgetThisDevice } from "@/lib/push/device";
 import { DeleteAccount } from "@/lib/account/DeleteAccount";
-import { isNativeIOS } from "@/lib/native";
 import { updateProfessionalProfile } from "@/lib/pro/actions";
 import { PRO_ACCENT, type ProfessionalType } from "@/lib/types";
 
 export function ProPerfilClient({
   pro,
   regLabel,
+  ios,
 }: {
   pro: {
     name: string;
@@ -25,6 +26,8 @@ export function ProPerfilClient({
     inviteCode: string;
   };
   regLabel: string;
+  // regra 3.1.1: no app iOS não há link/CTA de assinatura (decidido no server)
+  ios: boolean;
 }) {
   const acc = PRO_ACCENT[pro.type];
   const [name, setName] = useState(pro.name);
@@ -36,10 +39,6 @@ export function ProPerfilClient({
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
-  // regra 3.1.1: no app iOS não há link/CTA de assinatura (detecta após montar,
-  // pra não divergir do HTML do servidor)
-  const [ios, setIos] = useState(false);
-  useEffect(() => setIos(isNativeIOS()), []);
 
   async function handleSave() {
     if (busy) return;
@@ -163,7 +162,10 @@ export function ProPerfilClient({
       </PrimaryButton>
 
       <button
-        onClick={() => signOut()}
+        onClick={async () => {
+          await forgetThisDevice();
+          await signOut();
+        }}
         style={{ width: "100%", height: 50, marginTop: 24, borderRadius: "var(--radius-pill)", border: "1px solid rgba(239,68,68,0.25)", background: "rgba(239,68,68,0.06)", color: "#ef4444", fontWeight: 600, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
       >
         <IconLogout size={17} /> sair da conta

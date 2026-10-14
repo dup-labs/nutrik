@@ -59,6 +59,8 @@ begin
   -- tabelas sem FK
   delete from nutrk.daily_activity where patient_id = p_user;
   delete from nutrk.patient_events where patient_id = p_user;
+  -- aparelhos de push (o cascade em auth.users não roda quando o login é mantido)
+  delete from nutrk.device_tokens where user_id = p_user;
 
   -- paciente: tudo o mais cai em cascade a partir de profiles
   delete from nutrk.profiles where id = p_user;
