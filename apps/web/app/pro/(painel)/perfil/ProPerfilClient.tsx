@@ -122,7 +122,7 @@ export function ProPerfilClient({
         <div style={{ padding: "14px 16px", marginBottom: 20, borderRadius: 14, border: "1px solid var(--color-border)", background: "var(--color-surface-elevated)" }}>
           <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text)" }}>assinatura</div>
           <div style={{ fontSize: 12, color: "var(--color-text-muted)", marginTop: 2 }}>
-            gerencie sua assinatura em app.nutrk.io
+            a gestão da assinatura é feita pelo navegador.
           </div>
         </div>
       ) : (
