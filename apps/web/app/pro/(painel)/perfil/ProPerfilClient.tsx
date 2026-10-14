@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card, InitialAvatar, PrimaryButton } from "@/components/ui";
 import { IconCopy, IconLogout } from "@/components/ui/icons";
 import { signOut } from "@/lib/actions";
+import { DeleteAccount } from "@/lib/account/DeleteAccount";
+import { isNativeIOS } from "@/lib/native";
 import { updateProfessionalProfile } from "@/lib/pro/actions";
 import { PRO_ACCENT, type ProfessionalType } from "@/lib/types";
 
@@ -34,6 +36,10 @@ export function ProPerfilClient({
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
+  // regra 3.1.1: no app iOS não há link/CTA de assinatura (detecta após montar,
+  // pra não divergir do HTML do servidor)
+  const [ios, setIos] = useState(false);
+  useEffect(() => setIos(isNativeIOS()), []);
 
   async function handleSave() {
     if (busy) return;
@@ -113,6 +119,14 @@ export function ProPerfilClient({
         </button>
       </Card>
 
+      {ios ? (
+        <div style={{ padding: "14px 16px", marginBottom: 20, borderRadius: 14, border: "1px solid var(--color-border)", background: "var(--color-surface-elevated)" }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text)" }}>assinatura</div>
+          <div style={{ fontSize: 12, color: "var(--color-text-muted)", marginTop: 2 }}>
+            gerencie sua assinatura em app.nutrk.io
+          </div>
+        </div>
+      ) : (
       <Link
         href="/pro/assinatura"
         style={{
@@ -134,7 +148,8 @@ export function ProPerfilClient({
           </div>
         </div>
         <span style={{ color: acc.accent, fontWeight: 700 }}>→</span>
-      </Link>
+        </Link>
+      )}
 
       {field("nome profissional", name, setName)}
       {field(regLabel, reg, setReg, regLabel === "CRN" ? "CRN-3 · 45.892" : "CREF · 082451-G/SP")}
@@ -153,6 +168,8 @@ export function ProPerfilClient({
       >
         <IconLogout size={17} /> sair da conta
       </button>
+
+      <DeleteAccount role="pro" />
     </div>
   );
 }
