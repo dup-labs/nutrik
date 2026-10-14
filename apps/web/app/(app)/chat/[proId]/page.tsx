@@ -25,11 +25,23 @@ export default async function ChatPage({
   ]);
   if (!pro) notFound();
 
+  // bloqueei esse profissional? (chat fecha dos dois lados; a RLS também esconde as mensagens)
+  const proUserId = (pro as { user_id?: string | null }).user_id;
+  const { data: block } = proUserId
+    ? await supabase
+        .from("user_blocks")
+        .select("id")
+        .eq("blocker_id", user.id)
+        .eq("blocked_id", proUserId)
+        .maybeSingle()
+    : { data: null };
+
   return (
     <ChatClient
       pro={pro as Professional}
       initialMessages={(messages ?? []) as Message[]}
       userId={user.id}
+      initiallyBlocked={!!block}
     />
   );
 }

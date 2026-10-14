@@ -183,7 +183,13 @@ export async function getGroupMessages(supabase: Supabase, groupId: string) {
     .eq("group_id", groupId)
     .order("created_at", { ascending: false })
     .limit(200);
-  const list = ((messages ?? []) as GroupMessage[]).reverse();
+  // defesa em profundidade: a RLS restritiva já esconde, mas filtra aqui também
+  // (a mensagem de quem eu bloqueei nunca chega no client)
+  const { data: blocks } = await supabase.from("user_blocks").select("blocked_id");
+  const blockedIds = new Set((blocks ?? []).map((b) => b.blocked_id as string));
+  const list = ((messages ?? []) as GroupMessage[])
+    .filter((m) => !blockedIds.has(m.sender_id))
+    .reverse();
 
   const senderIds = [...new Set(list.map((m) => m.sender_id))];
   const { data: profiles } = senderIds.length
