@@ -15,11 +15,32 @@
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBarLaunch"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- Deep link por scheme: io.nutrk.app://auth/callback -> /auth/callback -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="io.nutrk.app" />
+            </intent-filter>
+
+            <!--
+              App Links (https). autoVerify só passa quando https://app.nutrk.io/.well-known/assetlinks.json
+              publicar o SHA256_FINGERPRINT da chave de assinatura (debug, upload e Play App Signing).
+              Placeholder até ter a chave; antes disso o link abre no navegador, sem quebrar nada.
+            -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="app.nutrk.io" android:pathPrefix="/auth" />
             </intent-filter>
 
         </activity>
@@ -36,6 +57,9 @@
     </application>
 
     <!-- Permissions -->
-
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- foto de refeição via <input capture>: câmera não é obrigatória pra instalar -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
 </manifest>
