@@ -21,7 +21,7 @@
 
 - **Supabase → Auth → Redirect URLs**: adicionar `io.nutrk.app://auth/callback` e `io.nutrk.app://auth/callback**`. Sem isso o login com Google não volta pro app.
 - **Supabase → templates de email**: trocar pra `/auth/confirm` com `token_hash` (ver `auth-setup.md`), pra recuperar senha e confirmar cadastro pedidos no app funcionarem quando o email é aberto fora dele.
-- **Vercel: `RESEND_API_KEY` NÃO existe em produção** (conferido em 2026-10-14). Sem ela nenhum email do app sai: denúncia (exigência da Apple 1.2), pedido de exclusão, avisos. Gerar no Resend (domínio nutrk.io verificado) e adicionar.
+- ~~Vercel: `RESEND_API_KEY`~~ **feito em 2026-10-14**: só existia no `.env.local`, copiada pra produção (sensível). Emails de auth continuam saindo pelo SMTP do Supabase.
 - **Telefone público do perfil no Google Play** é o celular pessoal do Dup: trocar por um número da empresa quando houver (o Google pede verificar de novo).
 - **Email `privacidade@nutrk.io`**: o Dup cria (é o contato do encarregado na política).
 
