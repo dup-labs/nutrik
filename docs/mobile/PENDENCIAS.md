@@ -15,13 +15,13 @@
    - Sign in with Apple no Supabase (Services ID, chave, Team ID) → ligar `NEXT_PUBLIC_APPLE_SIGNIN=1` na Vercel. **Obrigatório antes da App Store** (guideline 4.8, porque tem login com Google). A chave expira a cada 6 meses: pôr na agenda;
    - envs `APPLE_*` pra revogação na exclusão de conta (best-effort).
 3. **Google Play Console (empresa)**: conta "dup.lab" criada em 2026-10-14 (ID 6910184612422243703, dono hi@brunodup.com). Verificações (identidade, site, telefone) concluídas em 2026-10-14. Próximo: criar o app, gerar a chave de upload e subir o 1º AAB em teste interno → SHA-256 da chave de assinatura em `apps/web/app/.well-known/assetlinks.json/route.ts` (`SHA256_FINGERPRINT`).
-4. **Firebase** (dá pra criar já, é grátis): app Android `io.nutrk.app` → `google-services.json` em `apps/mobile/android/app/`; service account → env `FCM_SERVICE_ACCOUNT_JSON`.
+4. ~~Firebase~~ **feito em 2026-10-14**: projeto `nutrk-47430` (plano Spark), app Android `io.nutrk.app`, `google-services.json` em `apps/mobile/android/app/` (fora do git), `FCM_SERVICE_ACCOUNT_JSON` na Vercel (produção, sensível). Vale no próximo deploy.
 
 ## Configuração (sem conta nova)
 
 - **Supabase → Auth → Redirect URLs**: adicionar `io.nutrk.app://auth/callback` e `io.nutrk.app://auth/callback**`. Sem isso o login com Google não volta pro app.
 - **Supabase → templates de email**: trocar pra `/auth/confirm` com `token_hash` (ver `auth-setup.md`), pra recuperar senha e confirmar cadastro pedidos no app funcionarem quando o email é aberto fora dele.
-- **Vercel**: conferir `RESEND_API_KEY` em produção. Sem ela, denúncia e pedido de exclusão não chegam por email (ficam só no banco).
+- **Vercel: `RESEND_API_KEY` NÃO existe em produção** (conferido em 2026-10-14). Sem ela nenhum email do app sai: denúncia (exigência da Apple 1.2), pedido de exclusão, avisos. Gerar no Resend (domínio nutrk.io verificado) e adicionar.
 - **Telefone público do perfil no Google Play** é o celular pessoal do Dup: trocar por um número da empresa quando houver (o Google pede verificar de novo).
 - **Email `privacidade@nutrk.io`**: o Dup cria (é o contato do encarregado na política).
 
