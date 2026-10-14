@@ -8,7 +8,7 @@
 ## Bloqueado por conta (caminho crítico)
 
 1. ~~D-U-N-S~~ **feito em 2026-10-14: 943334590** (DUP.AGENCY TECNOLOGIA E CRIATIVIDADE LTDA, já existia na D&B). Account Holder Apple: hi@brunodup.com.
-2. **Apple Developer (empresa)** → Team ID. Depois:
+2. **Apple Developer (empresa)**: enrollment enviado em 2026-10-14 (Enrollment ID `5FG76S4D4G`), aguardando verificação da Apple → pagamento US$ 99 → Team ID. Depois:
    - substituir `TEAM_ID` em `apps/web/app/.well-known/apple-app-site-association/route.ts`;
    - ligar `App.entitlements` no target (Push, Associated Domains, Sign in with Apple);
    - chave APNs `.p8` → envs `APNS_KEY_P8`, `APNS_KEY_ID`, `APNS_TEAM_ID`, `APNS_ENV`;
