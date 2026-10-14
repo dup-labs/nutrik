@@ -4,6 +4,7 @@ import { useState } from "react";
 import { BackHeader, MeshAura } from "@/components/ui";
 import { IconGear } from "@/components/ui/icons";
 import { addWater, setWaterGoal } from "@/lib/actions";
+import { haptic } from "@/lib/haptics";
 
 const CUP = "M6 8h12l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 8zM6 8V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2";
 const BOTTLE = "M10 2h4M9 6h6l1 4v10a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V10z";
@@ -42,6 +43,7 @@ export function AguaClient({
 
   function handleAdd(ml: number) {
     setTotal((t) => Math.min(t + ml, 6000));
+    haptic("light");
     addWater({ date, amountMl: ml });
   }
 

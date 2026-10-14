@@ -5,6 +5,7 @@ import { useState } from "react";
 import { BackHeader, PrimaryButton } from "@/components/ui";
 import { IconCheck } from "@/components/ui/icons";
 import { saveCheckin } from "@/lib/actions";
+import { haptic } from "@/lib/haptics";
 
 const ROUPA = [
   { key: "folgada", label: "mais folgada" },
@@ -31,6 +32,7 @@ export function CheckinClient({
     if (!sensacao || !energia || busy) return;
     setBusy(true);
     await saveCheckin({ bodyFeeling: sensacao, energy: energia, clothesFit: roupa, requestId });
+    haptic("success");
     setSaved(true);
     setBusy(false);
   }
