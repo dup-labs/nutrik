@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { localDateISO } from "@/lib/dates";
 import { syncDailyScore } from "@/lib/scoring";
 import { createClient } from "@/lib/supabase/server";
+import { pushToProfessionalAfter } from "@/lib/push/send";
 import { FEATURE_KEYS, type FeatureKey, type PlanTemplate } from "@/lib/types";
 import { ensureUsername } from "@/lib/username";
 
@@ -514,6 +515,11 @@ export async function sendMessage(input: { professionalId: string; body: string 
     professional_id: input.professionalId,
     sender: "patient",
     body: input.body,
+  });
+  pushToProfessionalAfter(input.professionalId, {
+    title: "mensagem nova de paciente",
+    body: "abre as mensagens pra responder.",
+    url: "/pro/mensagens",
   });
 }
 

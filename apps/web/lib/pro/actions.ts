@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { generateInviteCode } from "@/lib/roles";
 import { resolveEntitlement } from "@/lib/billing/entitlement";
 import { sendEmail } from "@/lib/email";
+import { pushAfter } from "@/lib/push/send";
 
 async function requireUser() {
   const supabase = await createClient();
@@ -113,6 +114,11 @@ export async function proSendMessage(input: { patientId: string; body: string })
     professional_id: pro.id,
     sender: "professional",
     body: input.body,
+  });
+  pushAfter(input.patientId, {
+    title: `${pro.name.split(" ")[0].toLowerCase()} te mandou uma mensagem`,
+    body: "abre o chat pra ver.",
+    url: "/chat",
   });
 }
 
@@ -297,6 +303,7 @@ export async function publishMealPlan(input: {
     type: "protocolo",
     title: "plano alimentar novo no ar",
     body: `${pro.name} deu uma repaginada no seu plano. dá uma olhada quando puder.`,
+    url: "/refeicoes",
   });
   const { data: patient } = await supabase
     .from("profiles")
@@ -385,6 +392,7 @@ export async function publishTrainingPlan(input: {
     type: "protocolo",
     title: "treino novo no ar",
     body: `${pro.name} montou sua nova semana de treino. bora?`,
+    url: "/treino",
   });
   const { data: patient } = await supabase
     .from("profiles")
@@ -446,6 +454,8 @@ export async function notifyPatient(input: {
   type: "protocolo" | "mensagem" | "resultado" | "consulta";
   title: string;
   body?: string;
+  /** rota aberta ao tocar no push (default: central de notificações) */
+  url?: string;
 }) {
   const { supabase, pro } = await requirePro();
   await supabase.from("notifications").insert({
@@ -454,5 +464,10 @@ export async function notifyPatient(input: {
     type: input.type,
     title: input.title,
     body: input.body ?? null,
+  });
+  pushAfter(input.patientId, {
+    title: input.title,
+    body: input.body ?? "abre o nūtrk pra ver.",
+    url: input.url ?? "/notificacoes",
   });
 }
