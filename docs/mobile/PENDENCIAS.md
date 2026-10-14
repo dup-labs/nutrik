@@ -1,7 +1,8 @@
 # nūtrk mobile — o que falta
 
 > Atualizado em 2026-10-14, quando a `feat/mobile` foi pra produção.
-> iOS testado em simulador; Android é o próximo passo.
+> iOS (simulador) e Android (emulador) testados e no mesmo ponto: cadastro por
+> email, navegação, câmera, páginas legais, status bar, botão voltar.
 > Detalhes técnicos de cada item: `auth-setup.md`, `push-setup.md`, `store/`.
 
 ## Bloqueado por conta (caminho crítico)
@@ -36,7 +37,6 @@
 - denunciar e bloquear (precisa de 2 contas);
 - tela offline (desligar a rede);
 - links externos abrindo no navegador do app;
-- Android: tudo o que já foi testado no iOS + botão voltar do sistema.
 
 **Só com conta / aparelho real:**
 - login com Google e com Apple ponta a ponta;
