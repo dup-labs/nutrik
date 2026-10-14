@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { ProShell } from "@/components/pro/ProShell";
+import { PushRegistrar } from "@/components/native/PushRegistrar";
 import { BillingBanner } from "@/components/pro/BillingBanner";
 import { createClient, getAuthUser } from "@/lib/supabase/server";
 import { getProBillingState } from "@/lib/billing/queries";
@@ -36,6 +37,7 @@ export default async function ProPainelLayout({
 
   return (
     <ProShell proName={pro.name} proType={pro.type} patientCount={count ?? 0}>
+      <PushRegistrar />
       {billing && (
         <BillingBanner
           state={billing.entitlement.state}

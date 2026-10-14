@@ -10,3 +10,6 @@ node_modules/
 # vercel
 .vercel
 claude-design-handoff/*.zip
+
+# worktrees de agentes (Claude Code)
+.claude/worktrees/

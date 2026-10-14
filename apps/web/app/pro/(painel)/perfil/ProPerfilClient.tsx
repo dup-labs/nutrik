@@ -5,12 +5,16 @@ import Link from "next/link";
 import { Card, InitialAvatar, PrimaryButton } from "@/components/ui";
 import { IconCopy, IconLogout } from "@/components/ui/icons";
 import { signOut } from "@/lib/actions";
+import { forgetThisDevice } from "@/lib/push/device";
+import { LegalLinks } from "@/lib/account/LegalLinks";
+import { DeleteAccount } from "@/lib/account/DeleteAccount";
 import { updateProfessionalProfile } from "@/lib/pro/actions";
 import { PRO_ACCENT, type ProfessionalType } from "@/lib/types";
 
 export function ProPerfilClient({
   pro,
   regLabel,
+  inApp,
 }: {
   pro: {
     name: string;
@@ -23,6 +27,9 @@ export function ProPerfilClient({
     inviteCode: string;
   };
   regLabel: string;
+  // no app nativo (iOS e Android) não há link/CTA de assinatura — regra 3.1.1
+  // da Apple, e a mesma experiência no Android (decidido no server)
+  inApp: boolean;
 }) {
   const acc = PRO_ACCENT[pro.type];
   const [name, setName] = useState(pro.name);
@@ -113,6 +120,14 @@ export function ProPerfilClient({
         </button>
       </Card>
 
+      {inApp ? (
+        <div style={{ padding: "14px 16px", marginBottom: 20, borderRadius: 14, border: "1px solid var(--color-border)", background: "var(--color-surface-elevated)" }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text)" }}>assinatura</div>
+          <div style={{ fontSize: 12, color: "var(--color-text-muted)", marginTop: 2 }}>
+            a gestão da assinatura é feita pelo navegador.
+          </div>
+        </div>
+      ) : (
       <Link
         href="/pro/assinatura"
         style={{
@@ -134,7 +149,8 @@ export function ProPerfilClient({
           </div>
         </div>
         <span style={{ color: acc.accent, fontWeight: 700 }}>→</span>
-      </Link>
+        </Link>
+      )}
 
       {field("nome profissional", name, setName)}
       {field(regLabel, reg, setReg, regLabel === "CRN" ? "CRN-3 · 45.892" : "CREF · 082451-G/SP")}
@@ -148,11 +164,18 @@ export function ProPerfilClient({
       </PrimaryButton>
 
       <button
-        onClick={() => signOut()}
+        onClick={async () => {
+          await forgetThisDevice();
+          await signOut();
+        }}
         style={{ width: "100%", height: 50, marginTop: 24, borderRadius: "var(--radius-pill)", border: "1px solid rgba(239,68,68,0.25)", background: "rgba(239,68,68,0.06)", color: "#ef4444", fontWeight: 600, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
       >
         <IconLogout size={17} /> sair da conta
       </button>
+
+      <LegalLinks />
+
+      <DeleteAccount role="pro" />
     </div>
   );
 }

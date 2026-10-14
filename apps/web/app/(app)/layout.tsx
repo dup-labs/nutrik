@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { PatientShell } from "@/components/PatientShell";
+import { PushRegistrar } from "@/components/native/PushRegistrar";
 import { createClient, getAuthUser } from "@/lib/supabase/server";
 import { resolveDestination } from "@/lib/roles";
 
@@ -14,5 +15,10 @@ export default async function AppLayout({
   const dest = await resolveDestination(supabase, user);
   if (dest !== "/") redirect(dest);
 
-  return <PatientShell>{children}</PatientShell>;
+  return (
+    <PatientShell>
+      <PushRegistrar />
+      {children}
+    </PatientShell>
+  );
 }

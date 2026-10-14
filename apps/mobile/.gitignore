@@ -1,0 +1,19 @@
+node_modules/
+.DS_Store
+
+# ios/ e android/ SÃO versionados (cada um traz o próprio .gitignore do Capacitor).
+# Aqui só o que é build/cache/segredo e passa batido:
+ios/App/CapApp-SPM/.build/
+ios/App/CapApp-SPM/.swiftpm/
+ios/App/Pods/
+*.xcuserstate
+android/.gradle/
+android/local.properties
+*.iml
+
+# segredos: nunca versionar (o google-services.json é entregue por fora; ver README)
+android/app/google-services.json
+GoogleService-Info.plist
+*.p8
+*.keystore
+*.jks

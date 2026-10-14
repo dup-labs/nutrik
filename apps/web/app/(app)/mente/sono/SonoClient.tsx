@@ -5,6 +5,7 @@ import { useState } from "react";
 import { BackHeader, PrimaryButton } from "@/components/ui";
 import { IconMoon } from "@/components/ui/icons";
 import { saveSleep } from "@/lib/actions";
+import { haptic } from "@/lib/haptics";
 
 export function SonoClient({
   date,
@@ -27,6 +28,7 @@ export function SonoClient({
     if (!quality || !wakeMood || busy) return;
     setBusy(true);
     await saveSleep({ date, hours, quality, wakeMood });
+    haptic("success");
     setSaved(true);
     setBusy(false);
   }

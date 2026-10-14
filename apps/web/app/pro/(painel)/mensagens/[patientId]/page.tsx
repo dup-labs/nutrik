@@ -17,6 +17,13 @@ export default async function ProChatPage({
   const patient = patients.find((p) => p.id === patientId);
   if (!patient) notFound();
 
+  // bloqueei esse paciente? (RLS também esconde as mensagens dele)
+  const { data: block } = await supabase
+    .from("user_blocks")
+    .select("id")
+    .eq("blocked_id", patientId)
+    .maybeSingle();
+
   const { data: messages } = await supabase
     .from("messages")
     .select("*")
@@ -39,6 +46,7 @@ export default async function ProChatPage({
       patient={{ id: patient.id, name: patient.name, initial: patient.initial }}
       proId={pro.id}
       proType={pro.type}
+      initiallyBlocked={!!block}
       initialMessages={(messages ?? []) as Message[]}
     />
   );

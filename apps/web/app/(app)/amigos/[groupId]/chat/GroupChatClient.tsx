@@ -9,6 +9,7 @@ import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { InitialAvatar } from "@/components/ui";
 import { IconChevronLeft, IconRefresh, IconSend } from "@/components/ui/icons";
 import { relativeLabel } from "@/lib/dates";
+import { MessageActions } from "@/lib/moderation/ModerationMenu";
 import { sendGroupMessage } from "@/lib/social/actions";
 import type { FriendGroup, GroupMessage } from "@/lib/types";
 
@@ -34,13 +35,17 @@ export function GroupChatClient({
   const router = useRouter();
   const [extra, setExtra] = useState<GroupMessage[]>([]);
   const [draft, setDraft] = useState("");
+  const [hiddenIds, setHiddenIds] = useState<Set<string>>(new Set());
+  const [blockedUsers, setBlockedUsers] = useState<Set<string>>(new Set());
   const [refreshing, startRefresh] = useTransition();
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const messages = useMemo(() => {
     const known = new Set(initialMessages.map((m) => m.id));
-    return [...initialMessages, ...extra.filter((m) => !known.has(m.id))];
-  }, [initialMessages, extra]);
+    return [...initialMessages, ...extra.filter((m) => !known.has(m.id))].filter(
+      (m) => !hiddenIds.has(m.id) && !blockedUsers.has(m.sender_id),
+    );
+  }, [initialMessages, extra, hiddenIds, blockedUsers]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -190,6 +195,16 @@ export function GroupChatClient({
                   maxWidth: "78%",
                 }}
               >
+                <MessageActions
+                  disabled={mine || m.id.startsWith("tmp-")}
+                  target={{ type: "group_message", messageId: m.id, groupId: group.id }}
+                  label={senderLabel(m.sender_id)}
+                  onReported={() => setHiddenIds((s) => new Set(s).add(m.id))}
+                  onBlocked={() => {
+                    setBlockedUsers((s) => new Set(s).add(m.sender_id));
+                    router.refresh();
+                  }}
+                >
                 <div
                   style={{
                     padding: "10px 14px",
@@ -214,6 +229,7 @@ export function GroupChatClient({
                   )}
                   <div style={{ fontSize: 14, lineHeight: 1.45 }}>{m.body}</div>
                 </div>
+                </MessageActions>
                 <span
                   style={{
                     fontFamily: "var(--font-data)",

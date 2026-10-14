@@ -5,8 +5,10 @@ import { redirect } from "next/navigation";
 import { localDateISO } from "@/lib/dates";
 import { syncDailyScore } from "@/lib/scoring";
 import { createClient } from "@/lib/supabase/server";
+import { pushToProfessionalAfter } from "@/lib/push/send";
 import { FEATURE_KEYS, type FeatureKey, type PlanTemplate } from "@/lib/types";
 import { ensureUsername } from "@/lib/username";
+import { fallbackNickname, isAppleUser } from "@/lib/account/apple";
 
 async function requireUser() {
   const supabase = await createClient();
@@ -26,9 +28,14 @@ export async function completeCadastro(input: {
 }): Promise<{ ok: boolean; linked?: boolean; error?: string }> {
   const { supabase, user } = await requireUser();
 
+  // Apple: não pode exigir nome depois do login com a Apple. Sem nome, entra
+  // um apelido e a pessoa edita depois no perfil.
+  let name = input.name.trim();
+  if (name.length < 2 && isAppleUser(user)) name = fallbackNickname(user.email);
+
   const { error } = await supabase.from("profiles").upsert({
     id: user.id,
-    name: input.name.trim(),
+    name,
     objective: input.objective,
     email: user.email ?? null,
   });
@@ -514,6 +521,11 @@ export async function sendMessage(input: { professionalId: string; body: string 
     professional_id: input.professionalId,
     sender: "patient",
     body: input.body,
+  });
+  pushToProfessionalAfter(input.professionalId, {
+    title: "mensagem nova de paciente",
+    body: "abre as mensagens pra responder.",
+    url: "/pro/mensagens",
   });
 }
 

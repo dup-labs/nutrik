@@ -6,6 +6,7 @@ import { useRef, useState } from "react";
 import { BackHeader, MacroRow, PrimaryButton } from "@/components/ui";
 import { IconSwap } from "@/components/ui/icons";
 import { logMeal } from "@/lib/actions";
+import { haptic } from "@/lib/haptics";
 import { createClient } from "@/lib/supabase/client";
 import type { MealLog, ProtocolMeal } from "@/lib/types";
 
@@ -64,6 +65,7 @@ export function MealDetailClient({
       note,
       photoPath,
     });
+    haptic(mode === "feito" ? "success" : "light");
     router.push("/refeicoes");
     router.refresh();
   }

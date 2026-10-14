@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { haptic } from "@/lib/haptics";
 import { IconBrain, IconChart, IconHome, IconUser, IconUsers } from "@/components/ui/icons";
 
 export const NAV_ITEMS = [
@@ -46,6 +47,9 @@ export function BottomNav() {
           <Link
             key={item.href}
             href={item.href}
+            onClick={() => {
+              if (!active) haptic("light");
+            }}
             style={{
               display: "flex",
               flexDirection: "column",
