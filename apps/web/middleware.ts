@@ -12,6 +12,10 @@ const PUBLIC_PATHS = [
   "/pro/cadastro",
   "/pro/entrada",
   "/trocar",
+  // páginas públicas exigidas pelas lojas (Apple/Google)
+  "/privacidade",
+  "/termos",
+  "/excluir-conta",
 ];
 
 export async function middleware(request: NextRequest) {
@@ -68,6 +72,6 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     // /api fica fora: webhook do Asaas e cron autenticam por token próprio
-    "/((?!api|_next/static|_next/image|favicon.ico|manifest.webmanifest|icons|fonts|icon.png|.*\\.(?:svg|png|jpg|jpeg|gif|webp|otf|woff2?)$).*)",
+    "/((?!api|\\.well-known|_next/static|_next/image|favicon.ico|manifest.webmanifest|icons|fonts|icon.png|.*\\.(?:svg|png|jpg|jpeg|gif|webp|otf|woff2?)$).*)",
   ],
 };
