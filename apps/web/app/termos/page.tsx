@@ -15,7 +15,7 @@ export default function TermosPage() {
       <H2>1. o que é o nūtrk</H2>
       <P>
         o nūtrk é um app de nutrição, treino e saúde mental, oferecido por{" "}
-        <B>[RAZÃO SOCIAL]</B>, CNPJ <B>[CNPJ]</B>, <B>[ENDEREÇO]</B>. ao criar
+        <B>DUP.AGENCY TECNOLOGIA E CRIATIVIDADE LTDA</B>, CNPJ <B>22.297.356/0001-71</B>, <B>Rua Jerônimo Coelho, 78, Centro, Joinville/SC, CEP 89201-050</B>. ao criar
         uma conta ou usar o app, você concorda com estes termos e com a{" "}
         <Link href="/privacidade" style={link}>política de privacidade</Link>.
       </P>
@@ -102,7 +102,7 @@ export default function TermosPage() {
       <H2>6. propriedade intelectual</H2>
       <P>
         a marca nūtrk, o design, o código e os textos do app são de{" "}
-        <B>[RAZÃO SOCIAL]</B> ou licenciados a ela. você recebe um direito
+        <B>DUP.AGENCY TECNOLOGIA E CRIATIVIDADE LTDA</B> ou licenciados a ela. você recebe um direito
         pessoal, não exclusivo e revogável de usar o app. não copie, não
         engenharia reversa, não use o app para treinar sistemas de terceiros.
       </P>
@@ -137,7 +137,7 @@ export default function TermosPage() {
       <H2>10. lei aplicável e contato</H2>
       <P>
         valem as leis do Brasil. fica eleito o foro do domicílio do consumidor
-        para disputas de consumo e, nos demais casos, o foro de [CIDADE/UF].
+        para disputas de consumo e, nos demais casos, o foro de Joinville/SC.
         contato: app@nutrk.io.
       </P>
     </LegalPage>

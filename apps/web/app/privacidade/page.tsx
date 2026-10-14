@@ -13,8 +13,8 @@ export default function PrivacidadePage() {
       <H2>1. quem somos</H2>
       <P>
         o nūtrk é um app de nutrição, treino e saúde mental. a controladora dos
-        seus dados pessoais é <B>[RAZÃO SOCIAL]</B>, CNPJ <B>[CNPJ]</B>, com
-        sede em <B>[ENDEREÇO]</B> (&quot;nūtrk&quot;, &quot;nós&quot;).
+        seus dados pessoais é <B>DUP.AGENCY TECNOLOGIA E CRIATIVIDADE LTDA</B>, CNPJ <B>22.297.356/0001-71</B>, com
+        sede em <B>Rua Jerônimo Coelho, 78, Centro, Joinville/SC, CEP 89201-050</B> (&quot;nūtrk&quot;, &quot;nós&quot;).
       </P>
       <P>
         quando um nutricionista ou personal trainer acompanha você pelo app, ele
