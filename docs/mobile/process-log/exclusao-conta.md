@@ -34,7 +34,7 @@ solicitação, com política de retenção explícita).
   função SQL transacional → `auth.admin.deleteUser` → `signOut` local →
   redirect. Cada passo é idempotente; falha no meio mantém a sessão e o usuário
   tenta de novo. A lógica de dados fica numa função `security definer`
-  (`nutrk.delete_account_data`, migration `20261014_02`), executável só por
+  (`nutrk.delete_account_data`, migration `20261014_03`), executável só por
   `service_role`, porque são vários deletes que precisam ser atômicos.
 - Decisões:
   - Assinatura ativa e não conseguiu cancelar (Asaas fora do ar, sem chave):
@@ -95,7 +95,7 @@ Supabase (declarado: até 30 dias); registro do pedido de exclusão por email.
 com o plano de backup real do Supabase antes de publicar.**
 
 ## Pedidos ao integrador
-- Aplicar `apps/web/supabase/migrations/20261014_02_account_deletion.sql` no
+- Aplicar `apps/web/supabase/migrations/20261014_03_account_deletion.sql` no
   Supabase **antes** de liberar o build: sem ela a exclusão falha com erro
   amigável (a função `delete_account_data` não existe), nada é apagado, exceto
   fotos e assinatura cancelada, que já aconteceram — idempotente, ok.

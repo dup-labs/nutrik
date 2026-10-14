@@ -21,7 +21,7 @@ Escopo: denunciar, bloquear, ocultar e agir sobre conteúdo gerado por usuário
   mapear *onde o texto de terceiros aparece* (chat, comentário, nome, avatar, bio).
   Aqui só mensagens; username é visível no ranking (ver riscos).
 
-## Modelo de dados (migration `20261014_03_moderation.sql`, NÃO aplicada)
+## Modelo de dados (migration `20261014_02_moderation.sql`, NÃO aplicada)
 - O que fiz:
   - `nutrk.reports`: reporter, alvo, contexto (`turma_mensagem` / `chat_mensagem` /
     `turma_membro`), `group_id`, `group_message_id` (FK), `message_id` (text),
@@ -162,7 +162,7 @@ de rejeição 1.2.
 - Bloqueado vê tudo como antes (não é avisado) — intencional, evita retaliação.
 
 ## Pedidos ao integrador
-- Aplicar `20261014_03_moderation.sql` (após conferir as premissas acima).
+- Aplicar `20261014_02_moderation.sql` (após conferir as premissas acima).
 - Confirmar `RESEND_API_KEY` em produção e que `app@nutrk.io` recebe email (o remetente
   também é `app@nutrk.io`; alguns provedores filtram auto-envio).
 - Tela "usuários bloqueados" com `listMyBlocks()` / `unblockUser()` em perfil/configurações

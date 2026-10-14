@@ -61,6 +61,9 @@ begin
   delete from nutrk.patient_events where patient_id = p_user;
   -- aparelhos de push (o cascade em auth.users não roda quando o login é mantido)
   delete from nutrk.device_tokens where user_id = p_user;
+  -- moderação (o cascade em auth.users não roda quando o login é mantido)
+  delete from nutrk.user_blocks where blocker_id = p_user or blocked_id = p_user;
+  delete from nutrk.reports where reporter_id = p_user or target_user_id = p_user;
 
   -- paciente: tudo o mais cai em cascade a partir de profiles
   delete from nutrk.profiles where id = p_user;

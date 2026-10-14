@@ -7,7 +7,7 @@
 //   2. cancela a assinatura no Asaas (se profissional e não cancelada) — antes
 //      de apagar qualquer coisa, pra nunca sobrar cobrança sem conta
 //   3. apaga as fotos do Storage (bucket nutrk-photos, pasta <userId>/)
-//   4. nutrk.delete_account_data(): dados do schema (ver migration 20261014_02)
+//   4. nutrk.delete_account_data(): dados do schema (ver migration 20261014_03)
 //   5. auth.admin.deleteUser — exceto se o usuário também usa outro app do
 //      mesmo projeto Supabase (polr/pblshr compartilham auth.users)
 //   6. signOut local + redirect

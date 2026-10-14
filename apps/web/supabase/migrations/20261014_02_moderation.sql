@@ -1,14 +1,15 @@
 -- Moderação de conteúdo gerado por usuário (Apple 1.2 / Google UGC):
 -- denúncia, bloqueio e ocultação. NÃO aplicado — rodar na integração.
--- Premissas: nutrk.profiles(id) = auth.uid(); nutrk.professionals(id, user_id);
+-- Premissas: nutrk.professionals(id, user_id); usuários referenciados por
+-- auth.users(id) — profissional NÃO tem linha em nutrk.profiles;
 -- nutrk.messages(patient_id, professional_id, sender, ...) com RLS já ligado
 -- (as policies abaixo são RESTRICTIVE: somam por AND com as existentes).
 
 -- ── denúncias ───────────────────────────────────────────────────────────
 create table if not exists nutrk.reports (
   id uuid primary key default gen_random_uuid(),
-  reporter_id uuid not null references nutrk.profiles(id) on delete cascade,
-  target_user_id uuid not null references nutrk.profiles(id) on delete cascade,
+  reporter_id uuid not null references auth.users(id) on delete cascade,
+  target_user_id uuid not null references auth.users(id) on delete cascade,
   context text not null check (context in ('turma_mensagem', 'chat_mensagem', 'turma_membro')),
   group_id uuid references nutrk.friend_groups(id) on delete set null,
   group_message_id uuid references nutrk.group_messages(id) on delete set null,
@@ -42,8 +43,8 @@ create policy "reporter reads own reports" on nutrk.reports
 -- ── bloqueios ───────────────────────────────────────────────────────────
 create table if not exists nutrk.user_blocks (
   id uuid primary key default gen_random_uuid(),
-  blocker_id uuid not null references nutrk.profiles(id) on delete cascade,
-  blocked_id uuid not null references nutrk.profiles(id) on delete cascade,
+  blocker_id uuid not null references auth.users(id) on delete cascade,
+  blocked_id uuid not null references auth.users(id) on delete cascade,
   created_at timestamptz not null default now(),
   unique (blocker_id, blocked_id),
   check (blocker_id <> blocked_id)
