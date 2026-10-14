@@ -211,7 +211,7 @@ html.is-native select {
   font-size: 16px !important; /* !important: os inputs do app têm font-size inline */
 }
 /* faixa de assinatura / CTAs de compra: escondida no iOS antes mesmo de hidratar */
-html.is-ios .ios-hide { display: none !important; }
+html.is-native .native-hide { display: none !important; }
 
 /* ── shell do paciente: trilho no desktop, bottom nav no mobile ── */
 .pac-sidebar { display: none; }

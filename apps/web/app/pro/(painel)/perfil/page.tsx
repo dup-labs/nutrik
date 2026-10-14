@@ -21,7 +21,7 @@ export default async function ProPerfilPage() {
         inviteCode: pro.invite_code,
       }}
       regLabel={PRO_COPY[pro.type].regLabel}
-      ios={platform === "ios"}
+      inApp={platform !== "web"}
     />
   );
 }

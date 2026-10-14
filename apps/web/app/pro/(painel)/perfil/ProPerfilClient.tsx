@@ -14,7 +14,7 @@ import { PRO_ACCENT, type ProfessionalType } from "@/lib/types";
 export function ProPerfilClient({
   pro,
   regLabel,
-  ios,
+  inApp,
 }: {
   pro: {
     name: string;
@@ -27,8 +27,9 @@ export function ProPerfilClient({
     inviteCode: string;
   };
   regLabel: string;
-  // regra 3.1.1: no app iOS não há link/CTA de assinatura (decidido no server)
-  ios: boolean;
+  // no app nativo (iOS e Android) não há link/CTA de assinatura — regra 3.1.1
+  // da Apple, e a mesma experiência no Android (decidido no server)
+  inApp: boolean;
 }) {
   const acc = PRO_ACCENT[pro.type];
   const [name, setName] = useState(pro.name);
@@ -119,7 +120,7 @@ export function ProPerfilClient({
         </button>
       </Card>
 
-      {ios ? (
+      {inApp ? (
         <div style={{ padding: "14px 16px", marginBottom: 20, borderRadius: 14, border: "1px solid var(--color-border)", background: "var(--color-surface-elevated)" }}>
           <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text)" }}>assinatura</div>
           <div style={{ fontSize: 12, color: "var(--color-text-muted)", marginTop: 2 }}>

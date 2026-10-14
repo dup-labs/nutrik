@@ -55,8 +55,9 @@ export async function startSubscription(input: {
 }): Promise<{ ok: boolean; error?: string; invoiceUrl?: string }> {
   const ctx = await requireProNoGate();
   if (!ctx) return { ok: false, error: "sessão expirada. entra de novo?" };
-  // regra 3.1.1 da Apple: no app iOS não se inicia compra fora do IAP
-  if ((await getRequestPlatform()) === "ios") {
+  // regra 3.1.1 da Apple: no app não se inicia compra fora do IAP (Android
+  // segue a mesma experiência do iOS)
+  if ((await getRequestPlatform()) !== "web") {
     return { ok: false, error: "a gestão da assinatura é feita pelo navegador." };
   }
   if (input.plan !== "monthly" && input.plan !== "yearly") {

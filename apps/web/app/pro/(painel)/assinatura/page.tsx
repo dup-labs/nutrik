@@ -14,9 +14,10 @@ export default async function AssinaturaPage() {
 
   const { subscription, entitlement } = billing;
 
-  // Apple 3.1.1: no app iOS nada de preço/CTA de compra — só o status.
+  // Apple 3.1.1: no app (iOS e Android, mesma experiência) nada de preço/CTA
+  // de compra — só o status.
   // Decidido no server, então preços nem chegam ao client.
-  if ((await getRequestPlatform()) === "ios") {
+  if ((await getRequestPlatform()) !== "web") {
     return (
       <AssinaturaNeutra
         state={entitlement.state}
