@@ -78,6 +78,7 @@ export interface AppPlugin {
     cb: (e: { canGoBack: boolean }) => void,
   ): Promise<PluginHandle> | PluginHandle;
   minimizeApp(): Promise<void>;
+  getLaunchUrl(): Promise<{ url: string } | undefined>;
 }
 
 export interface BrowserPlugin {

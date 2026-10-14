@@ -14,6 +14,7 @@
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>applinks:app.nutrk.io</string>
+		<string>webcredentials:app.nutrk.io</string>
 	</array>
 </dict>
 </plist>

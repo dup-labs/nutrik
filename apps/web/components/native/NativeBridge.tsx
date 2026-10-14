@@ -57,6 +57,23 @@ export function NativeBridge() {
         ),
       );
 
+      // Abertura a frio por link: o appUrlOpen pode disparar antes deste
+      // listener existir (a página remota ainda carregava). Processa a URL de
+      // lançamento uma vez só — sessionStorage evita loop após o redirect.
+      App.getLaunchUrl()
+        .then((launch) => {
+          const url = launch?.url;
+          if (!url) return;
+          const KEY = "nutrk.launchUrl";
+          if (sessionStorage.getItem(KEY) === url) return;
+          sessionStorage.setItem(KEY, url);
+          const path = deepLinkToPath(url, WEB_HOST);
+          if (path && path !== window.location.pathname + window.location.search) {
+            window.location.assign(path);
+          }
+        })
+        .catch(() => {});
+
       // Botão voltar do Android.
       handles.push(
         Promise.resolve(
