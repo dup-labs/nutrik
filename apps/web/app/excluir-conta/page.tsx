@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { RequestForm } from "./RequestForm";
+import { BackButton } from "@/components/ui/BackButton";
 
 export const metadata: Metadata = {
   title: "Excluir conta — Nūtrk",
@@ -25,7 +26,10 @@ export default async function ExcluirContaPage({
 
   return (
     <main style={{ maxWidth: 640, margin: "0 auto", padding: "40px 24px 64px" }}>
-      <div style={{ fontWeight: 900, fontSize: 26, letterSpacing: "-0.03em", marginBottom: 24 }}>nūtrk</div>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
+        <BackButton />
+        <div style={{ fontWeight: 900, fontSize: 26, letterSpacing: "-0.03em" }}>nūtrk</div>
+      </div>
 
       {concluida ? (
         <div style={{ background: "rgba(47,158,107,0.10)", border: "1px solid rgba(47,158,107,0.24)", borderRadius: "var(--radius-md)", padding: 20, marginBottom: 8 }}>

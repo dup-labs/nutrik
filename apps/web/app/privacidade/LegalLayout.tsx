@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
+import { BackButton } from "@/components/ui/BackButton";
 
 /**
  * Casca das páginas legais públicas (/privacidade e /termos).
- * Server component, sem JS no cliente. Tokens vêm de globals.css.
+ * Server component; só a seta de voltar é client. Tokens vêm de globals.css.
  */
 export function LegalPage({
   title,
@@ -31,16 +32,19 @@ export function LegalPage({
           color: "var(--color-text-secondary)",
         }}
       >
-        <div
-          style={{
-            fontFamily: "var(--font-display)",
-            fontWeight: 900,
-            fontSize: 22,
-            letterSpacing: "-0.03em",
-            color: "var(--color-text)",
-          }}
-        >
-          nūtrk
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <BackButton />
+          <div
+            style={{
+              fontFamily: "var(--font-display)",
+              fontWeight: 900,
+              fontSize: 22,
+              letterSpacing: "-0.03em",
+              color: "var(--color-text)",
+            }}
+          >
+            nūtrk
+          </div>
         </div>
         <h1
           style={{

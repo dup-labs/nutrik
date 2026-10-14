@@ -39,7 +39,9 @@ const config: CapacitorConfig = {
       splashImmersive: false,
     },
     StatusBar: {
-      style: "DARK", // ícones escuros sobre fundo claro
+      // LIGHT = texto/ícones ESCUROS (pra fundo claro). DARK é o contrário —
+      // o nome confunde: no Capacitor o estilo descreve o fundo, não o texto.
+      style: "LIGHT",
       backgroundColor: "#ffffff",
       overlaysWebView: false,
     },
