@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  PREPARADO, MAS NÃO LIGADO ao target (precisa de conta Apple Developer paga).
+  Pra ativar: no Xcode, target App > Signing & Capabilities > Team = conta paga,
+  adicionar "Push Notifications" e "Associated Domains" (o Xcode passa a usar este
+  arquivo via CODE_SIGN_ENTITLEMENTS = App/App.entitlements). Em build de loja
+  troque aps-environment por "production" (o Xcode faz isso sozinho na assinatura de distribuição).
+-->
+<plist version="1.0">
+<dict>
+	<key>aps-environment</key>
+	<string>development</string>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:app.nutrk.io</string>
+	</array>
+</dict>
+</plist>
