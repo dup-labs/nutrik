@@ -4,6 +4,7 @@ import { useState } from "react";
 import { BackHeader, PrimaryButton } from "@/components/ui";
 import { IconCheck, IconFace, MOOD_DEFS } from "@/components/ui/icons";
 import { saveMood } from "@/lib/actions";
+import { haptic } from "@/lib/haptics";
 
 const TAGS = ["sono", "trabalho", "treino", "ansiedade", "gratidão", "família"];
 
@@ -25,6 +26,7 @@ export function HumorClient({
     if (!mood || busy) return;
     setBusy(true);
     await saveMood({ date, mood, tags });
+    haptic("success");
     setSaved(true);
     setBusy(false);
   }

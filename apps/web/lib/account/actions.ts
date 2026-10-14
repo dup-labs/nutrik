@@ -16,6 +16,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { asaasConfigured, cancelAsaasSubscription } from "@/lib/billing/asaas";
+import { isAppleUser } from "./apple";
+import { revokeAppleToken } from "./apple-revoke";
 import { CONFIRM_WORD, DELETED_REDIRECT, normalizeConfirm } from "./shared";
 
 const PHOTO_BUCKET = "nutrk-photos";
@@ -65,6 +67,18 @@ export async function deleteAccount(input: {
 
   if (normalizeConfirm(input.confirmation) !== CONFIRM_WORD) {
     return { ok: false, error: `digite "${CONFIRM_WORD}" pra confirmar.` };
+  }
+
+  // refresh token da Apple, se ainda estiver na sessão (o Supabase não o
+  // persiste); lido antes de apagar o usuário
+  let appleRefreshToken: string | null = null;
+  if (isAppleUser(user)) {
+    try {
+      const { data } = await supabase.auth.getSession();
+      appleRefreshToken = data.session?.provider_refresh_token ?? null;
+    } catch {
+      /* best-effort */
+    }
   }
 
   let admin: Admin;
@@ -140,6 +154,9 @@ export async function deleteAccount(input: {
       };
     }
   }
+
+  // 5b. Sign in with Apple: revoga o token (best-effort, nunca bloqueia)
+  if (appleRefreshToken) await revokeAppleToken(appleRefreshToken);
 
   // 6. encerra a sessão deste dispositivo (o usuário já pode nem existir mais)
   try {

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { LegalConsent } from "@/components/auth/LegalConsent";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { MeshAura, PrimaryButton, BackHeader } from "@/components/ui";
@@ -84,6 +85,7 @@ export default function LoginPage() {
 
         <OrDivider />
         <SocialButtons googleLabel="entrar com Google" />
+        <LegalConsent />
 
         <div style={{ textAlign: "center", fontSize: 14, color: "var(--color-text-secondary)", marginTop: 24 }}>
           ainda não tem conta?{" "}

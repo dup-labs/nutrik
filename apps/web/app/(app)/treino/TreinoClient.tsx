@@ -6,6 +6,7 @@ import { useState } from "react";
 import { PrimaryButton } from "@/components/ui";
 import { IconCheck, IconPlayOutline } from "@/components/ui/icons";
 import { concludeWorkout } from "@/lib/actions";
+import { haptic } from "@/lib/haptics";
 import type { SetLog, WorkoutExercise } from "@/lib/types";
 
 export function TreinoClient({
@@ -35,6 +36,7 @@ export function TreinoClient({
     if (busy || isDone) return;
     setBusy(true);
     await concludeWorkout({ workoutDayId, date });
+    haptic("success");
     setIsDone(true);
     setBusy(false);
     router.refresh();

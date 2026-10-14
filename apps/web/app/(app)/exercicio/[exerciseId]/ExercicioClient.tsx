@@ -5,6 +5,7 @@ import { useState } from "react";
 import { BackHeader, PrimaryButton } from "@/components/ui";
 import { IconCheck, IconPlay } from "@/components/ui/icons";
 import { saveSet } from "@/lib/actions";
+import { haptic } from "@/lib/haptics";
 import type { SetLog, WorkoutExercise } from "@/lib/types";
 
 type SetState = { done: boolean; load: string; noLoad: boolean };
@@ -34,6 +35,7 @@ export function ExercicioClient({
   function patchSet(i: number, patch: Partial<SetState>) {
     setSeries((s) => s.map((x, j) => (j === i ? { ...x, ...patch } : x)));
     const next = { ...series[i], ...patch };
+    if (patch.done && !series[i].done) haptic("light");
     // persiste a cada interação — sem botão de salvar por série
     saveSet({
       exerciseId: exercise.id,
@@ -60,6 +62,7 @@ export function ExercicioClient({
         }),
       ),
     );
+    haptic("light");
     router.back();
     router.refresh();
   }

@@ -7,10 +7,11 @@ import { BackHeader, MeshAura, PrimaryButton } from "@/components/ui";
 import {
   ErrorNote,
   FieldLabel,
-  GoogleButton,
+  SocialButtons,
   OrDivider,
   TextInput,
 } from "@/components/auth/fields";
+import { LegalConsent } from "@/components/auth/LegalConsent";
 import { createClient } from "@/lib/supabase/client";
 import { createProfessionalProfile } from "@/lib/pro/actions";
 import { AuthSplit } from "@/components/AuthSplit";
@@ -266,7 +267,8 @@ export default function ProCadastroPage() {
           {hasSession === false && (
             <>
               <OrDivider />
-              <GoogleButton label="continuar com Google" flow="pro" />
+              <SocialButtons flow="pro" />
+              <LegalConsent />
               <div style={{ textAlign: "center", fontSize: 14, color: "var(--color-text-secondary)", marginTop: 24 }}>
                 já tem conta?{" "}
                 <Link href="/login" style={{ color: "var(--color-orange)", fontWeight: 600, textDecoration: "none" }}>
