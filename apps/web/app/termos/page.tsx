@@ -87,8 +87,11 @@ export default function TermosPage() {
       </P>
       <P>
         turmas são espaços entre amigos, não atendimento. o dono da turma pode
-        remover membros. podemos remover conteúdo e suspender contas que violem
-        estes termos. para denunciar algo, escreva para app@nutrk.io.
+        remover membros. temos tolerância zero com conteúdo ofensivo e
+        usuários abusivos: você pode denunciar uma mensagem ou bloquear alguém
+        direto no app (segure a mensagem ou abra o menu do membro), ou escrever
+        para app@nutrk.io. analisamos denúncias em até 24 horas e podemos
+        remover conteúdo e suspender contas que violem estes termos.
       </P>
       <P>
         você mantém a propriedade do conteúdo que cria, mas nos autoriza a
