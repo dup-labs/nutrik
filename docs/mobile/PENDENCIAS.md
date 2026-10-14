@@ -5,6 +5,33 @@
 > email, navegação, câmera, páginas legais, status bar, botão voltar.
 > Detalhes técnicos de cada item: `auth-setup.md`, `push-setup.md`, `store/`.
 
+## Plano da próxima sessão (combinado em 2026-10-14)
+
+Uma etapa por vez, nesta ordem. Só o iOS espera a Apple; o resto anda.
+
+**1. Android no Google Play: teste interno com clientes reais**
+1. Criar o app "nūtrk" no Play Console (conta dup.lab).
+2. Gerar a chave de upload (keystore) e guardar fora do repo.
+3. Build de loja: `npm run sync` **sem** `CAP_SERVER_URL` → AAB assinado.
+4. Subir em **teste interno** (até 100 testadores, sem revisão).
+5. Pegar o SHA-256 do Play App Signing → `assetlinks.json` → deploy.
+6. Convidar os primeiros clientes reais (lista de emails do Dup).
+
+**2. Push ponta a ponta no Android**
+- Instalar o build de teste interno num Android, logar, receber push (plano publicado / mensagem).
+
+**3. Configurações rápidas no Supabase**
+- Redirect URLs: `io.nutrk.app://auth/callback` e `io.nutrk.app://auth/callback**`.
+- Templates de email → `/auth/confirm` (ver `auth-setup.md`).
+- Testar login com Google no app Android.
+
+**4. Testes que faltam (emulador)**
+- Excluir conta · denunciar/bloquear (2 contas) · tela offline · links externos.
+
+**5. Quando a Apple aprovar** (email no hi@brunodup.com — olhar o spam)
+- Pagar US$ 99 → Team ID → `apple-app-site-association`, entitlements, chave APNs, Sign in with Apple no Supabase + `NEXT_PUBLIC_APPLE_SIGNIN=1`.
+- Criar o app no App Store Connect → build pelo Xcode → TestFlight com os mesmos clientes.
+
 ## Bloqueado por conta (caminho crítico)
 
 1. ~~D-U-N-S~~ **feito em 2026-10-14: 943334590** (DUP.AGENCY TECNOLOGIA E CRIATIVIDADE LTDA, já existia na D&B). Account Holder Apple: hi@brunodup.com.
