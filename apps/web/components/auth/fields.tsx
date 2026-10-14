@@ -112,7 +112,9 @@ export function SocialButtons({ flow, googleLabel = "continuar com Google" }: So
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       <ErrorNote>{error}</ErrorNote>
-      <AppleSignInButton onClick={() => go("apple")} disabled={busy !== null} />
+      {APPLE_SIGNIN_ENABLED && (
+        <AppleSignInButton onClick={() => go("apple")} disabled={busy !== null} />
+      )}
       <button
         type="button"
         onClick={() => go("google")}
@@ -143,6 +145,12 @@ export function SocialButtons({ flow, googleLabel = "continuar com Google" }: So
  * oficial da Apple em pt-BR ("Continuar com a Apple") — por isso não está em
  * minúsculas como o resto da UI.
  */
+// Sign in with Apple só aparece depois de configurado no Supabase (precisa da
+// conta Apple Developer — ver docs/mobile/auth-setup.md). Ligar na Vercel com
+// NEXT_PUBLIC_APPLE_SIGNIN=1. Obrigatório antes de publicar na App Store,
+// porque o app oferece login com Google (guideline 4.8).
+const APPLE_SIGNIN_ENABLED = process.env.NEXT_PUBLIC_APPLE_SIGNIN === "1";
+
 export function AppleSignInButton({
   onClick,
   disabled,
